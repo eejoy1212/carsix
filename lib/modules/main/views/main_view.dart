@@ -1,5 +1,6 @@
 import 'package:carsix/const/color.dart';
 import 'package:carsix/content/device/device_content.dart';
+import 'package:carsix/content/mode/mode_content.dart';
 import 'package:carsix/modules/main/controllers/main_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
@@ -9,8 +10,8 @@ class MainView extends StatelessWidget {
   final MainController controller = Get.put(MainController());
 
   final iconList = <IconData>[
-    Icons.home,
-    Icons.search,
+    Icons.directions_car,
+    Icons.tune,
     Icons.favorite,
     Icons.person,
   ];
@@ -24,7 +25,7 @@ class MainView extends StatelessWidget {
           case 0:
             return DeviceContent();
           case 1:
-            return Center(child: Text("Search Page"));
+            return ModeContent();
           case 2:
             return Center(child: Text("Favorites Page"));
           case 3:

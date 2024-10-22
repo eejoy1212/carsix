@@ -10,10 +10,9 @@ class LoadingView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text(
-          "CARSIX LOADING",
-          style: TextStyle(fontSize: 20),
-        ),
+        child: Container(
+            margin: EdgeInsets.only(left: 26, right: 26),
+            child: Image.asset('assets/images/logo.png')),
       ),
     );
   }

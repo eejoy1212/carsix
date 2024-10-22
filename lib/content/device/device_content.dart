@@ -1,5 +1,5 @@
 import 'package:carsix/const/color.dart';
-import 'package:carsix/widget/device_card.dart';
+import 'package:carsix/widget/card/device_card.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
