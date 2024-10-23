@@ -20,9 +20,11 @@ class DeviceContent extends StatelessWidget {
                   Text(
                     "디바이스",
                     style: TextStyle(
+                        height: 1.6,
                         color: CarsixColors.white1,
                         fontSize: 26,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w700,
+                        fontStyle: FontStyle.italic,
                         letterSpacing: 2),
                   ),
                 ],

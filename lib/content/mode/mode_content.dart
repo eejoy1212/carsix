@@ -24,8 +24,9 @@ class ModeContent extends StatelessWidget {
                       style: TextStyle(
                         color: CarsixColors.white1,
                         fontSize: 26,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w700,
                         letterSpacing: 2,
+                        fontStyle: FontStyle.italic,
                       ),
                     ),
                   ],
