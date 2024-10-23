@@ -1,7 +1,9 @@
 import 'package:carsix/const/color.dart';
+import 'package:carsix/content/tabview/active_tabview.dart';
 import 'package:carsix/content/tabview/music_tabview.dart';
 import 'package:carsix/content/tabview/single_color_tabview.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ModeContent extends StatelessWidget {
   const ModeContent({super.key});
@@ -63,15 +65,7 @@ class ModeContent extends StatelessWidget {
                 child: TabBarView(
                   children: [
                     // 각 탭에 표시할 위젯
-                    Center(
-                      child: Text(
-                        '액티브 모드 설정',
-                        style: TextStyle(
-                          color: CarsixColors.white1,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
+                    ActiveTabView(),
                     // 단색 모드 화면
                     SingleColorTabView(),
                     MusicTabView(),

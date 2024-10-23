@@ -15,6 +15,8 @@ class MainController extends GetxController {
   RxList<Color> favoriteColors = RxList.empty();
   //뮤직 컬러
   RxList<Color> musicColors = RxList.empty();
+  //뮤직 컬러
+  RxList<Color> welcomeColors = RxList.empty();
   //모드 1~4
   RxString selectedMode = RxString("모드1");
   RxDouble musicSensitivity = RxDouble(0.0);
@@ -38,6 +40,18 @@ class MainController extends GetxController {
   // 뮤직 색상 제거 함수
   void removeFromMusics(Color color) {
     musicColors.remove(color);
+  }
+
+// welcome 색상 추가 함수
+  void addToWelcomes(Color color) {
+    if (!welcomeColors.contains(color) && welcomeColors.length < 3) {
+      welcomeColors.add(color);
+    }
+  }
+
+  // welcome 색상 제거 함수
+  void removeFromWelcomes(Color color) {
+    welcomeColors.remove(color);
   }
 
   @override

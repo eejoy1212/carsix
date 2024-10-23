@@ -51,7 +51,12 @@ class MainView extends StatelessWidget {
       }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
-        child: Icon(Icons.add),
+        child: Container(
+          margin: EdgeInsets.only(left: 8, right: 9, top: 16, bottom: 8),
+          child: Image.asset(
+            'assets/images/logo_mini_white.png',
+          ),
+        ),
         backgroundColor: CarsixColors.primaryRed, // FAB 버튼 색상 설정
         shape: CircleBorder(), // FAB가 원형 모양을 유지하도록 설정
       ),
