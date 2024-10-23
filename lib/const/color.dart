@@ -9,4 +9,5 @@ class CarsixColors {
   static const Color grey3 = Color(0xFF575757);
   static const Color grey4 = Color(0xFF3f3f3f);
   static const Color white1 = Color(0xFFFFFFFF);
+  static const Color brown1 = Color(0xFF7f7471);
 }

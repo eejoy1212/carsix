@@ -1,20 +1,13 @@
 import 'package:carsix/const/color.dart';
-import 'package:carsix/modules/main/controllers/main_controller.dart';
-import 'package:carsix/widget/btn/favorite_color_btn.dart';
-import 'package:carsix/widget/card/auto_bright_card.dart';
-import 'package:carsix/widget/card/selected_favorite_card.dart';
-import 'package:flex_color_picker/flex_color_picker.dart'; // flex_color_picker import
+import 'package:carsix/content/tabview/music_tabview.dart';
+import 'package:carsix/content/tabview/single_color_tabview.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class ModeContent extends StatelessWidget {
   const ModeContent({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // 컨트롤러를 인스턴스화
-    final MainController controller = Get.put(MainController());
-
     return SafeArea(
       child: Center(
         child: DefaultTabController(
@@ -79,27 +72,8 @@ class ModeContent extends StatelessWidget {
                       ),
                     ),
                     // 단색 모드 화면
-                    SingleChildScrollView(
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            FavoriteColorBtn(),
-                            SelectedFavoriteCard(
-                                title: "title", content: "content")
-                          ],
-                        ),
-                      ),
-                    ),
-                    Center(
-                      child: Text(
-                        '뮤직 모드 설정',
-                        style: TextStyle(
-                          color: CarsixColors.white1,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
+                    SingleColorTabView(),
+                    MusicTabView(),
                     Center(
                       child: Text(
                         '커스텀 모드 설정',

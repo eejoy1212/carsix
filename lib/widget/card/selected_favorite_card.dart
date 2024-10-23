@@ -25,7 +25,7 @@ class SelectedFavoriteCard extends StatelessWidget {
             const EdgeInsets.only(left: 20.0, right: 20, top: 16, bottom: 16),
         child: Column(
           children: [
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(

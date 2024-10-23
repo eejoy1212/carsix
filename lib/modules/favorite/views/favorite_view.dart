@@ -47,7 +47,7 @@ class FavoriteView extends StatelessWidget {
               ),
             ),
 
-            Divider(),
+            const Divider(),
             const SizedBox(height: 20),
             // 즐겨찾기 색상 표시 및 제거 기능 추가
             Obx(

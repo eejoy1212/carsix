@@ -5,6 +5,8 @@ import 'package:carsix/modules/main/bindings/main_binding.dart';
 import 'package:carsix/modules/main/views/main_view.dart';
 import 'package:carsix/modules/loading/bindings/loading_binding.dart';
 import 'package:carsix/modules/loading/views/loading_view.dart';
+import 'package:carsix/modules/music_color/bindings/music_color_binding.dart';
+import 'package:carsix/modules/music_color/views/music_color_view.dart';
 import 'package:get/get.dart';
 
 class AppPages {
@@ -25,6 +27,11 @@ class AppPages {
       name: '/favorite',
       page: () => FavoriteView(),
       binding: FavoriteBinding(),
+    ),
+    GetPage(
+      name: '/music-color',
+      page: () => MusicColorView(),
+      binding: MusicColorBinding(),
     ),
   ];
 }
