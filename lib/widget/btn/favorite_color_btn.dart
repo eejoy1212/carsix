@@ -13,6 +13,7 @@ class FavoriteColorBtn extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(color: CarsixColors.grey4),
         color: CarsixColors.grey1,
+        borderRadius: BorderRadius.all(Radius.circular(5)),
       ),
       child: InkWell(
         onTap: () {

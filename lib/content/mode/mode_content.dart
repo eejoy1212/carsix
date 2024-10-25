@@ -1,5 +1,6 @@
 import 'package:carsix/const/color.dart';
 import 'package:carsix/content/tabview/active_tabview.dart';
+import 'package:carsix/content/tabview/custom_tabview.dart';
 import 'package:carsix/content/tabview/music_tabview.dart';
 import 'package:carsix/content/tabview/single_color_tabview.dart';
 import 'package:flutter/material.dart';
@@ -69,15 +70,7 @@ class ModeContent extends StatelessWidget {
                     // 단색 모드 화면
                     SingleColorTabView(),
                     MusicTabView(),
-                    Center(
-                      child: Text(
-                        '커스텀 모드 설정',
-                        style: TextStyle(
-                          color: CarsixColors.white1,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
+                    CustomTabView()
                   ],
                 ),
               ),

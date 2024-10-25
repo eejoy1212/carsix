@@ -20,6 +20,7 @@ class ActiveTabView extends StatelessWidget {
             width: double.infinity,
             decoration: BoxDecoration(
               color: CarsixColors.grey1,
+              borderRadius: BorderRadius.all(Radius.circular(5)),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -76,6 +77,7 @@ class ActiveTabView extends StatelessWidget {
             width: double.infinity,
             decoration: BoxDecoration(
               color: CarsixColors.grey1,
+              borderRadius: BorderRadius.all(Radius.circular(5)),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -104,29 +106,39 @@ class ActiveTabView extends StatelessWidget {
                   ],
                 ),
                 Obx(
-                  () => Row(
-                      children: controller.welcomeColors
-                          .map((color) => Expanded(
-                                child: Container(
-                                  margin: EdgeInsets.only(
-                                    top: 16,
-                                  ),
-                                  height: 60, // 컬러 박스의 높이
-                                  decoration: BoxDecoration(
-                                    color: color,
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      width: 1,
+                  () => controller.welcomeColors.isEmpty
+                      ? Container(
+                          padding: EdgeInsets.symmetric(vertical: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("컬러를 추가 해 주세요"),
+                            ],
+                          ),
+                        )
+                      : Row(
+                          children: controller.welcomeColors
+                              .map((color) => Expanded(
+                                    child: Container(
+                                      margin: EdgeInsets.only(
+                                        top: 16,
+                                      ),
+                                      height: 60, // 컬러 박스의 높이
+                                      decoration: BoxDecoration(
+                                        color: color,
+                                        border: Border.all(
+                                          color: Colors.white,
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Center(
+                                          child: Text(
+                                        color.hex,
+                                        style: TextStyle(fontSize: 16),
+                                      )),
                                     ),
-                                  ),
-                                  child: Center(
-                                      child: Text(
-                                    color.hex,
-                                    style: TextStyle(fontSize: 16),
-                                  )),
-                                ),
-                              ))
-                          .toList()),
+                                  ))
+                              .toList()),
                 )
               ],
             ),
@@ -144,6 +156,7 @@ class ActiveTabView extends StatelessWidget {
             width: double.infinity,
             decoration: BoxDecoration(
               color: CarsixColors.grey1,
+              borderRadius: BorderRadius.all(Radius.circular(5)),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -172,29 +185,39 @@ class ActiveTabView extends StatelessWidget {
                   ],
                 ),
                 Obx(
-                  () => Row(
-                      children: controller.welcomeColors
-                          .map((color) => Expanded(
-                                child: Container(
-                                  margin: EdgeInsets.only(
-                                    top: 16,
-                                  ),
-                                  height: 60, // 컬러 박스의 높이
-                                  decoration: BoxDecoration(
-                                    color: color,
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      width: 1,
+                  () => controller.welcomeColors.isEmpty
+                      ? Container(
+                          padding: EdgeInsets.symmetric(vertical: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("컬러를 추가 해 주세요"),
+                            ],
+                          ),
+                        )
+                      : Row(
+                          children: controller.welcomeColors
+                              .map((color) => Expanded(
+                                    child: Container(
+                                      margin: EdgeInsets.only(
+                                        top: 16,
+                                      ),
+                                      height: 60, // 컬러 박스의 높이
+                                      decoration: BoxDecoration(
+                                        color: color,
+                                        border: Border.all(
+                                          color: Colors.white,
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Center(
+                                          child: Text(
+                                        color.hex,
+                                        style: TextStyle(fontSize: 16),
+                                      )),
                                     ),
-                                  ),
-                                  child: Center(
-                                      child: Text(
-                                    color.hex,
-                                    style: TextStyle(fontSize: 16),
-                                  )),
-                                ),
-                              ))
-                          .toList()),
+                                  ))
+                              .toList()),
                 )
               ],
             ),

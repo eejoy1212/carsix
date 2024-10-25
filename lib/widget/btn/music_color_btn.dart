@@ -8,17 +8,18 @@ class MusicColorBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 20, right: 20, top: 16),
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      margin: const EdgeInsets.only(left: 20, right: 20, top: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
         border: Border.all(color: CarsixColors.grey4),
         color: CarsixColors.grey1,
+        borderRadius: const BorderRadius.all(Radius.circular(5)),
       ),
       child: InkWell(
         onTap: () {
           Get.toNamed("/music-color");
         },
-        child: Row(
+        child: const Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(

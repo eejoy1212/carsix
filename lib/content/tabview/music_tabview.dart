@@ -22,6 +22,7 @@ class MusicTabView extends StatelessWidget {
               width: double.infinity,
               decoration: BoxDecoration(
                 color: CarsixColors.grey1,
+                borderRadius: BorderRadius.all(Radius.circular(5)),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -117,6 +118,7 @@ class MusicTabView extends StatelessWidget {
               width: double.infinity,
               decoration: BoxDecoration(
                 color: CarsixColors.grey1,
+                borderRadius: BorderRadius.all(Radius.circular(5)),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -171,6 +173,7 @@ class MusicTabView extends StatelessWidget {
               width: double.infinity,
               decoration: BoxDecoration(
                 color: CarsixColors.grey1,
+                borderRadius: BorderRadius.all(Radius.circular(5)),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,

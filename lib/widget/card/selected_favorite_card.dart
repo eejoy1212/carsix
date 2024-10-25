@@ -19,6 +19,7 @@ class SelectedFavoriteCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: CarsixColors.grey1,
+        borderRadius: BorderRadius.all(Radius.circular(5)),
       ),
       child: Padding(
         padding:
@@ -78,7 +79,7 @@ class SelectedFavoriteCard extends StatelessWidget {
                           child: Center(
                               child: Text(
                             color.hex,
-                            style: TextStyle(fontSize: 16),
+                            style: const TextStyle(fontSize: 16),
                           )),
                         );
                       },

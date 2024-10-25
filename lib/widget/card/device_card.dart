@@ -15,7 +15,7 @@ class DeviceCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: CarsixColors.grey1,
-        // borderRadius: BorderRadius.all(Radius.circular(8)),
+        borderRadius: BorderRadius.all(Radius.circular(5)),
       ),
       child: Padding(
         padding:
