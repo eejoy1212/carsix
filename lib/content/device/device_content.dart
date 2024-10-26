@@ -1,19 +1,27 @@
 import 'package:carsix/const/color.dart';
+import 'package:carsix/controller/bluetooth_controller.dart';
 import 'package:carsix/theme/controllers/theme_controller.dart';
 import 'package:carsix/widget/card/device_card.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class DeviceContent extends StatelessWidget {
   DeviceContent({super.key});
   final themeController = Get.find<ThemeController>();
+  final bleController = Get.put(BLEController());
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Center(
         child: Column(
           children: [
+            ElevatedButton(
+              onPressed: bleController.scanAndConnect,
+              child: Text("스캔 및 연결"),
+            ),
+            Obx(() => Text(bleController.isConnected.value ? "연결됨" : "연결 안됨")),
             //타이틀
             Container(
               margin: EdgeInsets.only(left: 20, right: 20, top: 20),

@@ -1,51 +1,75 @@
-import 'dart:async';
+import 'package:flutter_blue/flutter_blue.dart';
 import 'package:get/get.dart';
-import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class BluetoothController extends GetxController {
-  final FlutterReactiveBle _ble = FlutterReactiveBle();
-  final RxList<DiscoveredDevice> discoveredDevices =
-      <DiscoveredDevice>[].obs; // 스캔한 장치 목록
-  final RxBool isScanning = false.obs; // 스캔 상태
-  late StreamSubscription<DiscoveredDevice> _scanSubscription; // 스캔 구독
-
+class BLEController extends GetxController {
+  FlutterBlue flutterBlue = FlutterBlue.instance;
+  var isConnected = false.obs;
+  var isScanning = false.obs; // 스캔 상태 변수 추가
+  BluetoothDevice? connectedDevice;
+  String DeviceName = "CAR-SIX LED Controller";
   @override
   void onInit() {
     super.onInit();
-    requestPermissions(); // 권한 요청
+    requestPermissions();
+    scanAndConnect();
   }
 
-  // BLE 스캔 시작
-  void startScan() {
-    print('스캔중>>> $isScanning');
-    if (isScanning.value) return; // 이미 스캔 중이면 종료
-    isScanning.value = true;
-    discoveredDevices.clear();
+  void requestPermissions() async {
+    await [
+      Permission.bluetooth,
+      Permission.bluetoothScan,
+      Permission.bluetoothConnect,
+      Permission.locationWhenInUse,
+    ].request();
+  }
 
-    _scanSubscription = _ble.scanForDevices(withServices: []).listen((device) {
-      print('새로운 블루투스 장치>>> $discoveredDevices');
-      if (!discoveredDevices.any((d) => d.id == device.id)) {
-        discoveredDevices.add(device); // 새로운 장치 추가
+  void scanAndConnect() {
+    // 이미 스캔 중이면 함수 종료
+    if (isScanning.value) {
+      print("스캔이 이미 진행 중입니다.");
+      return;
+    }
+
+    // 스캔 시작
+    isScanning.value = true;
+    flutterBlue.startScan(timeout: Duration(seconds: 4)).catchError((e) {
+      print("BLE 스캔 오류: $e");
+    });
+
+    flutterBlue.scanResults.listen((results) {
+      for (ScanResult result in results) {
+        print("in for문00${result.device.name}");
+        if (result.device.name == DeviceName) {
+          print("in for문11");
+          // 기기 이름 설정 필요
+          flutterBlue.stopScan();
+          isScanning.value = false; // 스캔 종료 상태로 설정
+          connectToDevice(result.device);
+          break;
+        }
       }
     });
 
-    Future.delayed(Duration(seconds: 10), () {
-      // 10초 후 스캔 중지
-      stopScan();
+    flutterBlue.isScanning.listen((scanning) {
+      isScanning.value = scanning; // 스캔 상태 업데이트
     });
   }
 
-  // 스캔 중지
-  void stopScan() {
-    _scanSubscription.cancel(); // 스캔 스트림 구독 취소
-    isScanning.value = false;
+  void connectToDevice(BluetoothDevice device) async {
+    try {
+      await device.connect();
+      isConnected.value = true;
+      connectedDevice = device;
+      print("BLE 기기와 연결되었습니다.");
+    } catch (e) {
+      print("연결 오류: $e");
+    }
   }
 
-  // 권한 요청 함수 추가
-  Future<void> requestPermissions() async {
-    if (await Permission.location.isDenied) {
-      await Permission.location.request();
-    }
+  void disconnect() {
+    connectedDevice?.disconnect();
+    isConnected.value = false;
+    print("BLE 연결이 종료되었습니다.");
   }
 }
