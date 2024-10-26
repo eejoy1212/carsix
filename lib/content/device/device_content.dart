@@ -1,11 +1,13 @@
 import 'package:carsix/const/color.dart';
+import 'package:carsix/theme/controllers/theme_controller.dart';
 import 'package:carsix/widget/card/device_card.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 
 class DeviceContent extends StatelessWidget {
-  const DeviceContent({super.key});
-
+  DeviceContent({super.key});
+  final themeController = Get.find<ThemeController>();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -14,33 +16,20 @@ class DeviceContent extends StatelessWidget {
           children: [
             //타이틀
             Container(
-              margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
+              margin: EdgeInsets.only(left: 20, right: 20, top: 20),
               child: Row(
                 children: [
                   Text(
                     "디바이스",
                     style: TextStyle(
                         height: 1.6,
-                        color: CarsixColors.white1,
+                        color: themeController.isDarkMode.value
+                            ? CarsixColors.white1
+                            : CarsixColors.grey6,
                         fontSize: 26,
                         fontWeight: FontWeight.w700,
                         fontStyle: FontStyle.italic,
                         letterSpacing: 2),
-                  ),
-                ],
-              ),
-            ),
-            //페이지에 대한 설명
-            Container(
-              margin: const EdgeInsets.only(left: 20, right: 20),
-              child: Row(
-                children: [
-                  Text(
-                    "설명을 적어주세요",
-                    style: TextStyle(
-                      color: CarsixColors.grey2,
-                      fontSize: 16,
-                    ),
                   ),
                 ],
               ),

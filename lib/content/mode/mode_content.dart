@@ -3,12 +3,13 @@ import 'package:carsix/content/tabview/active_tabview.dart';
 import 'package:carsix/content/tabview/custom_tabview.dart';
 import 'package:carsix/content/tabview/music_tabview.dart';
 import 'package:carsix/content/tabview/single_color_tabview.dart';
+import 'package:carsix/theme/controllers/theme_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ModeContent extends StatelessWidget {
-  const ModeContent({super.key});
-
+  ModeContent({super.key});
+  final themeController = Get.find<ThemeController>();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -25,7 +26,9 @@ class ModeContent extends StatelessWidget {
                     Text(
                       "액티브 모드",
                       style: TextStyle(
-                        color: CarsixColors.white1,
+                        color: themeController.isDarkMode.value
+                            ? CarsixColors.white1
+                            : CarsixColors.grey6,
                         fontSize: 26,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 2,
@@ -35,24 +38,12 @@ class ModeContent extends StatelessWidget {
                   ],
                 ),
               ),
-              // 페이지에 대한 설명
-              Container(
-                margin: const EdgeInsets.only(left: 20, right: 20),
-                child: Row(
-                  children: [
-                    Text(
-                      "설명을 적어주세요",
-                      style: TextStyle(
-                        color: CarsixColors.grey2,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+
               // 탭바 추가
               TabBar(
-                labelColor: CarsixColors.white1,
+                labelColor: themeController.isDarkMode.value
+                    ? CarsixColors.white1
+                    : CarsixColors.primaryRed,
                 unselectedLabelColor: CarsixColors.grey2,
                 indicatorColor: CarsixColors.primaryRed,
                 tabs: const [

@@ -4,12 +4,13 @@ import 'package:carsix/content/led/led_content.dart';
 import 'package:carsix/content/mode/mode_content.dart';
 import 'package:carsix/content/mypage/mypage_content.dart';
 import 'package:carsix/modules/main/controllers/main_controller.dart';
+import 'package:carsix/theme/controllers/theme_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MainView extends StatelessWidget {
   final MainController controller = Get.put(MainController());
-
+  final themeController = Get.find<ThemeController>();
   final iconList = <IconData>[
     Icons.directions_car,
     Icons.tune,
@@ -39,27 +40,38 @@ class MainView extends StatelessWidget {
         return BottomNavigationBar(
           currentIndex: controller.currentIndex.value,
           onTap: (index) => controller.changeTab(index),
-          backgroundColor: CarsixColors.grey1, // 다크모드 배경색
+          backgroundColor: themeController.isDarkMode.value
+              ? CarsixColors.grey1
+              : CarsixColors.white2, // 다크모드 배경색
           selectedItemColor: CarsixColors.primaryRed,
+
           unselectedItemColor: Colors.grey,
           items: [
             BottomNavigationBarItem(
-              backgroundColor: CarsixColors.grey1,
+              backgroundColor: themeController.isDarkMode.value
+                  ? CarsixColors.grey1
+                  : CarsixColors.white2,
               icon: Icon(Icons.directions_car),
               label: 'DEVICE',
             ),
             BottomNavigationBarItem(
-              backgroundColor: CarsixColors.grey1,
+              backgroundColor: themeController.isDarkMode.value
+                  ? CarsixColors.grey1
+                  : CarsixColors.white2,
               icon: Icon(Icons.tune),
               label: 'MODE',
             ),
             BottomNavigationBarItem(
-              backgroundColor: CarsixColors.grey1,
+              backgroundColor: themeController.isDarkMode.value
+                  ? CarsixColors.grey1
+                  : CarsixColors.white2,
               icon: Icon(Icons.lightbulb_outline),
               label: 'LED',
             ),
             BottomNavigationBarItem(
-              backgroundColor: CarsixColors.grey1,
+              backgroundColor: themeController.isDarkMode.value
+                  ? CarsixColors.grey1
+                  : CarsixColors.white2,
               icon: Icon(Icons.person),
               label: 'MYPAGE',
             ),

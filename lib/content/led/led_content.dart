@@ -1,9 +1,11 @@
 import 'package:carsix/const/color.dart';
+import 'package:carsix/theme/controllers/theme_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class LedContent extends StatelessWidget {
-  const LedContent({super.key});
-
+  LedContent({super.key});
+  final themeController = Get.find<ThemeController>();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -14,13 +16,15 @@ class LedContent extends StatelessWidget {
               //타이틀
               Container(
                 margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
-                child: const Row(
+                child: Row(
                   children: [
                     Text(
                       "LED",
                       style: TextStyle(
                           height: 1.6,
-                          color: CarsixColors.white1,
+                          color: themeController.isDarkMode.value
+                              ? CarsixColors.white1
+                              : CarsixColors.grey6,
                           fontSize: 26,
                           fontWeight: FontWeight.w700,
                           fontStyle: FontStyle.italic,
@@ -36,9 +40,20 @@ class LedContent extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: CarsixColors.grey1,
+                decoration: BoxDecoration(
+                  color: themeController.isDarkMode.value
+                      ? CarsixColors.grey1
+                      : CarsixColors.white2,
                   borderRadius: BorderRadius.all(Radius.circular(5)),
+                  // border: Border.all(color: CarsixColors.grey2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1), // 그림자 색상 (조정 가능)
+                      spreadRadius: 2, // 그림자가 퍼지는 정도
+                      blurRadius: 5, // 그림자의 흐림 정도
+                      offset: Offset(0, 6), // 그림자의 위치 (x축, y축)
+                    ),
+                  ],
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -101,9 +116,20 @@ class LedContent extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: CarsixColors.grey1,
+                decoration: BoxDecoration(
+                  color: themeController.isDarkMode.value
+                      ? CarsixColors.grey1
+                      : CarsixColors.white2,
                   borderRadius: BorderRadius.all(Radius.circular(5)),
+                  // border: Border.all(color: CarsixColors.grey2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1), // 그림자 색상 (조정 가능)
+                      spreadRadius: 2, // 그림자가 퍼지는 정도
+                      blurRadius: 5, // 그림자의 흐림 정도
+                      offset: Offset(0, 6), // 그림자의 위치 (x축, y축)
+                    ),
+                  ],
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -166,9 +192,20 @@ class LedContent extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: CarsixColors.grey1,
+                decoration: BoxDecoration(
+                  color: themeController.isDarkMode.value
+                      ? CarsixColors.grey1
+                      : CarsixColors.white2,
                   borderRadius: BorderRadius.all(Radius.circular(5)),
+                  // border: Border.all(color: CarsixColors.grey2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1), // 그림자 색상 (조정 가능)
+                      spreadRadius: 2, // 그림자가 퍼지는 정도
+                      blurRadius: 5, // 그림자의 흐림 정도
+                      offset: Offset(0, 6), // 그림자의 위치 (x축, y축)
+                    ),
+                  ],
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -230,9 +267,20 @@ class LedContent extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: CarsixColors.grey1,
+                decoration: BoxDecoration(
+                  color: themeController.isDarkMode.value
+                      ? CarsixColors.grey1
+                      : CarsixColors.white2,
                   borderRadius: BorderRadius.all(Radius.circular(5)),
+                  // border: Border.all(color: CarsixColors.grey2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1), // 그림자 색상 (조정 가능)
+                      spreadRadius: 2, // 그림자가 퍼지는 정도
+                      blurRadius: 5, // 그림자의 흐림 정도
+                      offset: Offset(0, 6), // 그림자의 위치 (x축, y축)
+                    ),
+                  ],
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -294,9 +342,20 @@ class LedContent extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: CarsixColors.grey1,
+                decoration: BoxDecoration(
+                  color: themeController.isDarkMode.value
+                      ? CarsixColors.grey1
+                      : CarsixColors.white2,
                   borderRadius: BorderRadius.all(Radius.circular(5)),
+                  // border: Border.all(color: CarsixColors.grey2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1), // 그림자 색상 (조정 가능)
+                      spreadRadius: 2, // 그림자가 퍼지는 정도
+                      blurRadius: 5, // 그림자의 흐림 정도
+                      offset: Offset(0, 6), // 그림자의 위치 (x축, y축)
+                    ),
+                  ],
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -358,9 +417,20 @@ class LedContent extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: CarsixColors.grey1,
+                decoration: BoxDecoration(
+                  color: themeController.isDarkMode.value
+                      ? CarsixColors.grey1
+                      : CarsixColors.white2,
                   borderRadius: BorderRadius.all(Radius.circular(5)),
+                  // border: Border.all(color: CarsixColors.grey2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1), // 그림자 색상 (조정 가능)
+                      spreadRadius: 2, // 그림자가 퍼지는 정도
+                      blurRadius: 5, // 그림자의 흐림 정도
+                      offset: Offset(0, 6), // 그림자의 위치 (x축, y축)
+                    ),
+                  ],
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
