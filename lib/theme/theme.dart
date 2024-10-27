@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light, // 기본 다크 모 드 설정
+
     colorScheme: ColorScheme.fromSeed(
       background: CarsixColors.primaryRed,
       seedColor: CarsixColors.primaryRed,

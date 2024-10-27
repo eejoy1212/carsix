@@ -14,67 +14,69 @@ class DeviceContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Center(
-        child: Column(
-          children: [
-            ElevatedButton(
-              onPressed: bleController.scanAndConnect,
-              child: Text("스캔 및 연결"),
-            ),
-            Obx(() => Text(bleController.isConnected.value ? "연결됨" : "연결 안됨")),
-            //타이틀
-            Container(
-              margin: EdgeInsets.only(left: 20, right: 20, top: 20),
-              child: Row(
-                children: [
-                  Text(
-                    "디바이스",
-                    style: TextStyle(
-                        height: 1.6,
-                        color: themeController.isDarkMode.value
-                            ? CarsixColors.white1
-                            : CarsixColors.grey6,
-                        fontSize: 26,
-                        fontWeight: FontWeight.w700,
-                        fontStyle: FontStyle.italic,
-                        letterSpacing: 2),
-                  ),
-                ],
+      child: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              // ElevatedButton(
+              //   onPressed: bleController.scanAndConnect,
+              //   child: Text("스캔 및 연결"),
+              // ),
+              // Obx(() => Text(bleController.isConnected.value ? "연결됨" : "연결 안됨")),
+              //타이틀
+              Container(
+                margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                child: Row(
+                  children: [
+                    Text(
+                      "디바이스",
+                      style: TextStyle(
+                          height: 1.6,
+                          color: themeController.isDarkMode.value
+                              ? CarsixColors.white1
+                              : CarsixColors.grey6,
+                          fontSize: 26,
+                          fontWeight: FontWeight.w700,
+                          fontStyle: FontStyle.italic,
+                          letterSpacing: 2),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            //제조사
-            DeviceCard(
-              title: '제조사',
-              content: '현대',
-            ),
-            //제조사
-            DeviceCard(
-              title: '차량',
-              content: '그랜저',
-            ),
-            //차량번호
-            DeviceCard(
-              title: '차량번호',
-              content: '11나8868',
-            ),
-            //차량번호
-            DeviceCard(
-              title: '시공점',
-              content: '시공점',
-            ),
-            DeviceCard(
-              title: '연결제품',
-              content: '연결제품',
-            ),
-            DeviceCard(
-              title: '펌웨어버전',
-              content: '펌웨어버전',
-            ),
-            DeviceCard(
-              title: '하드웨어버전',
-              content: '하드웨어버전',
-            ),
-          ],
+              //제조사
+              DeviceCard(
+                title: '제조사',
+                content: '현대',
+              ),
+              //제조사
+              DeviceCard(
+                title: '차량',
+                content: '그랜저',
+              ),
+              //차량번호
+              DeviceCard(
+                title: '차량번호',
+                content: '11나8868',
+              ),
+              //차량번호
+              DeviceCard(
+                title: '시공점',
+                content: '시공점',
+              ),
+              DeviceCard(
+                title: '연결제품',
+                content: '연결제품',
+              ),
+              DeviceCard(
+                title: '펌웨어버전',
+                content: '펌웨어버전',
+              ),
+              DeviceCard(
+                title: '하드웨어버전',
+                content: '하드웨어버전',
+              ),
+            ],
+          ),
         ),
       ),
     );

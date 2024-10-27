@@ -21,6 +21,7 @@ class MainView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor: Color(0xfff5f5f5),
       body: Obx(() {
         // 각 페이지의 내용이 변경되도록
         switch (controller.currentIndex.value) {
@@ -38,6 +39,7 @@ class MainView extends StatelessWidget {
       }),
       bottomNavigationBar: Obx(() {
         return BottomNavigationBar(
+          showUnselectedLabels: true,
           currentIndex: controller.currentIndex.value,
           onTap: (index) => controller.changeTab(index),
           backgroundColor: themeController.isDarkMode.value
@@ -52,14 +54,14 @@ class MainView extends StatelessWidget {
                   ? CarsixColors.grey1
                   : CarsixColors.white2,
               icon: Icon(Icons.directions_car),
-              label: 'DEVICE',
+              label: '디바이스 설정',
             ),
             BottomNavigationBarItem(
               backgroundColor: themeController.isDarkMode.value
                   ? CarsixColors.grey1
                   : CarsixColors.white2,
               icon: Icon(Icons.tune),
-              label: 'MODE',
+              label: '모드 설정',
             ),
             BottomNavigationBarItem(
               backgroundColor: themeController.isDarkMode.value
@@ -73,7 +75,7 @@ class MainView extends StatelessWidget {
                   ? CarsixColors.grey1
                   : CarsixColors.white2,
               icon: Icon(Icons.person),
-              label: 'MYPAGE',
+              label: '마이페이지',
             ),
           ],
         );
