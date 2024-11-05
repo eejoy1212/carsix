@@ -1,5 +1,6 @@
 import 'package:carsix/const/color.dart';
 import 'package:carsix/content/device/device_content.dart';
+import 'package:carsix/content/individual/individual_content.dart';
 import 'package:carsix/content/led/led_content.dart';
 import 'package:carsix/content/mode/mode_content.dart';
 import 'package:carsix/content/mypage/mypage_content.dart';
@@ -26,12 +27,14 @@ class MainView extends StatelessWidget {
         // 각 페이지의 내용이 변경되도록
         switch (controller.currentIndex.value) {
           case 0:
-            return DeviceContent();
-          case 1:
             return ModeContent();
-          case 2:
+          case 1:
             return LedContent();
+          case 2:
+            return DeviceContent();
           case 3:
+            return IndividualContent();
+          case 4:
             return MyPageContent();
           default:
             return DeviceContent();
@@ -53,15 +56,8 @@ class MainView extends StatelessWidget {
               backgroundColor: themeController.isDarkMode.value
                   ? CarsixColors.grey1
                   : CarsixColors.white2,
-              icon: Icon(Icons.directions_car),
-              label: '디바이스 설정',
-            ),
-            BottomNavigationBarItem(
-              backgroundColor: themeController.isDarkMode.value
-                  ? CarsixColors.grey1
-                  : CarsixColors.white2,
               icon: Icon(Icons.tune),
-              label: '모드 설정',
+              label: '모드',
             ),
             BottomNavigationBarItem(
               backgroundColor: themeController.isDarkMode.value
@@ -74,7 +70,21 @@ class MainView extends StatelessWidget {
               backgroundColor: themeController.isDarkMode.value
                   ? CarsixColors.grey1
                   : CarsixColors.white2,
-              icon: Icon(Icons.person),
+              icon: Icon(Icons.directions_car_outlined),
+              label: '디바이스',
+            ),
+            BottomNavigationBarItem(
+              backgroundColor: themeController.isDarkMode.value
+                  ? CarsixColors.grey1
+                  : CarsixColors.white2,
+              icon: Icon(Icons.person_outline),
+              label: '개별색상',
+            ),
+            BottomNavigationBarItem(
+              backgroundColor: themeController.isDarkMode.value
+                  ? CarsixColors.grey1
+                  : CarsixColors.white2,
+              icon: Icon(Icons.person_outline),
               label: '마이페이지',
             ),
           ],

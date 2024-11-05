@@ -1,6 +1,7 @@
 import 'package:carsix/const/color.dart';
 import 'package:carsix/modules/favorite/controllers/favorite_controller.dart';
 import 'package:carsix/theme/controllers/theme_controller.dart';
+import 'package:carsix/widget/btn/red_btn.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,25 +20,15 @@ class SelectedFavoriteCard extends StatelessWidget {
       margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: themeController.isDarkMode.value
-            ? CarsixColors.grey1
-            : CarsixColors.white2,
+        border: Border.all(color: CarsixColors.grey2),
         borderRadius: BorderRadius.all(Radius.circular(5)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1), // 그림자 색상 (조정 가능)
-            spreadRadius: 2, // 그림자가 퍼지는 정도
-            blurRadius: 5, // 그림자의 흐림 정도
-            offset: Offset(0, 6), // 그림자의 위치 (x축, y축)
-          ),
-        ],
       ),
       child: Padding(
         padding:
             const EdgeInsets.only(left: 20.0, right: 20, top: 16, bottom: 16),
         child: Column(
           children: [
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
@@ -48,6 +39,19 @@ class SelectedFavoriteCard extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
+                Obx(() => controller.favoriteColors.isNotEmpty
+                    ? IconButton(
+                        onPressed: () {
+                          Get.toNamed("/favorite");
+                        },
+                        icon: Icon(
+                          Icons.edit,
+                          color: themeController.isDarkMode.value
+                              ? Colors.white
+                              : CarsixColors.grey1,
+                        ),
+                      )
+                    : Container())
               ],
             ),
             const SizedBox(
@@ -61,7 +65,18 @@ class SelectedFavoriteCard extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("컬러를 추가 해 주세요"),
+                          RedBtn(
+                              width: 200,
+                              color: CarsixColors.red2,
+                              onPressed: () {
+                                Get.toNamed("/favorite");
+                              },
+                              title: Text(
+                                "컬러를 추가 해 주세요",
+                                style: TextStyle(
+                                  color: CarsixColors.white1,
+                                ),
+                              ))
                         ],
                       ),
                     )
@@ -83,8 +98,10 @@ class SelectedFavoriteCard extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: color,
                             border: Border.all(
-                              color: Colors.white,
-                              width: 1,
+                              color: themeController.isDarkMode.isTrue
+                                  ? Colors.white
+                                  : CarsixColors.grey1,
+                              width: 2,
                             ),
                           ),
                           child: Center(

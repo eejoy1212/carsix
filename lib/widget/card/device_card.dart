@@ -13,54 +13,44 @@ class DeviceCard extends StatelessWidget {
   final themeController = Get.find<ThemeController>();
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: themeController.isDarkMode.value
-            ? CarsixColors.grey1
-            : CarsixColors.white2,
-        borderRadius: BorderRadius.all(Radius.circular(5)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1), // 그림자 색상 (조정 가능)
-            spreadRadius: 2, // 그림자가 퍼지는 정도
-            blurRadius: 5, // 그림자의 흐림 정도
-            offset: Offset(0, 6), // 그림자의 위치 (x축, y축)
+    return Obx(() => Container(
+          margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            border: Border.all(color: CarsixColors.grey2),
+            borderRadius: BorderRadius.all(Radius.circular(5)),
           ),
-        ],
-      ),
-      child: Padding(
-        padding:
-            const EdgeInsets.only(left: 20.0, right: 20, top: 16, bottom: 16),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Padding(
+            padding: const EdgeInsets.only(
+                left: 20.0, right: 20, top: 16, bottom: 16),
+            child: Column(
               children: [
-                Text(
-                  title, // 받아온 타이틀을 표시
-                  style: TextStyle(
-                    color: CarsixColors.grey2,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  content, // 받아온 컨텐츠를 표시
-                  style: TextStyle(
-                    color: themeController.isDarkMode.value
-                        ? CarsixColors.white1
-                        : CarsixColors.black1,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      title, // 받아온 타이틀을 표시
+                      style: TextStyle(
+                        color: CarsixColors.grey2,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      content, // 받아온 컨텐츠를 표시
+                      style: TextStyle(
+                        color: themeController.isDarkMode.value
+                            ? CarsixColors.white1
+                            : CarsixColors.black1,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
-      ),
-    );
+          ),
+        ));
   }
 }

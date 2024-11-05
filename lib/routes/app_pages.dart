@@ -6,6 +6,7 @@ import 'package:carsix/modules/favorite/views/favorite_view.dart';
 import 'package:carsix/modules/goodbye/bindings/goodbye_binding.dart';
 import 'package:carsix/modules/goodbye/views/goodbye_view.dart';
 import 'package:carsix/modules/main/bindings/main_binding.dart';
+import 'package:carsix/modules/main/views/device_edit_view.dart';
 import 'package:carsix/modules/main/views/main_view.dart';
 import 'package:carsix/modules/loading/bindings/loading_binding.dart';
 import 'package:carsix/modules/loading/views/loading_view.dart';
@@ -68,6 +69,11 @@ class AppPages {
       name: '/goodbye',
       page: () => GoodbyeView(),
       binding: GoodbyeBinding(),
+    ),
+    GetPage(
+      name: '/device-edit',
+      page: () => DeviceEditView(),
+      binding: MainBinding(),
     ),
   ];
 }

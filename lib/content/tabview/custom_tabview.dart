@@ -1,6 +1,7 @@
 import 'package:carsix/const/color.dart';
 import 'package:carsix/modules/main/controllers/main_controller.dart';
 import 'package:carsix/theme/controllers/theme_controller.dart';
+import 'package:carsix/widget/btn/red_btn.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,18 +22,8 @@ class CustomTabView extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               width: double.infinity,
               decoration: BoxDecoration(
-                color: themeController.isDarkMode.value
-                    ? CarsixColors.grey1
-                    : CarsixColors.white2,
+                border: Border.all(color: CarsixColors.grey2),
                 borderRadius: BorderRadius.all(Radius.circular(5)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1), // 그림자 색상 (조정 가능)
-                    spreadRadius: 2, // 그림자가 퍼지는 정도
-                    blurRadius: 5, // 그림자의 흐림 정도
-                    offset: Offset(0, 6), // 그림자의 위치 (x축, y축)
-                  ),
-                ],
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -49,16 +40,20 @@ class CustomTabView extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      IconButton(
-                        onPressed: () {
-                          Get.toNamed('/bg-color');
-                        },
-                        icon: Icon(
-                          Icons.edit,
-                          color: themeController.isDarkMode.value
-                              ? Colors.white
-                              : CarsixColors.grey1,
-                        ),
+                      Obx(
+                        () => controller.welcomeColors.isNotEmpty
+                            ? IconButton(
+                                onPressed: () {
+                                  Get.toNamed('/bg-color');
+                                },
+                                icon: Icon(
+                                  Icons.edit,
+                                  color: themeController.isDarkMode.value
+                                      ? Colors.white
+                                      : CarsixColors.grey1,
+                                ),
+                              )
+                            : Container(),
                       )
                     ],
                   ),
@@ -69,7 +64,18 @@ class CustomTabView extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("컬러를 추가 해 주세요"),
+                                RedBtn(
+                                    width: 200,
+                                    color: CarsixColors.red2,
+                                    onPressed: () {
+                                      Get.toNamed("/bg-color");
+                                    },
+                                    title: Text(
+                                      "컬러를 추가 해 주세요",
+                                      style: TextStyle(
+                                        color: CarsixColors.white1,
+                                      ),
+                                    ))
                               ],
                             ),
                           )
@@ -107,18 +113,8 @@ class CustomTabView extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               width: double.infinity,
               decoration: BoxDecoration(
-                color: themeController.isDarkMode.value
-                    ? CarsixColors.grey1
-                    : CarsixColors.white2,
+                border: Border.all(color: CarsixColors.grey2),
                 borderRadius: BorderRadius.all(Radius.circular(5)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1), // 그림자 색상 (조정 가능)
-                    spreadRadius: 2, // 그림자가 퍼지는 정도
-                    blurRadius: 5, // 그림자의 흐림 정도
-                    offset: Offset(0, 6), // 그림자의 위치 (x축, y축)
-                  ),
-                ],
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -135,16 +131,20 @@ class CustomTabView extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      IconButton(
-                        onPressed: () {
-                          Get.toNamed('/custom1');
-                        },
-                        icon: Icon(
-                          Icons.edit,
-                          color: themeController.isDarkMode.value
-                              ? Colors.white
-                              : CarsixColors.grey1,
-                        ),
+                      Obx(
+                        () => controller.welcomeColors.isNotEmpty
+                            ? IconButton(
+                                onPressed: () {
+                                  Get.toNamed('/bg-color');
+                                },
+                                icon: Icon(
+                                  Icons.edit,
+                                  color: themeController.isDarkMode.value
+                                      ? Colors.white
+                                      : CarsixColors.grey1,
+                                ),
+                              )
+                            : Container(),
                       )
                     ],
                   ),
@@ -155,7 +155,18 @@ class CustomTabView extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("컬러를 추가 해 주세요"),
+                                RedBtn(
+                                    width: 200,
+                                    color: CarsixColors.red2,
+                                    onPressed: () {
+                                      Get.toNamed("/bg-color");
+                                    },
+                                    title: Text(
+                                      "컬러를 추가 해 주세요",
+                                      style: TextStyle(
+                                        color: CarsixColors.white1,
+                                      ),
+                                    ))
                               ],
                             ),
                           )
@@ -192,18 +203,8 @@ class CustomTabView extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               width: double.infinity,
               decoration: BoxDecoration(
-                color: themeController.isDarkMode.value
-                    ? CarsixColors.grey1
-                    : CarsixColors.white2,
+                border: Border.all(color: CarsixColors.grey2),
                 borderRadius: BorderRadius.all(Radius.circular(5)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1), // 그림자 색상 (조정 가능)
-                    spreadRadius: 2, // 그림자가 퍼지는 정도
-                    blurRadius: 5, // 그림자의 흐림 정도
-                    offset: Offset(0, 6), // 그림자의 위치 (x축, y축)
-                  ),
-                ],
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -220,16 +221,20 @@ class CustomTabView extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      IconButton(
-                        onPressed: () {
-                          Get.toNamed('/custom2');
-                        },
-                        icon: Icon(
-                          Icons.edit,
-                          color: themeController.isDarkMode.value
-                              ? Colors.white
-                              : CarsixColors.grey1,
-                        ),
+                      Obx(
+                        () => controller.welcomeColors.isNotEmpty
+                            ? IconButton(
+                                onPressed: () {
+                                  Get.toNamed('/bg-color');
+                                },
+                                icon: Icon(
+                                  Icons.edit,
+                                  color: themeController.isDarkMode.value
+                                      ? Colors.white
+                                      : CarsixColors.grey1,
+                                ),
+                              )
+                            : Container(),
                       )
                     ],
                   ),
@@ -240,7 +245,18 @@ class CustomTabView extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("컬러를 추가 해 주세요"),
+                                RedBtn(
+                                    width: 200,
+                                    color: CarsixColors.red2,
+                                    onPressed: () {
+                                      Get.toNamed("/bg-color");
+                                    },
+                                    title: Text(
+                                      "컬러를 추가 해 주세요",
+                                      style: TextStyle(
+                                        color: CarsixColors.white1,
+                                      ),
+                                    ))
                               ],
                             ),
                           )
@@ -277,18 +293,8 @@ class CustomTabView extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               width: double.infinity,
               decoration: BoxDecoration(
-                color: themeController.isDarkMode.value
-                    ? CarsixColors.grey1
-                    : CarsixColors.white2,
+                border: Border.all(color: CarsixColors.grey2),
                 borderRadius: BorderRadius.all(Radius.circular(5)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1), // 그림자 색상 (조정 가능)
-                    spreadRadius: 2, // 그림자가 퍼지는 정도
-                    blurRadius: 5, // 그림자의 흐림 정도
-                    offset: Offset(0, 6), // 그림자의 위치 (x축, y축)
-                  ),
-                ],
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -305,16 +311,20 @@ class CustomTabView extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      IconButton(
-                        onPressed: () {
-                          Get.toNamed('/custom3');
-                        },
-                        icon: Icon(
-                          Icons.edit,
-                          color: themeController.isDarkMode.value
-                              ? Colors.white
-                              : CarsixColors.grey1,
-                        ),
+                      Obx(
+                        () => controller.welcomeColors.isNotEmpty
+                            ? IconButton(
+                                onPressed: () {
+                                  Get.toNamed('/bg-color');
+                                },
+                                icon: Icon(
+                                  Icons.edit,
+                                  color: themeController.isDarkMode.value
+                                      ? Colors.white
+                                      : CarsixColors.grey1,
+                                ),
+                              )
+                            : Container(),
                       )
                     ],
                   ),
@@ -325,7 +335,18 @@ class CustomTabView extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("컬러를 추가 해 주세요"),
+                                RedBtn(
+                                    width: 200,
+                                    color: CarsixColors.red2,
+                                    onPressed: () {
+                                      Get.toNamed("/bg-color");
+                                    },
+                                    title: Text(
+                                      "컬러를 추가 해 주세요",
+                                      style: TextStyle(
+                                        color: CarsixColors.white1,
+                                      ),
+                                    ))
                               ],
                             ),
                           )
@@ -356,6 +377,18 @@ class CustomTabView extends StatelessWidget {
                 ],
               ),
             ),
+            Container(
+                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                child: RedBtn(
+                    onPressed: () {},
+                    title: Text(
+                      "저장",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: CarsixColors.white1,
+                      ),
+                    )))
           ],
         ),
       ),
