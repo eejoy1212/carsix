@@ -1,3 +1,6 @@
+import 'package:carsix/const/color.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -12,6 +15,25 @@ class BLEController extends GetxController {
   // 속도 설정 변수
   RxDouble speedValue = 10.0.obs;
   BluetoothCharacteristic? characteristic; // 데이터 전송을 위한 BLE 특성
+  // 즐겨찾기 색상 리스트 (최대 6개)
+  RxList<Color> singleColors = <Color>[].obs;
+  var selectedColor = CarsixColors.primaryRed.obs;
+  Rx<Color> toApplySingleColor = CarsixColors.primaryRed.obs;
+  void addToSingleColors(Color color) {
+    if (!singleColors.contains(color) && singleColors.length < 6) {
+      singleColors.add(color);
+    }
+  }
+
+  // 즐겨찾기 색상 제거 함수
+  void removeFromSingles(Color color) {
+    singleColors.remove(color);
+  }
+
+  //cmd날릴 단색 색상
+  void applyFromSingles(Color color) {
+    toApplySingleColor.value = color;
+  }
 
   @override
   void onInit() {
@@ -51,6 +73,49 @@ class BLEController extends GetxController {
   //         "BLE 연결이 설정되지 않았습니다. characteristic: $characteristic, isConnected: ${isConnected.value}");
   //   }
   // }
+  void changeSingleColorMode(
+      {required int red, required int green, required int blue}) async {
+    // RGB 값 유효성 검사 (0~255 범위)
+    if (red < 0 ||
+        red > 255 ||
+        green < 0 ||
+        green > 255 ||
+        blue < 0 ||
+        blue > 255) {
+      print("유효하지 않은 RGB 값입니다: R=$red, G=$green, B=$blue");
+      return;
+    }
+
+    // 단색 모드 색상 변경 명령어 생성
+    List<int> command = [
+      0xEA, // Header 1
+      0xBF, // Header 2
+      0xCA, // CMD (단색 모드 색상 변경)
+      0x00, // Sub CMD (색상 변경)
+      red & 0xFF, // Data1: Red 값
+      green & 0xFF, // Data2: Green 값
+      blue & 0xFF, // Data3: Blue 값
+      0x00, // Data4
+      0x00, // Data5
+      0x00, // Data6
+      0x00, // Data7
+      0x00, // Data8
+      0x00, // Data9
+      0xEB // End
+    ];
+
+    if (characteristic != null && isConnected.value) {
+      try {
+        await characteristic!.write(command, withoutResponse: false);
+        print("단색 모드 색상 변경 명령 전송 성공: $command");
+      } catch (e) {
+        print("단색 모드 색상 변경 명령 전송 실패: $e");
+      }
+    } else {
+      print("BLE 연결이 설정되지 않았습니다.");
+    }
+  }
+
   void changeMode(int subCommand) async {
     // 유효한 Sub Command인지 확인
     if (subCommand < 1 || subCommand > 4) {
