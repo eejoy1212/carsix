@@ -18,6 +18,7 @@ class BLEController extends GetxController {
     super.onInit();
     requestPermissions();
     scanAndConnect();
+    changeMode(1);
   }
 
 // BLEController에 추가된 레인보우 모드 함수
@@ -50,6 +51,43 @@ class BLEController extends GetxController {
   //         "BLE 연결이 설정되지 않았습니다. characteristic: $characteristic, isConnected: ${isConnected.value}");
   //   }
   // }
+  void changeMode(int subCommand) async {
+    // 유효한 Sub Command인지 확인
+    if (subCommand < 1 || subCommand > 4) {
+      print("유효하지 않은 모드 번호입니다: $subCommand");
+      return;
+    }
+
+    // 모드 변경 명령어 생성
+    List<int> command = [
+      0xEA, // Header 1
+      0xBF, // Header 2
+      0xC4, // CMD (Mode 변경)
+      subCommand & 0xFF, // Sub CMD (모드 번호)
+      0x00, // Data 1
+      0x00, // Data 2
+      0x00, // Data 3
+      0x00, // Data 4
+      0x00, // Data 5
+      0x00, // Data 6
+      0x00, // Data 7
+      0x00, // Data 8
+      0x00, // Data 9
+      0xEB // End
+    ];
+
+    if (characteristic != null && isConnected.value) {
+      try {
+        await characteristic!.write(command, withoutResponse: false);
+        print("모드 변경 명령 전송 성공: $command");
+      } catch (e) {
+        print("모드 변경 명령 전송 실패: $e");
+      }
+    } else {
+      print("BLE 연결이 설정되지 않았습니다.");
+    }
+  }
+
   void sendActiveMode(int mode) async {
     // 모드 번호 유효성 검사
     if (mode < 0 || mode > 11) {
@@ -96,175 +134,6 @@ class BLEController extends GetxController {
       }
     } else {
       print("BLE 연결이 설정되지 않았습니다.");
-    }
-  }
-
-  void sendActiveMode2() async {
-    // Active Mode 2 명령어
-    List<int> activeMode2Command = [
-      0xEA, // Header 1
-      0xBF, // Header 2
-      0xC5, // CMD (Active Mode 변경)
-      0x02, // Sub CMD (Active Mode 2)
-      0x00, // Data 1
-      0x00, // Data 2
-      0x00, // Data 3
-      0x00, // Data 4
-      0x00, // Data 5
-      0x00, // Data 6
-      0x00, // Data 7
-      0x00, // Data 8
-      0x00, // Data 9
-      0xEB // End
-    ];
-
-    if (characteristic != null && isConnected.value) {
-      try {
-        await characteristic!.write(activeMode2Command, withoutResponse: false);
-        print("Active Mode 2 명령 전송 성공: $activeMode2Command");
-      } catch (e) {
-        print("Active Mode 2 명령 전송 실패: $e");
-      }
-    } else {
-      print("BLE 연결이 설정되지 않았습니다.");
-    }
-  }
-
-  void sendActiveMode1() async {
-    // Active Mode 1 명령어
-    List<int> activeMode1Command = [
-      0xEA, // Header 1
-      0xBF, // Header 2
-      0xC5, // CMD (Active Mode 변경)
-      0x01, // Sub CMD (Active Mode 1)
-      0x00, // Data 1
-      0x00, // Data 2
-      0x00, // Data 3
-      0x00, // Data 4
-      0x00, // Data 5
-      0x00, // Data 6
-      0x00, // Data 7
-      0x00, // Data 8
-      0x00, // Data 9
-      0xEB // End
-    ];
-
-    if (characteristic != null && isConnected.value) {
-      try {
-        await characteristic!.write(activeMode1Command, withoutResponse: false);
-        print("Active Mode 1 명령 전송 성공: $activeMode1Command");
-      } catch (e) {
-        print("Active Mode 1 명령 전송 실패: $e");
-      }
-    } else {
-      print("BLE 연결이 설정되지 않았습니다.");
-    }
-  }
-
-  Future<void> sendRainbowMode() async {
-    if (characteristic != null && isConnected.value) {
-      List<int> redCommand = [
-        0xEA, // Header 1
-        0xBF, // Header 2
-        0xCA, // CMD (단색 모드 색상 변경)
-        0x00, // Sub CMD (전체 대상)
-        0xFF, // R (빨강 최대 값)
-        0x00, // G (초록 없음)
-        0x00, // B (파랑 없음)
-        0x00, // Padding 1
-        0x00, // Padding 2
-        0x00, // Padding 3
-        0x00, // Padding 4
-        0x00, // Padding 5
-        0x00, // Padding 6
-        0xEB // End
-      ];
-
-      List<List<int>> rainbowCommands = [
-        redCommand, // 빨강
-        redCommand, // 주황
-        redCommand, // 노랑
-        redCommand, // 초록
-        redCommand, // 초록
-        redCommand, // 초록
-        redCommand, // 초록
-        redCommand, // 초록
-// 보라
-      ];
-
-      for (var command in rainbowCommands) {
-        try {
-          // 명령 전송
-          var res = await characteristic!.write(command);
-          print("명령 전송 성공: $command // ${res}");
-
-          // 충분한 지연 시간 추가 (예: 500ms)
-          await Future.delayed(Duration(seconds: 1));
-
-          // BLE 응답 읽기
-          // var response = await characteristic!.read();
-          // print("BLE 응답 데이터: $response");
-        } catch (e) {
-          print("명령 전송 실패: $command, 오류: $e");
-        }
-      }
-    } else {
-      print(
-          "BLE 연결이 설정되지 않았습니다. characteristic: $characteristic, isConnected: ${isConnected.value}");
-    }
-  }
-
-  void changeAllLEDColors(int r, int g, int b) async {
-    if (characteristic != null && isConnected.value) {
-      // 모든 LED 스트립에 동일한 색상을 설정
-      List<int> command = [
-        0xEA, // Header 1
-        0xBF, // Header 2
-        0xCA, // CMD for single color mode
-        0x00, // Sub CMD (전체 스트립 색상 설정)
-        r, // Red 값 (0~255)
-        g, // Green 값 (0~255)
-        b, // Blue 값 (0~255)
-        0xEB // End byte
-      ];
-
-      try {
-        // BLE 명령 전송
-        await characteristic!.write(command, withoutResponse: true);
-        print("BLE 명령 전송 (LED 색상 변경): $command");
-      } catch (e) {
-        print("명령 전송 중 오류 발생: $e");
-      }
-    } else {
-      print(
-          "BLE 연결이 설정되지 않았습니다. characteristic: $characteristic, isConnected: ${isConnected.value}");
-    }
-  }
-
-  // 레인보우 모드를 위한 명령 전송 함수
-  void sendRainbowToBLE() async {
-    if (characteristic != null && isConnected.value) {
-      // 레인보우 모드의 각 색상에 대한 명령어 리스트
-      List<List<int>> rainbowCommands = [
-        [0xEA, 0xBF, 0x01, 0x00, 0xEB], // 빨강
-        [0xEA, 0xBF, 0x02, 0x00, 0xEB], // 주황
-        [0xEA, 0xBF, 0x03, 0x00, 0xEB], // 노랑
-        [0xEA, 0xBF, 0x04, 0x00, 0xEB], // 초록
-        [0xEA, 0xBF, 0x05, 0x00, 0xEB], // 파랑
-        [0xEA, 0xBF, 0x06, 0x00, 0xEB], // 남색
-        [0xEA, 0xBF, 0x07, 0x00, 0xEB] // 보라
-      ];
-
-      // 각 색상 명령을 순차적으로 전송
-      for (var command in rainbowCommands) {
-        await characteristic!.write(command);
-        print("BLE 명령 전송 (레인보우 모드): $command");
-
-        // 전송 간 짧은 지연 추가 (1초) - 시각적으로 레인보우 효과를 주기 위함
-        await Future.delayed(Duration(milliseconds: 500));
-      }
-    } else {
-      print("BLE 연결이 설정되지 않았습니다. $characteristic // ${isConnected.value}");
     }
   }
 

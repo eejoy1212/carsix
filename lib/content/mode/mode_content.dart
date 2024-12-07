@@ -4,6 +4,7 @@ import 'package:carsix/content/tabview/ceremoney_tabview.dart';
 import 'package:carsix/content/tabview/custom_tabview.dart';
 import 'package:carsix/content/tabview/music_tabview.dart';
 import 'package:carsix/content/tabview/single_color_tabview.dart';
+import 'package:carsix/controller/bluetooth_controller.dart';
 import 'package:carsix/theme/controllers/theme_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,7 +12,7 @@ import 'package:get/get.dart';
 class ModeContent extends StatelessWidget {
   ModeContent({super.key});
   final themeController = Get.find<ThemeController>();
-
+  final BLEController bleController = Get.find<BLEController>();
   void showBrightnessDialog(BuildContext context) {
     bool isAutoBrightnessOn = true; // 초기값 설정
     double brightnessLevel = 50; // 초기 밝기 설정
@@ -97,7 +98,8 @@ class ModeContent extends StatelessWidget {
     return SafeArea(
       child: Center(
         child: DefaultTabController(
-          length: 5, // 탭의 수
+          length: 4, // 탭의 수
+
           child: Column(
             children: [
               // 어떤 탭인지 타이틀
@@ -147,17 +149,30 @@ class ModeContent extends StatelessWidget {
                 indicatorColor: CarsixColors.primaryRed,
                 tabs: const [
                   Tab(text: "액티브"),
-                  Tab(text: "세리머니"),
+                  // Tab(text: "세리머니"),
                   Tab(text: "단색"),
                   Tab(text: "뮤직"),
                   Tab(text: "커스텀"),
                 ],
+                onTap: (index) {
+                  print("탭 변경됨: $index");
+                  if (index == 0) {
+                    print("액티브 탭 선택됨");
+                  } else if (index == 1) {
+                    print("단색 탭 선택됨");
+                  } else if (index == 2) {
+                    print("뮤직 탭 선택됨");
+                  } else if (index == 3) {
+                    print("커스텀 탭 선택됨");
+                  }
+                  bleController.changeMode(index + 1);
+                },
               ),
               Expanded(
                 child: TabBarView(
                   children: [
                     ActiveTabView(),
-                    CeremonyTabView(),
+                    // CeremonyTabView(),
                     SingleColorTabView(),
                     MusicTabView(),
                     CustomTabView(),
