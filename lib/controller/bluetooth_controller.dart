@@ -19,6 +19,7 @@ class BLEController extends GetxController {
   RxList<Color> singleColors = <Color>[].obs;
   var selectedColor = CarsixColors.primaryRed.obs;
   Rx<Color> toApplySingleColor = CarsixColors.primaryRed.obs;
+  Rx<bool> isApplySingleColor = true.obs;
   void addToSingleColors(Color color) {
     if (!singleColors.contains(color) && singleColors.length < 6) {
       singleColors.add(color);

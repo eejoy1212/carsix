@@ -30,10 +30,11 @@ class SingleColorTabView extends StatelessWidget {
                     () => ColorPicker(
                       color: controller.selectedColor.value, // 선택된 색상
                       onColorChanged: (Color color) {
+                        controller.isApplySingleColor.value = true;
                         controller.selectedColor.value = color; // 색상 업데이트
                       },
                       onColorChangeEnd: (Color color) {
-                        controller.addToSingleColors(color); // 선택된 색상을 즐겨찾기에 추가
+                        // controller.addToSingleColors(color); // 선택된 색상을 즐겨찾기에 추가
                       },
                       subheading: const Text(
                         '사용할 색상 선택',
@@ -51,6 +52,52 @@ class SingleColorTabView extends StatelessWidget {
 
                   const Divider(),
                   const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          margin: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 20),
+                          child: RedBtn(
+                              onPressed: () {
+                                if (controller.isApplySingleColor.isTrue) {
+                                  controller.addToSingleColors(
+                                      controller.selectedColor.value);
+                                } else {
+                                  controller.removeFromSingles(
+                                      controller.toApplySingleColor.value);
+                                }
+                              },
+                              title: Row(
+                                children: [
+                                  Obx(
+                                    () => Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color:
+                                            controller.isApplySingleColor.isTrue
+                                                ? controller.selectedColor.value
+                                                : controller
+                                                    .toApplySingleColor.value,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                  ),
+                                  Obx(() => Text(
+                                        controller.isApplySingleColor.isTrue
+                                            ? "선택 색상 저장하기"
+                                            : "저장된 색상 삭제하기",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600),
+                                      )),
+                                ],
+                              )),
+                        ),
+                      ),
+                    ],
+                  ),
                   // 즐겨찾기 색상 표시 및 제거 기능 추가
                   Obx(
                     () => Wrap(
@@ -59,6 +106,7 @@ class SingleColorTabView extends StatelessWidget {
                           .map(
                             (color) => GestureDetector(
                               onTap: () {
+                                controller.isApplySingleColor.value = false;
                                 // controller
                                 //     .removeFromSingles(color); // 클릭 시 즐겨찾기에서 제거
                                 controller.applyFromSingles(color);
@@ -94,6 +142,7 @@ class SingleColorTabView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
+
                   Obx(
                     () => Text(
                       '즐겨찾기 색상: ${controller.singleColors.length}/6',
