@@ -1,17 +1,15 @@
+import 'package:carsix/controller/bluetooth_controller.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:carsix/const/color.dart';
 import 'package:carsix/modules/main/controllers/main_controller.dart';
 import 'package:carsix/widget/btn/red_btn.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class ActiveTabView extends StatelessWidget {
-  ActiveTabView({super.key});
-
-  final MainController controller = Get.put(MainController());
-
+  final MainController controller = Get.find<MainController>();
+  final BLEController bleController = Get.find<BLEController>();
   @override
   Widget build(BuildContext context) {
-    // 버튼 이름 리스트
     final List<String> buttonTitles = [
       "레인보우",
       "액티브 모드 1",
@@ -48,12 +46,22 @@ class ActiveTabView extends StatelessWidget {
                                     ? CarsixColors.primaryRed
                                     : CarsixColors.grey1,
                                 onPressed: () {
-                                  // 선택된 버튼 인덱스를 토글
                                   controller.selectedButtonIndex.value =
-                                      controller.selectedButtonIndex.value ==
-                                              firstButtonIndex
-                                          ? -1
-                                          : firstButtonIndex;
+                                      firstButtonIndex;
+                                  // if (firstButtonIndex == 0) {
+                                  //   // 레인보우 모드 버튼 기능
+                                  //   bleController
+                                  //       .testSendLEDCountConfigExample1();
+                                  // } else {
+                                  //   // 액티브 모드 버튼 기능
+                                  //   bleController
+                                  //       .sendActiveModeToBLE(firstButtonIndex);
+                                  // }
+                                  // bleController.testSetStrip1LEDCount();
+                                  // bleController.sendActiveMode1();
+                                  print("클릭11");
+                                  bleController
+                                      .sendActiveMode(firstButtonIndex);
                                 },
                                 title: Text(
                                   buttonTitles[firstButtonIndex],
@@ -74,12 +82,19 @@ class ActiveTabView extends StatelessWidget {
                                       ? CarsixColors.primaryRed
                                       : CarsixColors.grey1,
                                   onPressed: () {
-                                    // 선택된 버튼 인덱스를 토글
                                     controller.selectedButtonIndex.value =
-                                        controller.selectedButtonIndex.value ==
-                                                secondButtonIndex
-                                            ? -1
-                                            : secondButtonIndex;
+                                        secondButtonIndex;
+                                    // if (secondButtonIndex == 0) {
+                                    //   // 레인보우 모드 버튼 기능
+                                    //   bleController.sendRainbowToBLE();
+                                    // } else {
+                                    //   // 액티브 모드 버튼 기능
+                                    //   bleController.sendActiveModeToBLE(
+                                    //       secondButtonIndex);
+                                    // }
+                                    print("클릭22");
+                                    bleController
+                                        .sendActiveMode(secondButtonIndex);
                                   },
                                   title: Text(
                                     buttonTitles[secondButtonIndex],
@@ -99,9 +114,11 @@ class ActiveTabView extends StatelessWidget {
               ),
               Container(
                 margin: EdgeInsets.symmetric(vertical: 20),
-                width: double.infinity, // 버튼을 가로로 꽉 차게 설정
+                width: double.infinity,
                 child: RedBtn(
-                  onPressed: () {},
+                  onPressed: () {
+                    // 저장 버튼 클릭 시 수행할 작업
+                  },
                   title: Text(
                     "저장",
                     style: TextStyle(

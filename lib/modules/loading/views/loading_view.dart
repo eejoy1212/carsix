@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 class LoadingView extends StatelessWidget {
   LoadingView({super.key});
-  final LoadingController controller = Get.put(LoadingController());
+  final LoadingController controller = Get.find<LoadingController>();
 
   @override
   Widget build(BuildContext context) {

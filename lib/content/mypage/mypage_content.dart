@@ -1,13 +1,14 @@
 import 'package:carsix/const/color.dart';
+import 'package:carsix/controller/bluetooth_controller.dart';
 import 'package:carsix/theme/controllers/theme_controller.dart';
-import 'package:carsix/widget/card/device_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class MyPageContent extends StatelessWidget {
   MyPageContent({super.key});
   final themeController = Get.find<ThemeController>();
+  final bleController = Get.find<BLEController>(); // BLEController 인스턴스 생성
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -15,7 +16,7 @@ class MyPageContent extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              //타이틀
+              // 타이틀
               Container(
                 margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
                 child: Row(
@@ -39,7 +40,7 @@ class MyPageContent extends StatelessWidget {
                 ),
               ),
 
-              //다크모드 화이트모드 전환
+              // 다크모드 화이트모드 전환
               Container(
                 margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
                 child: const Row(
@@ -54,7 +55,6 @@ class MyPageContent extends StatelessWidget {
                   ],
                 ),
               ),
-              //테마 전환
               InkWell(
                   onTap: () => themeController.toggleTheme(),
                   child: Container(
@@ -104,9 +104,76 @@ class MyPageContent extends StatelessWidget {
                       ),
                     ),
                   )),
-              const SizedBox(
-                height: 1,
+              const SizedBox(height: 1),
+
+              // Bluetooth 연결 상태 표시
+              Container(
+                margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
+                child: const Row(
+                  children: [
+                    Text(
+                      "연결 상태",
+                      style: TextStyle(
+                        color: CarsixColors.grey2,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              InkWell(
+                onTap: () {
+                  if (!bleController.isConnected.value) {
+                    bleController.scanAndConnect();
+                  }
+                },
+                child: Obx(() {
+                  return Container(
+                    margin:
+                        const EdgeInsets.only(top: 6, left: 20.0, right: 20),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            bottom: BorderSide(
+                      color: CarsixColors.grey2,
+                    ))),
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 16, bottom: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            bleController.isConnected.value
+                                ? Icons.bluetooth_connected
+                                : Icons.bluetooth_disabled,
+                            color: themeController.isDarkMode.value
+                                ? CarsixColors.white1
+                                : CarsixColors.grey6,
+                          ),
+                          SizedBox(width: 12),
+                          Text(
+                            bleController.isConnected.value
+                                ? "연결됨: ${bleController.deviceName}"
+                                : bleController.isScanning.value
+                                    ? "연결 시도 중..."
+                                    : "연결 안 됨",
+                            style: TextStyle(
+                              color: themeController.isDarkMode.value
+                                  ? CarsixColors.white1
+                                  : CarsixColors.grey6,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+              ),
+              const SizedBox(height: 1),
+
+              // 제품 관련
               Container(
                 margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
                 child: const Row(
@@ -121,7 +188,7 @@ class MyPageContent extends StatelessWidget {
                   ],
                 ),
               ),
-              //제품연결
+              // 제품연결
               InkWell(
                 onTap: () {},
                 child: Container(
@@ -149,12 +216,10 @@ class MyPageContent extends StatelessWidget {
                                       ? CarsixColors.white1
                                       : CarsixColors.grey6,
                                 )),
-                            SizedBox(
-                              width: 12,
-                            ),
+                            SizedBox(width: 12),
                             Obx(
                               () => Text(
-                                "제품연결", // 받아온 컨텐츠를 표시
+                                "제품연결",
                                 style: TextStyle(
                                   color: themeController.isDarkMode.value
                                       ? CarsixColors.white1
@@ -171,17 +236,13 @@ class MyPageContent extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 1,
-              ),
-              //카식스 업데이트
+              const SizedBox(height: 1),
+
+              // 카식스 업데이트
               InkWell(
                   onTap: () {},
                   child: Container(
-                    margin: EdgeInsets.only(
-                      left: 20.0,
-                      right: 20,
-                    ),
+                    margin: EdgeInsets.only(left: 20.0, right: 20),
                     decoration: BoxDecoration(
                         border: Border(
                             bottom: BorderSide(
@@ -190,41 +251,33 @@ class MyPageContent extends StatelessWidget {
                     width: double.infinity,
                     child: Padding(
                       padding: EdgeInsets.only(top: 16, bottom: 16),
-                      child: Column(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Obx(() => Icon(
-                                    Icons.update_outlined,
-                                    color: themeController.isDarkMode.value
-                                        ? CarsixColors.white1
-                                        : CarsixColors.grey6,
-                                  )),
-                              SizedBox(
-                                width: 12,
-                              ),
-                              Obx(() => Text(
-                                    "카식스 업데이트", // 받아온 컨텐츠를 표시
-                                    style: TextStyle(
-                                      color: themeController.isDarkMode.value
-                                          ? CarsixColors.white1
-                                          : CarsixColors.grey6,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  )),
-                            ],
-                          ),
+                          Obx(() => Icon(
+                                Icons.update_outlined,
+                                color: themeController.isDarkMode.value
+                                    ? CarsixColors.white1
+                                    : CarsixColors.grey6,
+                              )),
+                          SizedBox(width: 12),
+                          Obx(() => Text(
+                                "카식스 업데이트",
+                                style: TextStyle(
+                                  color: themeController.isDarkMode.value
+                                      ? CarsixColors.white1
+                                      : CarsixColors.grey6,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              )),
                         ],
                       ),
                     ),
                   )),
-              //도움말
 
-              const SizedBox(
-                height: 1,
-              ),
+              // 도움말 및 지원
+              const SizedBox(height: 1),
               Container(
                 margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
                 child: const Row(
@@ -239,16 +292,11 @@ class MyPageContent extends StatelessWidget {
                   ],
                 ),
               ),
-              //도움말
               InkWell(
                 onTap: () {},
                 child: Obx(() => Container(
                       width: double.infinity,
-                      margin: EdgeInsets.only(
-                        left: 20.0,
-                        right: 20,
-                        top: 6,
-                      ),
+                      margin: EdgeInsets.only(left: 20.0, right: 20, top: 6),
                       decoration: BoxDecoration(
                           border: Border(
                               bottom: BorderSide(
@@ -256,100 +304,25 @@ class MyPageContent extends StatelessWidget {
                       ))),
                       child: Padding(
                         padding: EdgeInsets.only(top: 16, bottom: 16),
-                        child: Column(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Obx(() => Icon(
-                                      Icons.help_outline,
-                                      color: themeController.isDarkMode.value
-                                          ? CarsixColors.white1
-                                          : CarsixColors.grey6,
-                                    )),
-                                const SizedBox(
-                                  width: 12,
-                                ),
-                                Text(
-                                  "도움말", // 받아온 컨텐츠를 표시
-                                  style: TextStyle(
-                                    color: themeController.isDarkMode.value
-                                        ? CarsixColors.white1
-                                        : CarsixColors.grey6,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    )),
-              ),
-              //홈페이지
-
-              const SizedBox(
-                height: 1,
-              ),
-              Container(
-                margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
-                child: const Row(
-                  children: [
-                    Text(
-                      "외부 링크",
-                      style: TextStyle(
-                        color: CarsixColors.grey2,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              InkWell(
-                onTap: () {},
-                child: Obx(() => Container(
-                      margin: EdgeInsets.only(
-                        top: 6,
-                        left: 20.0,
-                        right: 20,
-                      ),
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                        color: CarsixColors.grey2,
-                      ))),
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          top: 16,
-                          bottom: 16,
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Obx(() => Icon(
-                                      Icons.home_outlined,
-                                      color: themeController.isDarkMode.value
-                                          ? CarsixColors.white1
-                                          : CarsixColors.grey6,
-                                    )),
-                                SizedBox(
-                                  width: 12,
-                                ),
-                                Text(
-                                  "홈페이지", // 받아온 컨텐츠를 표시
-                                  style: TextStyle(
-                                    color: themeController.isDarkMode.value
-                                        ? CarsixColors.white1
-                                        : CarsixColors.grey6,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
+                            Obx(() => Icon(
+                                  Icons.help_outline,
+                                  color: themeController.isDarkMode.value
+                                      ? CarsixColors.white1
+                                      : CarsixColors.grey6,
+                                )),
+                            const SizedBox(width: 12),
+                            Text(
+                              "도움말",
+                              style: TextStyle(
+                                color: themeController.isDarkMode.value
+                                    ? CarsixColors.white1
+                                    : CarsixColors.grey6,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ],
                         ),
@@ -357,6 +330,7 @@ class MyPageContent extends StatelessWidget {
                     )),
               ),
 
+              // 외부 링크 및 버전 정보
               Container(
                 margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
                 child: const Row(
@@ -370,42 +344,7 @@ class MyPageContent extends StatelessWidget {
                     ),
                   ],
                 ),
-              )
-              //인스타그램 자랑하기
-              // const SizedBox(
-              //   height: 1,
-              // ),
-              // InkWell(
-              //     onTap: () {},
-              //     child: Container(
-              //       width: double.infinity,
-              //       color: themeController.isDarkMode.value
-              //           ? CarsixColors.grey1
-              //           : CarsixColors.white2,
-              //       child: Padding(
-              //         padding: EdgeInsets.only(
-              //             left: 20.0, right: 20, top: 16, bottom: 16),
-              //         child: Column(
-              //           children: [
-              //             Row(
-              //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //               children: [
-              //                 Text(
-              //                   "인스타그램 자랑하기", // 받아온 컨텐츠를 표시
-              //                   style: TextStyle(
-              //                     color: themeController.isDarkMode.value
-              //                         ? CarsixColors.white1
-              //                         : CarsixColors.grey6,
-              //                     fontSize: 16,
-              //                     fontWeight: FontWeight.w600,
-              //                   ),
-              //                 ),
-              //               ],
-              //             ),
-              //           ],
-              //         ),
-              //       ),
-              //     )),
+              ),
             ],
           ),
         ),

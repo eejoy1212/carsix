@@ -26,7 +26,8 @@ class RedBtn extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed, // 전달받은 onPressed 콜백을 사용
         style: ElevatedButton.styleFrom(
-          primary: color, // 버튼 배경색
+          // primary: color, // 버튼 배경색
+          backgroundColor: color,
           textStyle: TextStyle(
             color: txtColor,
           ),

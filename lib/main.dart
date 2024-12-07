@@ -2,6 +2,10 @@ import 'dart:io';
 
 import 'package:carsix/const/color.dart';
 import 'package:carsix/controller/bluetooth_controller.dart';
+import 'package:carsix/modules/bottom_navbar/controllers/bottom_navbar_controller.dart';
+import 'package:carsix/modules/favorite/controllers/favorite_controller.dart';
+import 'package:carsix/modules/loading/controllers/loading_controllers.dart';
+import 'package:carsix/modules/main/controllers/main_controller.dart';
 import 'package:carsix/routes/app_pages.dart';
 import 'package:carsix/theme/controllers/theme_controller.dart';
 import 'package:carsix/theme/theme.dart';
@@ -17,9 +21,12 @@ void main() {
     databaseFactory = databaseFactoryFfi;
   }
   WidgetsFlutterBinding.ensureInitialized();
-
-  final themeController = Get.put(ThemeController());
-  final bleController = Get.put(BLEController());
+  Get.put(MainController());
+  Get.put(BLEController());
+  Get.put(ThemeController());
+  Get.put(NavigationController());
+  Get.put(FavoriteController());
+  Get.put(LoadingController());
   runApp(MyApp());
 }
 

@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MainView extends StatelessWidget {
-  final MainController controller = Get.put(MainController());
+  final MainController controller = Get.find<MainController>();
   final themeController = Get.find<ThemeController>();
   final iconList = <IconData>[
     Icons.directions_car,

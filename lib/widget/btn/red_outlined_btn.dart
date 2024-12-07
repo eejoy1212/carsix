@@ -21,7 +21,7 @@ class RedOutlinedBtn extends StatelessWidget {
       child: OutlinedButton(
         onPressed: onPressed, // 전달받은 onPressed 콜백을 사용
         style: OutlinedButton.styleFrom(
-          primary: CarsixColors.primaryRed, // 버튼 배경색 노랑으로 설정
+          backgroundColor: CarsixColors.primaryRed, // 버튼 배경색 노랑으로 설정
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8), // 보더 반경 설정
           ),

@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 
 class MusicColorView extends StatelessWidget {
   MusicColorView({super.key});
-  final MainController controller = Get.put(MainController());
+  final MainController controller = Get.find<MainController>();
 
   @override
   Widget build(BuildContext context) {

@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 
 class MusicTabView extends StatelessWidget {
   MusicTabView({super.key});
-  final MainController controller = Get.put(MainController());
+  final MainController controller = Get.find<MainController>();
   final themeController = Get.find<ThemeController>();
 
   @override

@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 
 class FavoriteView extends StatelessWidget {
   FavoriteView({super.key});
-  final FavoriteController controller = Get.put(FavoriteController());
+  final FavoriteController controller = Get.find<FavoriteController>();
 
   @override
   Widget build(BuildContext context) {

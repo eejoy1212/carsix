@@ -10,8 +10,8 @@ class DeviceEditView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final MainController controller = Get.put(MainController());
-    final ThemeController themeController = Get.put(ThemeController());
+    final MainController controller = Get.find<MainController>();
+    final ThemeController themeController = Get.find<ThemeController>();
 
     return Scaffold(
       appBar: AppBar(

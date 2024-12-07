@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 
 class WelcomeView extends StatelessWidget {
   WelcomeView({super.key});
-  final MainController controller = Get.put(MainController());
+  final MainController controller = Get.find<MainController>();
 
   @override
   Widget build(BuildContext context) {

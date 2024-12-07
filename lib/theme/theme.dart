@@ -2,8 +2,7 @@ import 'package:carsix/const/color.dart';
 import 'package:flutter/material.dart';
 
 final ThemeData lightTheme = ThemeData(
-    brightness: Brightness.light, // 기본 다크 모 드 설정
-
+    brightness: Brightness.light, //기본 다크 모드 설정
     colorScheme: ColorScheme.fromSeed(
       background: CarsixColors.primaryRed,
       seedColor: CarsixColors.primaryRed,
@@ -19,14 +18,14 @@ final ThemeData lightTheme = ThemeData(
         fontStyle: FontStyle.italic,
         letterSpacing: 2,
       ),
-      headline1: TextStyle(
-        height: 1.6,
-        color: CarsixColors.white1,
-        fontSize: 26,
-        fontWeight: FontWeight.w700,
-        fontStyle: FontStyle.italic,
-        letterSpacing: 2,
-      ),
+      // headline1: TextStyle(
+      //   height: 1.6,
+      //   color: CarsixColors.white1,
+      //   fontSize: 26,
+      //   fontWeight: FontWeight.w700,
+      //   fontStyle: FontStyle.italic,
+      //   letterSpacing: 2,
+      // ),
     )
     // useMaterial3: true,
     );
@@ -47,15 +46,15 @@ final ThemeData darkTheme = ThemeData(
         fontStyle: FontStyle.italic,
         letterSpacing: 2,
       ),
-      headline1: TextStyle(
-        height: 1.6,
-        color: CarsixColors.white1,
-        fontSize: 26,
-        fontWeight: FontWeight.w700,
-        fontStyle: FontStyle.italic,
-        letterSpacing: 2,
-      ),
-      bodyText1: TextStyle(),
+      // headline1: TextStyle(
+      //   height: 1.6,
+      //   color: CarsixColors.white1,
+      //   fontSize: 26,
+      //   fontWeight: FontWeight.w700,
+      //   fontStyle: FontStyle.italic,
+      //   letterSpacing: 2,
+      // ),
+      // bodyText1: TextStyle(),
     )
     // useMaterial3: true,
     );

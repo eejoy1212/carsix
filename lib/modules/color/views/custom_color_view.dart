@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 
 class CustomColorView extends StatelessWidget {
   CustomColorView({super.key});
-  final MainController controller = Get.put(MainController());
+  final MainController controller = Get.find<MainController>();
 
   @override
   Widget build(BuildContext context) {

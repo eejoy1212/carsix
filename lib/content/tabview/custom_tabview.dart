@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 
 class CustomTabView extends StatelessWidget {
   CustomTabView({super.key});
-  final MainController controller = Get.put(MainController());
+  final MainController controller = Get.find<MainController>();
   final themeController = Get.find<ThemeController>();
   @override
   Widget build(BuildContext context) {

@@ -12,7 +12,7 @@ class SelectedFavoriteCard extends StatelessWidget {
 
   // 생성자를 통해 title과 content를 받도록 설정
   SelectedFavoriteCard({super.key, required this.title, required this.content});
-  final FavoriteController controller = Get.put(FavoriteController());
+  final FavoriteController controller = Get.find<FavoriteController>();
   final themeController = Get.find<ThemeController>();
   @override
   Widget build(BuildContext context) {

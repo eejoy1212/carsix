@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 
 class CeremonyTabView extends StatelessWidget {
   CeremonyTabView({super.key});
-  final MainController controller = Get.put(MainController());
+  final MainController controller = Get.find<MainController>();
   final themeController = Get.find<ThemeController>();
   final bleController = Get.find<BLEController>();
   @override

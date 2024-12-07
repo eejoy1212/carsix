@@ -16,8 +16,8 @@ class DeviceContent extends StatefulWidget {
 
 class _DeviceContentState extends State<DeviceContent> {
   final themeController = Get.find<ThemeController>();
-  final bleController = Get.put(BLEController());
-  final mainController = Get.put(MainController());
+  final bleController = Get.find<BLEController>();
+  final mainController = Get.find<MainController>();
 
   @override
   void initState() {
