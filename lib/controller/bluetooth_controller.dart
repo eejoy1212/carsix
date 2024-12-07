@@ -20,9 +20,71 @@ class BLEController extends GetxController {
   var selectedColor = CarsixColors.primaryRed.obs;
   Rx<Color> toApplySingleColor = CarsixColors.primaryRed.obs;
   Rx<bool> isApplySingleColor = true.obs;
+  //커스텀 모드 변수
+  Rx<Color> selectedCustomColor = CarsixColors.primaryRed.obs;
+  Rx<Color> customBgColor = CarsixColors.primaryRed.obs;
+  RxList<Color> customBlockColors = RxList.empty();
+  RxBool isCustomBg = RxBool(true);
   void addToSingleColors(Color color) {
     if (!singleColors.contains(color) && singleColors.length < 6) {
       singleColors.add(color);
+    }
+  }
+
+  void changeCustomModeColor({
+    required int backgroundRed,
+    required int backgroundGreen,
+    required int backgroundBlue,
+    required int block1Red,
+    required int block1Green,
+    required int block1Blue,
+    required int block2Red,
+    required int block2Green,
+    required int block2Blue,
+  }) async {
+    // RGB 값 유효성 검사 (0~255 범위)
+    if ([
+      backgroundRed,
+      backgroundGreen,
+      backgroundBlue,
+      block1Red,
+      block1Green,
+      block1Blue,
+      block2Red,
+      block2Green,
+      block2Blue
+    ].any((value) => value < 0 || value > 255)) {
+      print("유효하지 않은 RGB 값입니다.");
+      return;
+    }
+
+    // 커스텀 모드 색상 변경 명령어 생성
+    List<int> command = [
+      0xEA, // Header 1
+      0xBF, // Header 2
+      0xC6, // CMD (Custom Mode 색상 변경)
+      0x00, // Sub CMD (색상 변경)
+      backgroundRed & 0xFF, // Data1: 배경 Red
+      backgroundGreen & 0xFF, // Data2: 배경 Green
+      backgroundBlue & 0xFF, // Data3: 배경 Blue
+      block1Red & 0xFF, // Data4: Color Block 1 Red
+      block1Green & 0xFF, // Data5: Color Block 1 Green
+      block1Blue & 0xFF, // Data6: Color Block 1 Blue
+      block2Red & 0xFF, // Data7: Color Block 2 Red
+      block2Green & 0xFF, // Data8: Color Block 2 Green
+      block2Blue & 0xFF, // Data9: Color Block 2 Blue
+      0xEB // End
+    ];
+
+    if (characteristic != null && isConnected.value) {
+      try {
+        await characteristic!.write(command, withoutResponse: false);
+        print("커스텀 모드 색상 변경 명령 전송 성공: $command");
+      } catch (e) {
+        print("커스텀 모드 색상 변경 명령 전송 실패: $e");
+      }
+    } else {
+      print("BLE 연결이 설정되지 않았습니다.");
     }
   }
 
