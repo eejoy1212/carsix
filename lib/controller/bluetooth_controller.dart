@@ -11,7 +11,7 @@ class BLEController extends GetxController {
   var isScanning = false.obs;
   BluetoothDevice? connectedDevice;
   String deviceName = "CAR-SIX LED Controller";
-
+  RxInt currentTabIndex = 0.obs;
   // 속도 설정 변수
   RxDouble speedValue = 10.0.obs;
   BluetoothCharacteristic? characteristic; // 데이터 전송을 위한 BLE 특성
@@ -27,6 +27,23 @@ class BLEController extends GetxController {
   RxBool isCustomBg = RxBool(true);
   RxDouble brightValue = RxDouble(25);
   RxBool isAutoBright = RxBool(true);
+  void updateTabIndex(int index) {
+    currentTabIndex.value = index;
+    print("현재 탭 인덱스: $index");
+  }
+
+  void applySingleMode() {
+    final Color selectedColor = toApplySingleColor.value;
+
+    // RGB 값 추출
+    int red = selectedColor.red;
+    int green = selectedColor.green;
+    int blue = selectedColor.blue;
+
+    // BLE 명령 호출
+    changeSingleColorMode(red: red, green: green, blue: blue);
+  }
+
   void addToSingleColors(Color color) {
     if (!singleColors.contains(color) && singleColors.length < 6) {
       singleColors.add(color);

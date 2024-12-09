@@ -4,6 +4,7 @@ import 'package:carsix/content/individual/individual_content.dart';
 import 'package:carsix/content/led/led_content.dart';
 import 'package:carsix/content/mode/mode_content.dart';
 import 'package:carsix/content/mypage/mypage_content.dart';
+import 'package:carsix/controller/bluetooth_controller.dart';
 import 'package:carsix/modules/main/controllers/main_controller.dart';
 import 'package:carsix/theme/controllers/theme_controller.dart';
 import 'package:carsix/widget/btn/apply_btn.dart';
@@ -12,6 +13,7 @@ import 'package:get/get.dart';
 
 class MainView extends StatelessWidget {
   final MainController controller = Get.find<MainController>();
+  final BLEController bleController = Get.find<BLEController>();
   final themeController = Get.find<ThemeController>();
   final iconList = <IconData>[
     Icons.directions_car,
@@ -42,7 +44,15 @@ class MainView extends StatelessWidget {
         }
       }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: ApplyBtn(title: "이 설정 적용하기"),
+      floatingActionButton: ApplyBtn(
+        title: "이 설정 적용하기",
+        onTap: () {
+          if (controller.currentIndex.value == 0 &&
+              bleController.currentTabIndex == 1) {
+            bleController.applySingleMode();
+          }
+        },
+      ),
       bottomNavigationBar: Obx(() {
         return BottomNavigationBar(
           showUnselectedLabels: true,
