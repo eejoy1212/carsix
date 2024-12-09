@@ -6,6 +6,7 @@ import 'package:carsix/content/mode/mode_content.dart';
 import 'package:carsix/content/mypage/mypage_content.dart';
 import 'package:carsix/modules/main/controllers/main_controller.dart';
 import 'package:carsix/theme/controllers/theme_controller.dart';
+import 'package:carsix/widget/btn/apply_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -40,6 +41,8 @@ class MainView extends StatelessWidget {
             return DeviceContent();
         }
       }),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: ApplyBtn(title: "이 설정 적용하기"),
       bottomNavigationBar: Obx(() {
         return BottomNavigationBar(
           showUnselectedLabels: true,

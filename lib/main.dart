@@ -10,7 +10,6 @@ import 'package:carsix/routes/app_pages.dart';
 import 'package:carsix/theme/controllers/theme_controller.dart';
 import 'package:carsix/theme/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 

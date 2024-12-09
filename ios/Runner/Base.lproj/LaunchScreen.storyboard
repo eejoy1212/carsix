@@ -16,13 +16,32 @@
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="YRO-k0-Ey4">
+                            <!-- Gradiant Layer -->
+                            <view opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gradientView">
+                                <layer key="layer" layerClass="CAGradientLayer" translatesAutoresizingMaskIntoConstraints="NO">
+                                    <gradient key="colors">
+                                        <color key="color1" red="0" green="0" blue="0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="color2" red="0.17" green="0.17" blue="0.17" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </gradient>
+                                    <gradient key="locations">
+                                        <number key="location1" value="0.0"/>
+                                        <number key="location2" value="1.0"/>
+                                    </gradient>
+                                </layer>
+                            </view>
+                            <!-- Center Logo -->
+                            <imageView opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" image="logo_splash" translatesAutoresizingMaskIntoConstraints="NO" id="logoImageView">
                             </imageView>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="1a2-6s-vTC"/>
-                            <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="4X2-HB-R7a"/>
+                            <!-- Center constraints for the logo -->
+                            <constraint firstItem="logoImageView" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="centerXConstraint"/>
+                            <constraint firstItem="logoImageView" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="centerYConstraint"/>
+                            <!-- Fullscreen for gradient -->
+                            <constraint firstItem="gradientView" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="gradientTop"/>
+                            <constraint firstItem="gradientView" firstAttribute="bottom" secondItem="Ze5-6b-2t3" secondAttribute="bottom" id="gradientBottom"/>
+                            <constraint firstItem="gradientView" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="gradientLeading"/>
+                            <constraint firstItem="gradientView" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" id="gradientTrailing"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -32,6 +51,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LaunchImage" width="168" height="185"/>
+        <!-- Make sure the image is added correctly -->
+        <image name="logo_splash" width="168" height="185"/>
     </resources>
 </document>

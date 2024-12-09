@@ -1,4 +1,5 @@
 import 'package:carsix/controller/bluetooth_controller.dart';
+import 'package:carsix/widget/btn/active_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:carsix/const/color.dart';
@@ -40,12 +41,15 @@ class ActiveTabView extends StatelessWidget {
                     child: Row(
                       children: [
                         Expanded(
-                          child: Obx(() => RedBtn(
-                                color: controller.selectedButtonIndex.value ==
-                                        firstButtonIndex
-                                    ? CarsixColors.primaryRed
-                                    : CarsixColors.grey1,
-                                onPressed: () {
+                          child: Obx(() => ActiveBtn(
+                                isSelected:
+                                    controller.selectedButtonIndex.value ==
+                                        firstButtonIndex,
+                                // color: controller.selectedButtonIndex.value ==
+                                //         firstButtonIndex
+                                //     ? CarsixColors.primaryRed
+                                //     : CarsixColors.grey1,
+                                onTap: () {
                                   controller.selectedButtonIndex.value =
                                       firstButtonIndex;
                                   // if (firstButtonIndex == 0) {
@@ -63,71 +67,38 @@ class ActiveTabView extends StatelessWidget {
                                   bleController
                                       .sendActiveMode(firstButtonIndex);
                                 },
-                                title: Text(
-                                  buttonTitles[firstButtonIndex],
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: CarsixColors.white1,
-                                  ),
-                                ),
+                                title: buttonTitles[firstButtonIndex],
                               )),
                         ),
                         if (secondButtonIndex < buttonTitles.length) ...[
                           SizedBox(width: 20),
                           Expanded(
-                            child: Obx(() => RedBtn(
-                                  color: controller.selectedButtonIndex.value ==
-                                          secondButtonIndex
-                                      ? CarsixColors.primaryRed
-                                      : CarsixColors.grey1,
-                                  onPressed: () {
-                                    controller.selectedButtonIndex.value =
-                                        secondButtonIndex;
-                                    // if (secondButtonIndex == 0) {
-                                    //   // 레인보우 모드 버튼 기능
-                                    //   bleController.sendRainbowToBLE();
-                                    // } else {
-                                    //   // 액티브 모드 버튼 기능
-                                    //   bleController.sendActiveModeToBLE(
-                                    //       secondButtonIndex);
-                                    // }
-                                    print("클릭22");
-                                    bleController
-                                        .sendActiveMode(secondButtonIndex);
-                                  },
-                                  title: Text(
-                                    buttonTitles[secondButtonIndex],
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                      color: CarsixColors.white1,
-                                    ),
-                                  ),
-                                )),
+                            child: Obx(() => ActiveBtn(
+                                isSelected:
+                                    controller.selectedButtonIndex.value ==
+                                        secondButtonIndex,
+                                onTap: () {
+                                  controller.selectedButtonIndex.value =
+                                      secondButtonIndex;
+                                  // if (secondButtonIndex == 0) {
+                                  //   // 레인보우 모드 버튼 기능
+                                  //   bleController.sendRainbowToBLE();
+                                  // } else {
+                                  //   // 액티브 모드 버튼 기능
+                                  //   bleController.sendActiveModeToBLE(
+                                  //       secondButtonIndex);
+                                  // }
+                                  print("클릭22");
+                                  bleController
+                                      .sendActiveMode(secondButtonIndex);
+                                },
+                                title: buttonTitles[secondButtonIndex])),
                           ),
                         ],
                       ],
                     ),
                   );
                 }),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 20),
-                width: double.infinity,
-                child: RedBtn(
-                  onPressed: () {
-                    // 저장 버튼 클릭 시 수행할 작업
-                  },
-                  title: Text(
-                    "저장",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: CarsixColors.white1,
-                    ),
-                  ),
-                ),
               ),
             ],
           ),

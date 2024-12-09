@@ -25,6 +25,8 @@ class BLEController extends GetxController {
   Rx<Color> customBgColor = CarsixColors.primaryRed.obs;
   RxList<Color> customBlockColors = RxList.empty();
   RxBool isCustomBg = RxBool(true);
+  RxDouble brightValue = RxDouble(25);
+  RxBool isAutoBright = RxBool(true);
   void addToSingleColors(Color color) {
     if (!singleColors.contains(color) && singleColors.length < 6) {
       singleColors.add(color);

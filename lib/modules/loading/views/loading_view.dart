@@ -11,8 +11,11 @@ class LoadingView extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Container(
-            margin: EdgeInsets.only(left: 26, right: 26),
-            child: Image.asset('assets/images/logo.png')),
+            margin: EdgeInsets.only(
+              left: 115,
+              right: 115,
+            ),
+            child: Image.asset('assets/images/logo_splash.png')),
       ),
     );
   }

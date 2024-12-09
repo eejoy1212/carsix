@@ -6,8 +6,11 @@ import 'package:carsix/content/tabview/music_tabview.dart';
 import 'package:carsix/content/tabview/single_color_tabview.dart';
 import 'package:carsix/controller/bluetooth_controller.dart';
 import 'package:carsix/theme/controllers/theme_controller.dart';
+import 'package:carsix/widget/btn/bright_btn.dart';
+import 'package:carsix/widget/indicator/circle_indicatio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 class ModeContent extends StatelessWidget {
   ModeContent({super.key});
@@ -96,90 +99,180 @@ class ModeContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Center(
-        child: DefaultTabController(
-          length: 4, // 탭의 수
-
-          child: Column(
-            children: [
-              // 어떤 탭인지 타이틀
-              Container(
-                margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "모드 설정",
-                      style: TextStyle(
-                        height: 1.6,
-                        color: themeController.isDarkMode.value
-                            ? CarsixColors.white1
-                            : CarsixColors.grey6,
-                        fontSize: 26,
-                        fontWeight: FontWeight.w600,
-                        fontStyle: FontStyle.italic,
-                        letterSpacing: 2.6,
+      child: DefaultTabController(
+        length: 4, // 탭의 수
+        child: Scaffold(
+          backgroundColor: Colors.black,
+          body: NestedScrollView(
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return [
+                SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      SizedBox(height: 26),
+                      Image.asset(
+                        'assets/images/logo_splash.png',
+                        width: 40,
                       ),
-                    ),
-                    IconButton(
-                      onPressed: () => showBrightnessDialog(context),
-                      icon: Row(
-                        children: [
-                          Icon(
-                            Icons.sunny,
-                            size: 24,
-                            color: themeController.isDarkMode.value
-                                ? CarsixColors.white1
-                                : CarsixColors.grey6,
+                      Obx(
+                        () => SleekCircularSlider(
+                          innerWidget: (percentage) {
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  percentage.toStringAsFixed(0),
+                                  style: TextStyle(
+                                    fontSize: 48,
+                                    color: CarsixColors.white1,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                                Text(
+                                  "%",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: CarsixColors.white1,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                )
+                              ],
+                            );
+                          },
+                          initialValue:
+                              bleController.brightValue.value, // 초기값 (퍼센트)
+                          min: 0,
+                          max: 100,
+                          onChange: (double value) {
+                            bleController.brightValue.value = value;
+                          },
+                          appearance: CircularSliderAppearance(
+                            size: 200,
+                            customWidths: CustomSliderWidths(
+                              trackWidth: 10,
+                              progressBarWidth: 26,
+                              handlerSize: 8,
+                            ),
+                            customColors: CustomSliderColors(
+                              trackColor: Colors.grey,
+                              progressBarColor: CarsixColors.progressRed,
+                              dotColor: CarsixColors.black3,
+                              shadowColor: CarsixColors.progressRed,
+                              shadowStep: 10,
+                            ),
+                            infoProperties: InfoProperties(
+                              mainLabelStyle: TextStyle(
+                                color: Colors.white,
+                                fontSize: 50,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              modifier: (double value) {
+                                return '${value.toInt()}%'; // 퍼센트 표시
+                              },
+                            ),
                           ),
-                          SizedBox(width: 10),
-                          Text("자동 밝기 (2/10)"),
-                        ],
+                        ),
+                      ),
+                      SizedBox(height: 22),
+                      Text(
+                        "밝기 조절",
+                        style: TextStyle(
+                          color: CarsixColors.white1,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                          letterSpacing: -0.3,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        "다이얼을 돌려서 밝기를 조절해주세요.\n자동 밝기 기능은 하단 버튼을 눌러주세요.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: CarsixColors.grey7,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 12,
+                          letterSpacing: -0.3,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      BrightBtn(),
+                      SizedBox(height: 10),
+                    ],
+                  ),
+                ),
+              ];
+            },
+            body: Column(
+              children: [
+                TabBar(
+                  dividerColor: Colors.transparent,
+                  indicator: CircleIndicator(color: CarsixColors.primaryRed),
+                  labelColor: themeController.isDarkMode.value
+                      ? CarsixColors.white1
+                      : CarsixColors.primaryRed,
+                  unselectedLabelColor: CarsixColors.grey2,
+                  indicatorColor: CarsixColors.primaryRed,
+                  tabs: [
+                    Tab(
+                      height: 60,
+                      child: Text(
+                        "액티브",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
+                    Tab(
+                      child: Text(
+                        "단색",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      height: 60,
+                    ),
+                    Tab(
+                      child: Text(
+                        "뮤직",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      height: 60,
+                    ),
+                    Tab(
+                      child: Text(
+                        "커스텀",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      height: 60,
+                    ),
                   ],
+                  onTap: (index) {
+                    print("탭 변경됨: $index");
+                    bleController.changeMode(index + 1);
+                  },
                 ),
-              ),
-              // 탭바 추가
-              TabBar(
-                labelColor: themeController.isDarkMode.value
-                    ? CarsixColors.white1
-                    : CarsixColors.primaryRed,
-                unselectedLabelColor: CarsixColors.grey2,
-                indicatorColor: CarsixColors.primaryRed,
-                tabs: const [
-                  Tab(text: "액티브"),
-                  // Tab(text: "세리머니"),
-                  Tab(text: "단색"),
-                  Tab(text: "뮤직"),
-                  Tab(text: "커스텀"),
-                ],
-                onTap: (index) {
-                  print("탭 변경됨: $index");
-                  if (index == 0) {
-                    print("액티브 탭 선택됨");
-                  } else if (index == 1) {
-                    print("단색 탭 선택됨");
-                  } else if (index == 2) {
-                    print("뮤직 탭 선택됨");
-                  } else if (index == 3) {
-                    print("커스텀 탭 선택됨");
-                  }
-                  bleController.changeMode(index + 1);
-                },
-              ),
-              Expanded(
-                child: TabBarView(
-                  children: [
-                    ActiveTabView(),
-                    // CeremonyTabView(),
-                    SingleColorTabView(),
-                    MusicTabView(),
-                    CustomTabView(),
-                  ],
+                Expanded(
+                  child: TabBarView(
+                    children: [
+                      ActiveTabView(),
+                      SingleColorTabView(),
+                      MusicTabView(),
+                      CustomTabView(),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
