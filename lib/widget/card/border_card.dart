@@ -23,6 +23,7 @@ class BorderCard extends StatelessWidget {
   final double borderThickness;
   final AlignmentGeometry borderBegin;
   final AlignmentGeometry borderEnd;
+  final MainAxisAlignment titleAlign;
   const BorderCard({
     super.key,
     required this.isSelected,
@@ -46,6 +47,7 @@ class BorderCard extends StatelessWidget {
     this.txtWithIcon = Icons.abc_outlined,
     this.isTxt = true,
     this.otherWidget = const SizedBox.shrink(),
+    this.titleAlign = MainAxisAlignment.center,
   });
 
   @override
@@ -89,15 +91,24 @@ class BorderCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     isTxt == true
-                        ? Text(
-                            title,
-                            style: TextStyle(
-                              color: isSelected
-                                  ? selectedTxtColor
-                                  : unSelectedTxtColor, // 항상 흰색 텍스트
-                              fontSize: fontSize,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        ? Row(
+                            mainAxisAlignment: titleAlign,
+                            children: [
+                              SizedBox(
+                                  width: titleAlign == MainAxisAlignment.start
+                                      ? 10
+                                      : 0),
+                              Text(
+                                title,
+                                style: TextStyle(
+                                  color: isSelected
+                                      ? selectedTxtColor
+                                      : unSelectedTxtColor, // 항상 흰색 텍스트
+                                  fontSize: fontSize,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           )
                         : (otherWidget ?? SizedBox.shrink()),
                     SizedBox(

@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 
 class ColorChip extends StatelessWidget {
+  final double width;
   final Color selected;
-  const ColorChip({super.key, required this.selected});
+  const ColorChip({
+    super.key,
+    required this.selected,
+    this.width = 36,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 36, // 원하는 너비
-      height: 36, // 원하는 높이
+      width: width, // 원하는 너비
+      height: width, // 원하는 높이
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: selected, // 배경색

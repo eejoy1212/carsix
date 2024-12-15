@@ -7,6 +7,7 @@ class ActiveCard extends StatelessWidget {
   final String title;
   final bool isSelected;
   final bool nowApply;
+  final MainAxisAlignment titleAlign;
   const ActiveCard({
     super.key,
     required this.onApply,
@@ -14,12 +15,14 @@ class ActiveCard extends StatelessWidget {
     required this.isSelected,
     required this.onSetting,
     required this.nowApply,
+    this.titleAlign = MainAxisAlignment.center,
   });
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return BorderCard(
+      titleAlign: titleAlign,
       borderThickness: 2,
       borderRadius: 20,
       padding: 10,
