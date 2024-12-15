@@ -1,3 +1,4 @@
+import 'package:carsix/content/mode/active_mode.dart';
 import 'package:carsix/modules/color/bindings/custom_color_binding.dart';
 import 'package:carsix/modules/color/views/custom_color_view.dart';
 import 'package:carsix/modules/favorite/bindings/favorite_binding.dart';
@@ -73,6 +74,11 @@ class AppPages {
     GetPage(
       name: '/device-edit',
       page: () => DeviceEditView(),
+      binding: MainBinding(),
+    ),
+    GetPage(
+      name: '/active-mode',
+      page: () => ActiveModeContent(),
       binding: MainBinding(),
     ),
   ];

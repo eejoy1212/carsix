@@ -8,7 +8,9 @@ import 'package:carsix/controller/bluetooth_controller.dart';
 import 'package:carsix/modules/main/controllers/main_controller.dart';
 import 'package:carsix/theme/controllers/theme_controller.dart';
 import 'package:carsix/widget/btn/apply_btn.dart';
+import 'package:carsix/widget/chip/bottom_nav_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class MainView extends StatelessWidget {
@@ -47,9 +49,12 @@ class MainView extends StatelessWidget {
       floatingActionButton: ApplyBtn(
         title: "이 설정 적용하기",
         onTap: () {
-          if (controller.currentIndex.value == 0 &&
-              bleController.currentTabIndex == 1) {
-            bleController.applySingleMode();
+          if (controller.currentIndex.value == 0) {
+            if (bleController.currentTabIndex == 0) {
+              bleController.sendActiveMode();
+            } else if (bleController.currentTabIndex == 1) {
+              bleController.applySingleMode();
+            }
           }
         },
       ),
@@ -61,7 +66,7 @@ class MainView extends StatelessWidget {
           backgroundColor: themeController.isDarkMode.value
               ? CarsixColors.grey1
               : CarsixColors.white2, // 다크모드 배경색
-          selectedItemColor: CarsixColors.primaryRed,
+          selectedItemColor: CarsixColors.white1,
 
           unselectedItemColor: Colors.grey,
           items: [
@@ -69,36 +74,71 @@ class MainView extends StatelessWidget {
               backgroundColor: themeController.isDarkMode.value
                   ? CarsixColors.grey1
                   : CarsixColors.white2,
-              icon: Icon(Icons.tune),
+              icon: BottomNavIcon(
+                iconType: BottomNavIconType.home,
+                isActive: false,
+              ),
+              activeIcon: BottomNavIcon(
+                iconType: BottomNavIconType.home,
+                isActive: true,
+              ),
               label: '모드',
             ),
             BottomNavigationBarItem(
               backgroundColor: themeController.isDarkMode.value
                   ? CarsixColors.grey1
                   : CarsixColors.white2,
-              icon: Icon(Icons.lightbulb_outline),
-              label: 'LED',
+              icon: BottomNavIcon(
+                iconType: BottomNavIconType.led,
+                isActive: false,
+              ),
+              activeIcon: BottomNavIcon(
+                iconType: BottomNavIconType.led,
+                isActive: true,
+              ),
+              label: '조명',
             ),
             BottomNavigationBarItem(
               backgroundColor: themeController.isDarkMode.value
                   ? CarsixColors.grey1
                   : CarsixColors.white2,
-              icon: Icon(Icons.directions_car_outlined),
-              label: '디바이스',
+              icon: BottomNavIcon(
+                iconType: BottomNavIconType.car,
+                isActive: false,
+              ),
+              activeIcon: BottomNavIcon(
+                iconType: BottomNavIconType.car,
+                isActive: true,
+              ),
+              label: '연결',
             ),
             BottomNavigationBarItem(
               backgroundColor: themeController.isDarkMode.value
                   ? CarsixColors.grey1
                   : CarsixColors.white2,
-              icon: Icon(Icons.person_outline),
-              label: '개별색상',
+              icon: BottomNavIcon(
+                iconType: BottomNavIconType.color,
+                isActive: false,
+              ),
+              activeIcon: BottomNavIcon(
+                iconType: BottomNavIconType.color,
+                isActive: true,
+              ),
+              label: '색상',
             ),
             BottomNavigationBarItem(
               backgroundColor: themeController.isDarkMode.value
                   ? CarsixColors.grey1
                   : CarsixColors.white2,
-              icon: Icon(Icons.person_outline),
-              label: '마이페이지',
+              icon: BottomNavIcon(
+                iconType: BottomNavIconType.settings,
+                isActive: false,
+              ),
+              activeIcon: BottomNavIcon(
+                iconType: BottomNavIconType.settings,
+                isActive: true,
+              ),
+              label: '설정',
             ),
           ],
         );

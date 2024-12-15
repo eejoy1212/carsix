@@ -5,6 +5,7 @@ import 'package:carsix/widget/btn/color_select_btn.dart';
 import 'package:carsix/widget/btn/favorite_color_btn.dart';
 import 'package:carsix/widget/btn/red_btn.dart';
 import 'package:carsix/widget/card/selected_favorite_card.dart';
+import 'package:carsix/widget/chip/selected_color_chip.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,6 +16,15 @@ class SingleColorTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BLEController controller = Get.find<BLEController>();
+    int getColorStatus() {
+      //즐겨찾기에 선택색상 없는 경우-저장하기
+      if (!controller.singleColors.contains(controller.selectedColor.value)) {
+        return 0;
+      } else {
+        return 2;
+      }
+    }
+
     return SingleChildScrollView(
       child: Center(
         child: Column(
@@ -43,15 +53,16 @@ class SingleColorTabView extends StatelessWidget {
                       colorNameTextStyle: TextStyle(color: Colors.transparent),
                       color: controller.selectedColor.value, // 선택된 색상
                       onColorChanged: (Color color) {
+                        controller.isSingleSaveComplete.value = false;
                         controller.isApplySingleColor.value = true;
                         controller.selectedColor.value = color; // 색상 업데이트
                       },
                       onColorChangeEnd: (Color color) {
-                        controller.selectedColor.value = color;
+                        // controller.selectedColor.value = color;
                         // controller.addToSingleColors(color); // 선택된 색상을 즐겨찾기에 추가
                       },
                       onColorChangeStart: (Color color) {
-                        controller.selectedColor.value = color;
+                        // controller.selectedColor.value = color;
                         // controller.addToSingleColors(color); // 선택된 색상을 즐겨찾기에 추가
                       },
 
@@ -115,63 +126,16 @@ class SingleColorTabView extends StatelessWidget {
                   // ),
                   Obx(() => ColorSelectBtn(
                         selected: controller.selectedColor.value,
-                        onTab: () {
-                          if (controller.singleColors
-                              .contains(controller.selectedColor.value)) {
-                            return;
-                          } else {
-                            controller.singleColors
-                                .add(controller.selectedColor.value);
-                          }
-                        },
+                        onTab: getColorStatus() == 0
+                            ? controller.selectSave
+                            : controller.selectRemove,
+                        status: getColorStatus(),
+                        completed: controller.isSingleSaveComplete.value,
                       )),
                   SizedBox(
                     height: 20,
                   ),
-                  // 즐겨찾기 색상 표시 및 제거 기능 추가
-                  // Obx(
-                  //   () => Wrap(
-                  //     spacing: 10,
-                  //     children: controller.singleColors
-                  //         .map(
-                  //           (color) => GestureDetector(
-                  //             onTap: () {
-                  //               controller.isApplySingleColor.value = false;
-                  //               // controller
-                  //               //     .removeFromSingles(color); // 클릭 시 즐겨찾기에서 제거
-                  //               controller.applyFromSingles(color);
-                  //             },
-                  //             child: Container(
-                  //               width: 40,
-                  //               height: 40,
-                  //               decoration: BoxDecoration(
-                  //                 color: color,
-                  //                 shape: BoxShape.circle,
-                  //                 border: Border.all(
-                  //                   color: controller.toApplySingleColor.value
-                  //                               .value ==
-                  //                           color.value
-                  //                       ? Colors.white
-                  //                       : Colors.transparent,
-                  //                   width: 2,
-                  //                 ),
-                  //               ),
-                  //               child: Icon(
-                  //                 Icons.check, // 삭제 아이콘 추가
-                  //                 color: controller
-                  //                             .toApplySingleColor.value.value ==
-                  //                         color.value
-                  //                     ? Colors.white
-                  //                     : Colors.transparent,
-                  //                 size: 18,
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         )
-                  //         .toList(),
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 10),
+
                   Container(
                     width: MediaQuery.of(context).size.width - 30,
                     child: Column(
@@ -223,27 +187,19 @@ class SingleColorTabView extends StatelessWidget {
                                               color: color,
                                               shape: BoxShape.circle,
                                               border: Border.all(
-                                                color: controller
-                                                            .toApplySingleColor
-                                                            .value
-                                                            .value ==
+                                                color: controller.selectedColor
+                                                            .value.value ==
                                                         color.value
                                                     ? Colors.white
                                                     : Colors.transparent,
                                                 width: 2,
                                               ),
                                             ),
-                                            child: Icon(
-                                              Icons.check, // 삭제 아이콘 추가
-                                              color: controller
-                                                          .toApplySingleColor
-                                                          .value
-                                                          .value ==
-                                                      color.value
-                                                  ? Colors.white
-                                                  : Colors.transparent,
-                                              size: 18,
-                                            ),
+                                            child: controller.selectedColor
+                                                        .value.value ==
+                                                    color.value
+                                                ? SelectedColorChip()
+                                                : Container(),
                                           ),
                                         ),
                                       )
@@ -253,36 +209,6 @@ class SingleColorTabView extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          margin: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 20),
-                          child: RedBtn(
-                            onPressed: () {
-                              final Color selectedColor =
-                                  controller.toApplySingleColor.value;
-
-                              // RGB 값 추출
-                              int red = selectedColor.red;
-                              int green = selectedColor.green;
-                              int blue = selectedColor.blue;
-
-                              // BLE 명령 호출
-                              controller.changeSingleColorMode(
-                                  red: red, green: green, blue: blue);
-                            },
-                            title: Text(
-                              "이 설정 적용하기",
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
                 ],
               ),
             ),

@@ -102,7 +102,7 @@ class ModeContent extends StatelessWidget {
       child: DefaultTabController(
         length: 4, // 탭의 수
         child: Scaffold(
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.transparent,
           body: NestedScrollView(
             headerSliverBuilder:
                 (BuildContext context, bool innerBoxIsScrolled) {

@@ -1,10 +1,8 @@
 import 'package:carsix/controller/bluetooth_controller.dart';
-import 'package:carsix/widget/btn/active_btn.dart';
+import 'package:carsix/widget/card/active_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:carsix/const/color.dart';
 import 'package:carsix/modules/main/controllers/main_controller.dart';
-import 'package:carsix/widget/btn/red_btn.dart';
 
 class ActiveTabView extends StatelessWidget {
   final MainController controller = Get.find<MainController>();
@@ -41,16 +39,16 @@ class ActiveTabView extends StatelessWidget {
                     child: Row(
                       children: [
                         Expanded(
-                          child: Obx(() => ActiveBtn(
+                          child: Obx(() => ActiveCard(
                                 isSelected:
-                                    controller.selectedButtonIndex.value ==
+                                    bleController.selectedButtonIndex.value ==
                                         firstButtonIndex,
-                                // color: controller.selectedButtonIndex.value ==
+                                // color: bleController.selectedButtonIndex.value ==
                                 //         firstButtonIndex
                                 //     ? CarsixColors.primaryRed
                                 //     : CarsixColors.grey1,
-                                onTap: () {
-                                  controller.selectedButtonIndex.value =
+                                onApply: () {
+                                  bleController.selectedButtonIndex.value =
                                       firstButtonIndex;
                                   // if (firstButtonIndex == 0) {
                                   //   // 레인보우 모드 버튼 기능
@@ -63,36 +61,47 @@ class ActiveTabView extends StatelessWidget {
                                   // }
                                   // bleController.testSetStrip1LEDCount();
                                   // bleController.sendActiveMode1();
-                                  print("클릭11");
-                                  bleController
-                                      .sendActiveMode(firstButtonIndex);
                                 },
                                 title: buttonTitles[firstButtonIndex],
+                                onSetting: () {
+                                  Get.toNamed("/active-mode", parameters: {
+                                    "mode": firstButtonIndex.toString()
+                                  }); // mode를 URL에 추가
+                                },
+                                nowApply:
+                                    bleController.selectedButtonIndex.value ==
+                                        firstButtonIndex,
                               )),
                         ),
                         if (secondButtonIndex < buttonTitles.length) ...[
                           SizedBox(width: 20),
                           Expanded(
-                            child: Obx(() => ActiveBtn(
-                                isSelected:
-                                    controller.selectedButtonIndex.value ==
-                                        secondButtonIndex,
-                                onTap: () {
-                                  controller.selectedButtonIndex.value =
-                                      secondButtonIndex;
-                                  // if (secondButtonIndex == 0) {
-                                  //   // 레인보우 모드 버튼 기능
-                                  //   bleController.sendRainbowToBLE();
-                                  // } else {
-                                  //   // 액티브 모드 버튼 기능
-                                  //   bleController.sendActiveModeToBLE(
-                                  //       secondButtonIndex);
-                                  // }
-                                  print("클릭22");
-                                  bleController
-                                      .sendActiveMode(secondButtonIndex);
-                                },
-                                title: buttonTitles[secondButtonIndex])),
+                            child: Obx(() => ActiveCard(
+                                  isSelected:
+                                      bleController.selectedButtonIndex.value ==
+                                          secondButtonIndex,
+                                  onApply: () {
+                                    bleController.selectedButtonIndex.value =
+                                        secondButtonIndex;
+                                    // if (secondButtonIndex == 0) {
+                                    //   // 레인보우 모드 버튼 기능
+                                    //   bleController.sendRainbowToBLE();
+                                    // } else {
+                                    //   // 액티브 모드 버튼 기능
+                                    //   bleController.sendActiveModeToBLE(
+                                    //       secondButtonIndex);
+                                    // }
+                                  },
+                                  title: buttonTitles[secondButtonIndex],
+                                  onSetting: () {
+                                    Get.toNamed("/active-mode", parameters: {
+                                      "mode": secondButtonIndex.toString()
+                                    }); // mode를 URL에 추가
+                                  },
+                                  nowApply:
+                                      bleController.selectedButtonIndex.value ==
+                                          secondButtonIndex,
+                                )),
                           ),
                         ],
                       ],
@@ -100,6 +109,7 @@ class ActiveTabView extends StatelessWidget {
                   );
                 }),
               ),
+              SizedBox(height: 96)
             ],
           ),
         ),

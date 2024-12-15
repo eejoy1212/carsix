@@ -34,16 +34,34 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeController themeController = Get.find<ThemeController>();
 
-    return Obx(() => GetMaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'GetX App',
-          theme: lightTheme,
-          darkTheme: darkTheme,
-          themeMode: themeController.isDarkMode.value
-              ? ThemeMode.dark
-              : ThemeMode.light,
-          initialRoute: AppPages.INITIAL,
-          getPages: AppPages.routes,
-        ));
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'GetX App',
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.transparent, // Scaffold의 기본 배경 투명 처리
+      ),
+      darkTheme: ThemeData(
+        scaffoldBackgroundColor: Colors.transparent, // 동일한 설정
+      ),
+      themeMode: ThemeMode.dark,
+      initialRoute: AppPages.INITIAL,
+      getPages: AppPages.routes,
+      builder: (context, child) {
+        return Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.black, // #000000
+                Colors.black, // #000000
+                Color(0xFF2B2B2B), // #2B2B2B
+              ],
+            ),
+          ),
+          child: child, // 전체 앱 위젯을 포함
+        );
+      },
+    );
   }
 }

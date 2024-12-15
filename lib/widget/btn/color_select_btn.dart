@@ -5,8 +5,24 @@ import 'package:flutter/material.dart';
 class ColorSelectBtn extends StatelessWidget {
   final void Function() onTab;
   final Color selected;
-  const ColorSelectBtn(
-      {super.key, required this.onTab, required this.selected});
+  final int status;
+  final bool completed;
+  const ColorSelectBtn({
+    super.key,
+    required this.onTab,
+    required this.selected,
+    required this.status,
+    required this.completed,
+  });
+  String getTitle() {
+    if (status == 0) {
+      return "선택 색상 저장하기";
+    } else if (status == 1) {
+      return "색상 저장완료!";
+    } else {
+      return "저장된 색상 삭제하기";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,9 +71,9 @@ class ColorSelectBtn extends StatelessWidget {
                 width: 10,
               ),
               Text(
-                "선택 색상 저장하기",
+                completed ? "색상 저장완료!" : getTitle(),
                 style: TextStyle(
-                  color: CarsixColors.white1,
+                  color: completed ? Color(0xFFA0A0A0) : CarsixColors.white1,
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                 ),

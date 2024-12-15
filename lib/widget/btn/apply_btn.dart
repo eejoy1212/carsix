@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class ApplyBtn extends StatelessWidget {
   final String title;
-  final void Function()? onTap;
+  final void Function() onTap;
 
-  const ApplyBtn({super.key, required this.title, this.onTap});
+  const ApplyBtn({super.key, required this.title, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

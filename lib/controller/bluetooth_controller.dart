@@ -17,8 +17,8 @@ class BLEController extends GetxController {
   BluetoothCharacteristic? characteristic; // 데이터 전송을 위한 BLE 특성
   // 즐겨찾기 색상 리스트 (최대 6개)
   RxList<Color> singleColors = <Color>[].obs;
-  var selectedColor = CarsixColors.primaryRed.obs;
-  Rx<Color> toApplySingleColor = CarsixColors.primaryRed.obs;
+  Rx<Color> selectedColor = Colors.transparent.obs;
+  Rx<Color> toApplySingleColor = Colors.transparent.obs;
   Rx<bool> isApplySingleColor = true.obs;
   //커스텀 모드 변수
   Rx<Color> selectedCustomColor = CarsixColors.primaryRed.obs;
@@ -27,18 +27,34 @@ class BLEController extends GetxController {
   RxBool isCustomBg = RxBool(true);
   RxDouble brightValue = RxDouble(25);
   RxBool isAutoBright = RxBool(true);
+  RxInt selectedButtonIndex = (-1).obs;
+  RxBool isSelectLoading = RxBool(false);
+  RxBool isSingleSaveComplete = RxBool(false);
+  void selectSave() {
+    if (singleColors.contains(selectedColor.value)) {
+      return;
+    } else {
+      isSingleSaveComplete.value = true;
+      singleColors.add(selectedColor.value);
+    }
+  }
+
+  void selectRemove() {
+    singleColors.remove(selectedColor.value);
+  }
+
   void updateTabIndex(int index) {
     currentTabIndex.value = index;
     print("현재 탭 인덱스: $index");
   }
 
   void applySingleMode() {
-    final Color selectedColor = toApplySingleColor.value;
+    // final Color selectedColor = toApplySingleColor.value;
 
     // RGB 값 추출
-    int red = selectedColor.red;
-    int green = selectedColor.green;
-    int blue = selectedColor.blue;
+    int red = selectedColor.value.red;
+    int green = selectedColor.value.green;
+    int blue = selectedColor.value.blue;
 
     // BLE 명령 호출
     changeSingleColorMode(red: red, green: green, blue: blue);
@@ -114,7 +130,8 @@ class BLEController extends GetxController {
 
   //cmd날릴 단색 색상
   void applyFromSingles(Color color) {
-    toApplySingleColor.value = color;
+    isSingleSaveComplete.value = false;
+    selectedColor.value = color;
   }
 
   @override
@@ -235,23 +252,25 @@ class BLEController extends GetxController {
     }
   }
 
-  void sendActiveMode(int mode) async {
+  void sendActiveMode() async {
     // 모드 번호 유효성 검사
-    if (mode < 0 || mode > 11) {
-      print("유효하지 않은 모드 번호입니다: $mode");
+    if (selectedButtonIndex.value < 0 || selectedButtonIndex.value > 11) {
+      print("유효하지 않은 모드 번호입니다: $selectedButtonIndex.value");
       return;
     }
 
     // CMD 값 설정
     int cmd;
-    if (mode == 0) {
+    if (selectedButtonIndex.value == 0) {
       cmd = 0x0B; // Rainbow Mode CMD
     } else {
       cmd = 0xC5; // Active Mode CMD
     }
 
     // Sub CMD 설정 (레인보우 모드는 0 고정)
-    int subCmd = mode == 0 ? 0x00 : mode & 0xFF;
+    int subCmd = selectedButtonIndex.value == 0
+        ? 0x00
+        : selectedButtonIndex.value & 0xFF;
 
     // 명령어 생성
     List<int> command = [
@@ -275,9 +294,10 @@ class BLEController extends GetxController {
       try {
         await characteristic!.write(command, withoutResponse: false);
         print(
-            "${mode == 0 ? "Rainbow" : "Active"} Mode $mode 명령 전송 성공: $command");
+            "${selectedButtonIndex.value == 0 ? "Rainbow" : "Active"} Mode $selectedButtonIndex.value 명령 전송 성공: $command");
       } catch (e) {
-        print("${mode == 0 ? "Rainbow" : "Active"} Mode $mode 명령 전송 실패: $e");
+        print(
+            "${selectedButtonIndex.value == 0 ? "Rainbow" : "Active"} Mode $selectedButtonIndex.value 명령 전송 실패: $e");
       }
     } else {
       print("BLE 연결이 설정되지 않았습니다.");

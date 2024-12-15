@@ -32,8 +32,9 @@ final ThemeData lightTheme = ThemeData(
 
 final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark, // 기본 다크 모드 설정
+
     colorScheme: ColorScheme.fromSeed(
-      background: CarsixColors.black1,
+      // background: Colors.amber,
       seedColor: CarsixColors.primaryRed,
       brightness: Brightness.dark, // 여기에서 다크 모드를 명시적으로 설정
     ),

@@ -15,7 +15,7 @@ class MainController extends GetxController {
   // 선택된 색상 변수
   var selectedColor = CarsixColors.primaryRed.obs;
   // 선택된 버튼 인덱스 (-1은 선택 안된 상태를 의미)
-  RxInt selectedButtonIndex = (-1).obs;
+
   // 모드 선택 상태 변수
   RxList<bool> isSelectedModes = List.generate(11, (_) => false).obs;
   // 즐겨찾기 컬러
