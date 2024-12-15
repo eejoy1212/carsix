@@ -30,8 +30,6 @@ class SingleColorTabView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // FavoriteColorBtn(),
-            // SelectedFavoriteCard(title: "title", content: "content"),
             Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -54,17 +52,10 @@ class SingleColorTabView extends StatelessWidget {
                       color: controller.selectedColor.value, // 선택된 색상
                       onColorChanged: (Color color) {
                         controller.isSingleSaveComplete.value = false;
-                        controller.isApplySingleColor.value = true;
                         controller.selectedColor.value = color; // 색상 업데이트
                       },
-                      onColorChangeEnd: (Color color) {
-                        // controller.selectedColor.value = color;
-                        // controller.addToSingleColors(color); // 선택된 색상을 즐겨찾기에 추가
-                      },
-                      onColorChangeStart: (Color color) {
-                        // controller.selectedColor.value = color;
-                        // controller.addToSingleColors(color); // 선택된 색상을 즐겨찾기에 추가
-                      },
+                      onColorChangeEnd: (Color color) {},
+                      onColorChangeStart: (Color color) {},
 
                       subheading: const Text(
                         '사용할 색상 선택',
@@ -76,54 +67,7 @@ class SingleColorTabView extends StatelessWidget {
                       showColorName: true,
                     ),
                   ),
-
                   const SizedBox(height: 20),
-                  // Row(
-                  //   children: [
-                  //     Expanded(
-                  //       child: Container(
-                  //         margin: EdgeInsets.symmetric(
-                  //             horizontal: 20, vertical: 20),
-                  //         child: RedBtn(
-                  //             onPressed: () {
-                  //               if (controller.isApplySingleColor.isTrue) {
-                  //                 controller.addToSingleColors(
-                  //                     controller.selectedColor.value);
-                  //               } else {
-                  //                 controller.removeFromSingles(
-                  //                     controller.toApplySingleColor.value);
-                  //               }
-                  //             },
-                  //             title: Row(
-                  //               children: [
-                  //                 Obx(
-                  //                   () => Container(
-                  //                     width: 40,
-                  //                     height: 40,
-                  //                     decoration: BoxDecoration(
-                  //                       color:
-                  //                           controller.isApplySingleColor.isTrue
-                  //                               ? controller.selectedColor.value
-                  //                               : controller
-                  //                                   .toApplySingleColor.value,
-                  //                       shape: BoxShape.circle,
-                  //                     ),
-                  //                   ),
-                  //                 ),
-                  //                 Obx(() => Text(
-                  //                       controller.isApplySingleColor.isTrue
-                  //                           ? "선택 색상 저장하기"
-                  //                           : "저장된 색상 삭제하기",
-                  //                       style: TextStyle(
-                  //                           fontSize: 16,
-                  //                           fontWeight: FontWeight.w600),
-                  //                     )),
-                  //               ],
-                  //             )),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
                   Obx(() => ColorSelectBtn(
                         selected: controller.selectedColor.value,
                         onTab: getColorStatus() == 0

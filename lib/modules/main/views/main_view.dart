@@ -50,9 +50,9 @@ class MainView extends StatelessWidget {
         title: "이 설정 적용하기",
         onTap: () {
           if (controller.currentIndex.value == 0) {
-            if (bleController.currentTabIndex == 0) {
+            if (bleController.currentTabIndex == 1) {
               bleController.sendActiveMode();
-            } else if (bleController.currentTabIndex == 1) {
+            } else if (bleController.currentTabIndex == 2) {
               bleController.applySingleMode();
             }
           }

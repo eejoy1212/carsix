@@ -259,7 +259,7 @@ class ModeContent extends StatelessWidget {
                   onTap: (index) {
                     print("탭 변경됨: $index");
                     bleController.changeMode(index + 1);
-                    bleController.updateTabIndex(index);
+                    // bleController.updateTabIndex(index);
                   },
                 ),
                 Expanded(

@@ -7,6 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 class BLEController extends GetxController {
   FlutterBlue flutterBlue = FlutterBlue.instance;
+  final Rx<ScrollController> scrollController = ScrollController().obs;
   var isConnected = false.obs;
   var isScanning = false.obs;
   BluetoothDevice? connectedDevice;
@@ -30,6 +31,8 @@ class BLEController extends GetxController {
   RxInt selectedButtonIndex = (-1).obs;
   RxBool isSelectLoading = RxBool(false);
   RxBool isSingleSaveComplete = RxBool(false);
+  RxBool isSliding = false.obs;
+
   void selectSave() {
     if (singleColors.contains(selectedColor.value)) {
       return;
@@ -217,6 +220,8 @@ class BLEController extends GetxController {
 
   void changeMode(int subCommand) async {
     // 유효한 Sub Command인지 확인
+    print("모드 내에서 탭 전환>> ${subCommand}");
+    updateTabIndex(subCommand);
     if (subCommand < 1 || subCommand > 4) {
       print("유효하지 않은 모드 번호입니다: $subCommand");
       return;
