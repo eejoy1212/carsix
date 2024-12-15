@@ -123,7 +123,7 @@ class ModeContent extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  percentage.toStringAsFixed(0),
+                                  percentage.toStringAsFixed(0), // 화면상 퍼센트 표시
                                   style: TextStyle(
                                     fontSize: 48,
                                     color: CarsixColors.white1,
@@ -142,10 +142,25 @@ class ModeContent extends StatelessWidget {
                             );
                           },
                           initialValue:
-                              bleController.brightValue.value, // 초기값 (퍼센트)
-                          min: 0,
-                          max: 100,
+                              bleController.brightValue.value, // 초기값 0~100%
+                          min: 0, // 화면상 최소값
+                          max: 100, // 화면상 최대값
+                          onChangeEnd: (double value) {
+                            double actualBrightness = (value / 100) * 250;
+                            bleController.changeBrightness(
+                              brightnessValues: [
+                                actualBrightness.toInt(),
+                                actualBrightness.toInt(),
+                                actualBrightness.toInt(),
+                                actualBrightness.toInt(),
+                                actualBrightness.toInt(),
+                                actualBrightness.toInt(),
+                                actualBrightness.toInt()
+                              ],
+                            );
+                          },
                           onChange: (double value) {
+                            // 화면상의 0~100% 값을 실제 0~250 값으로 변환
                             bleController.brightValue.value = value;
                           },
                           appearance: CircularSliderAppearance(

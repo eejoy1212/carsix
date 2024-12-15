@@ -50,10 +50,16 @@ class MainView extends StatelessWidget {
         title: "이 설정 적용하기",
         onTap: () {
           if (controller.currentIndex.value == 0) {
+            //액티브 모드
             if (bleController.currentTabIndex == 1) {
               bleController.sendActiveMode();
+              //단색 모드
             } else if (bleController.currentTabIndex == 2) {
               bleController.applySingleMode();
+            }
+            //뮤직 모드
+            else if (bleController.currentTabIndex == 3) {
+              bleController.applyMusicMode();
             }
           }
         },
@@ -64,16 +70,14 @@ class MainView extends StatelessWidget {
           currentIndex: controller.currentIndex.value,
           onTap: (index) => controller.changeTab(index),
           backgroundColor: themeController.isDarkMode.value
-              ? CarsixColors.grey1
+              ? CarsixColors.black4
               : CarsixColors.white2, // 다크모드 배경색
           selectedItemColor: CarsixColors.white1,
 
           unselectedItemColor: Colors.grey,
           items: [
             BottomNavigationBarItem(
-              backgroundColor: themeController.isDarkMode.value
-                  ? CarsixColors.grey1
-                  : CarsixColors.white2,
+              backgroundColor: CarsixColors.black4,
               icon: BottomNavIcon(
                 iconType: BottomNavIconType.home,
                 isActive: false,
@@ -85,9 +89,7 @@ class MainView extends StatelessWidget {
               label: '모드',
             ),
             BottomNavigationBarItem(
-              backgroundColor: themeController.isDarkMode.value
-                  ? CarsixColors.grey1
-                  : CarsixColors.white2,
+              backgroundColor: CarsixColors.black4,
               icon: BottomNavIcon(
                 iconType: BottomNavIconType.led,
                 isActive: false,
@@ -99,9 +101,7 @@ class MainView extends StatelessWidget {
               label: '조명',
             ),
             BottomNavigationBarItem(
-              backgroundColor: themeController.isDarkMode.value
-                  ? CarsixColors.grey1
-                  : CarsixColors.white2,
+              backgroundColor: CarsixColors.black4,
               icon: BottomNavIcon(
                 iconType: BottomNavIconType.car,
                 isActive: false,
@@ -113,9 +113,7 @@ class MainView extends StatelessWidget {
               label: '연결',
             ),
             BottomNavigationBarItem(
-              backgroundColor: themeController.isDarkMode.value
-                  ? CarsixColors.grey1
-                  : CarsixColors.white2,
+              backgroundColor: CarsixColors.black4,
               icon: BottomNavIcon(
                 iconType: BottomNavIconType.color,
                 isActive: false,
@@ -127,9 +125,7 @@ class MainView extends StatelessWidget {
               label: '색상',
             ),
             BottomNavigationBarItem(
-              backgroundColor: themeController.isDarkMode.value
-                  ? CarsixColors.grey1
-                  : CarsixColors.white2,
+              backgroundColor: CarsixColors.black4,
               icon: BottomNavIcon(
                 iconType: BottomNavIconType.settings,
                 isActive: false,

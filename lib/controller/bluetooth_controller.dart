@@ -1,11 +1,20 @@
+import 'dart:convert';
+
 import 'package:carsix/const/color.dart';
+import 'package:carsix/const/databas_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class BLEController extends GetxController {
+  //뮤직 모드 설정
+  Rx<Color> selectedMusicColor = Colors.transparent.obs;
+  RxList<Color> musicColors = <Color>[].obs;
+  RxBool isMusicSaveComplete = RxBool(false);
+  RxInt selectedMusicButtonIndex = (-1).obs; //뮤직모드 적용할지 안할지 적용하기 버튼 누르는거
+  RxDouble musicSensitivity = 0.0.obs;
+  //뮤직 모드 설정
   FlutterBlue flutterBlue = FlutterBlue.instance;
   final Rx<ScrollController> scrollController = ScrollController().obs;
   var isConnected = false.obs;
@@ -16,11 +25,12 @@ class BLEController extends GetxController {
   // 속도 설정 변수
   RxDouble speedValue = 10.0.obs;
   BluetoothCharacteristic? characteristic; // 데이터 전송을 위한 BLE 특성
-  // 즐겨찾기 색상 리스트 (최대 6개)
+  //액티브 모드 설정
   RxList<Color> singleColors = <Color>[].obs;
   Rx<Color> selectedColor = Colors.transparent.obs;
   Rx<Color> toApplySingleColor = Colors.transparent.obs;
   Rx<bool> isApplySingleColor = true.obs;
+  //액티브 모드 설정
   //커스텀 모드 변수
   Rx<Color> selectedCustomColor = CarsixColors.primaryRed.obs;
   Rx<Color> customBgColor = CarsixColors.primaryRed.obs;
@@ -32,7 +42,163 @@ class BLEController extends GetxController {
   RxBool isSelectLoading = RxBool(false);
   RxBool isSingleSaveComplete = RxBool(false);
   RxBool isSliding = false.obs;
+  //밝기 조절하는 다이얼
+  void changeBrightness({
+    required List<int> brightnessValues,
+  }) async {
+    // 밝기 값 유효성 검사 (0~250 범위, 총 7개의 데이터)
+    if (brightnessValues.length != 7) {
+      print("밝기 값은 정확히 7개의 값을 가져야 합니다.");
+      return;
+    }
 
+    if (brightnessValues.any((value) => value < 0 || value > 250)) {
+      print("밝기 값은 0부터 250 사이여야 합니다: $brightnessValues");
+      return;
+    }
+
+    // 밝기 설정 명령어 생성
+    List<int> command = [
+      0xEA, // Header 1
+      0xBF, // Header 2
+      0xC3, // CMD (밝기 설정)
+      0x00, // Sub Command
+      ...brightnessValues, // Data1 ~ Data7: 각 Strip의 밝기 값
+      0x00, // Data8 (0으로 고정)
+      0x00, // Data9 (0으로 고정)
+      0xEB, // End
+    ];
+
+    // BLE 명령어 전송
+    if (characteristic != null && isConnected.value) {
+      try {
+        await characteristic!.write(command, withoutResponse: false);
+        print("밝기 설정 명령 전송 성공: $command");
+      } catch (e) {
+        print("밝기 설정 명령 전송 실패: $e");
+      }
+    } else {
+      print("BLE 연결이 설정되지 않았습니다.");
+    }
+  }
+
+  //밝기 조절하는 다이얼
+  //로컬 디비
+  final DatabaseHelper _dbHelper = DatabaseHelper();
+  void initMusicSetting() {
+    selectedMusicColor.value = Colors.transparent;
+    musicColors.value = <Color>[];
+    isMusicSaveComplete.value = false;
+  }
+
+  Future<void> saveMusicMode(int mode) async {
+    final String modeKey = "music$mode";
+
+    // favorite 컬러 리스트를 JSON 문자열로 변환
+    final String favoriteJson = jsonEncode(
+      musicColors.map((color) => color.value).toList(),
+    );
+
+    // 현재 선택된 컬러 (now)
+    final int nowColor = selectedMusicColor.value.value;
+
+    await _dbHelper.saveMusicMode(
+      mode: modeKey,
+      favorite: favoriteJson,
+      now: nowColor,
+    );
+
+    isMusicSaveComplete.value = true;
+    print('저장 완료: mode=$modeKey, favorite=$favoriteJson, now=$nowColor');
+  }
+
+  // 데이터 불러오기
+  Future<void> loadMusicMode(int mode) async {
+    final String modeKey = "music$mode";
+    final data = await _dbHelper.getMusicMode(modeKey);
+
+    if (data != null) {
+      // favorite 컬러 로드
+      final List<dynamic> favoriteList = jsonDecode(data['favorite']);
+      musicColors.value = favoriteList.map((color) => Color(color)).toList();
+
+      // now 컬러 로드
+      selectedMusicColor.value = Color(data['now']);
+      print('불러오기 완료: mode=$modeKey');
+    }
+  } //로컬 디비
+
+//뮤직 모드 세팅
+  void selectMusicSave() {
+    if (musicColors.contains(selectedMusicColor.value)) {
+      return;
+    } else {
+      isMusicSaveComplete.value = true;
+      musicColors.add(selectedMusicColor.value);
+    }
+  }
+
+  void selectMusicRemove() {
+    musicColors.remove(selectedMusicColor.value);
+  }
+
+  void applyFromMusics(Color color) {
+    isMusicSaveComplete.value = false;
+    selectedMusicColor.value = color;
+  }
+
+  void changeMusicMode(int newMode) async {
+    int mode = newMode + 1;
+    // 유효한 모드 값인지 확인 (1~4만 가능)
+    if (mode < 1 || mode > 4) {
+      print("유효하지 않은 뮤직 모드입니다: $mode");
+      return;
+    }
+
+    // 뮤직 모드 설정 명령어 생성
+    List<int> command = [
+      0xEA, // Header 1
+      0xBF, // Header 2
+      0xCB, // CMD (뮤직 모드 변경)
+      mode & 0xFF, // Sub Command (1~4 중 하나)
+      0x00, // Data1
+      0x00, // Data2
+      0x00, // Data3
+      0x00, // Data4
+      0x00, // Data5
+      0x00, // Data6
+      0x00, // Data7
+      0x00, // Data8
+      0x00, // Data9
+      0xEB // End
+    ];
+    print("뮤직모드 커맨드>>>${command}");
+    // BLE 명령어 전송
+    if (characteristic != null && isConnected.value) {
+      try {
+        await characteristic!.write(command, withoutResponse: false);
+        print("뮤직 모드 $mode 변경 명령 전송 성공: $command");
+      } catch (e) {
+        print("뮤직 모드 $mode 변경 명령 전송 실패: $e");
+      }
+    } else {
+      print("BLE 연결이 설정되지 않았습니다.");
+    }
+  }
+
+  void applyMusicMode() {
+    // final Color selectedColor = toApplySingleColor.value;
+
+    // RGB 값 추출
+    int red = selectedColor.value.red;
+    int green = selectedColor.value.green;
+    int blue = selectedColor.value.blue;
+
+    // BLE 명령 호출
+    changeMusicMode(selectedMusicButtonIndex.value);
+  }
+
+//뮤직 모드 세팅
   void selectSave() {
     if (singleColors.contains(selectedColor.value)) {
       return;
