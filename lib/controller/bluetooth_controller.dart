@@ -8,6 +8,21 @@ import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class BLEController extends GetxController {
+  //커스텀 모드 설정
+  // Rx<Color> selectedCustomColor = Colors.transparent.obs;
+  // RxList<Color> customColors = <Color>[].obs;
+  RxString nowApplyCustomMode = "".obs;
+  Rx<Color> selectedBgCustomColor = Colors.transparent.obs;
+  RxList<Color> customBgColors = <Color>[].obs;
+  Rx<Color> selectedSel1CustomColor = Colors.transparent.obs;
+  RxList<Color> customSel1Colors = <Color>[].obs;
+  Rx<Color> selectedSel2CustomColor = Colors.transparent.obs;
+  RxList<Color> customSel2Colors = <Color>[].obs;
+  RxBool isCustomSaveComplete = RxBool(false);
+  RxInt selectedCustomButtonIndex = (-1).obs; //뮤직모드 적용할지 안할지 적용하기 버튼 누르는거
+  RxDouble customBright = 0.0.obs;
+  RxDouble customVelocity = 0.0.obs;
+  //커스텀 모드 설정
   //뮤직 모드 설정
   Rx<Color> selectedMusicColor = Colors.transparent.obs;
   RxList<Color> musicColors = <Color>[].obs;
@@ -32,7 +47,7 @@ class BLEController extends GetxController {
   Rx<bool> isApplySingleColor = true.obs;
   //액티브 모드 설정
   //커스텀 모드 변수
-  Rx<Color> selectedCustomColor = CarsixColors.primaryRed.obs;
+  // Rx<Color> selectedCustomColor = CarsixColors.primaryRed.obs;
   Rx<Color> customBgColor = CarsixColors.primaryRed.obs;
   RxList<Color> customBlockColors = RxList.empty();
   RxBool isCustomBg = RxBool(true);
@@ -128,6 +143,163 @@ class BLEController extends GetxController {
     }
   } //로컬 디비
 
+//커스텀모드 컬러 세팅
+  void initCustomSetting() {
+    selectedBgCustomColor.value = Colors.transparent;
+    customBgColors.value = <Color>[];
+    selectedSel1CustomColor.value = Colors.transparent;
+    customSel1Colors.value = <Color>[];
+    selectedSel2CustomColor.value = Colors.transparent;
+    customSel2Colors.value = <Color>[];
+    isCustomSaveComplete.value = false;
+  }
+
+  void saveCustomMode(
+    int mode,
+    String type,
+  ) async {
+    String modeKey = 'custom$mode';
+    final dbHelper = DatabaseHelper();
+
+    // 기존 데이터 조회
+    final existingData = await dbHelper.getCustomMode(modeKey);
+
+    // 기존 값 설정 (기본값도 포함)
+    String existingBgFavorite = existingData?['bgFavorite'] ?? '';
+    int existingBgNow = existingData?['bgNow'] ?? 0;
+
+    String existingSel1Favorite = existingData?['sel1Favorite'] ?? '';
+    int existingSel1Now = existingData?['sel1Now'] ?? 0;
+
+    String existingSel2Favorite = existingData?['sel2Favorite'] ?? '';
+    int existingSel2Now = existingData?['sel2Now'] ?? 0;
+
+    // 새로운 favorite 색상 리스트 JSON 형태로 변환
+    final String favoriteBgJson = jsonEncode(
+      customBgColors.map((color) => color.value).toList(),
+    );
+    final int nowBgColor = selectedBgCustomColor.value.value;
+
+    final String favoriteSel1Json = jsonEncode(
+      customSel1Colors.map((color) => color.value).toList(),
+    );
+    final int nowSel1Color = selectedSel1CustomColor.value.value;
+
+    final String favoriteSel2Json = jsonEncode(
+      customSel2Colors.map((color) => color.value).toList(),
+    );
+    final int nowSel2Color = selectedSel2CustomColor.value.value;
+
+    // type에 따라 새로운 데이터로 업데이트, 나머지는 기존 값 유지
+    switch (type) {
+      case 'bg':
+        existingBgFavorite = favoriteBgJson;
+        existingBgNow = nowBgColor;
+        break;
+      case 'sel1':
+        existingSel1Favorite = favoriteSel1Json;
+        existingSel1Now = nowSel1Color;
+        break;
+      case 'sel2':
+        existingSel2Favorite = favoriteSel2Json;
+        existingSel2Now = nowSel2Color;
+        break;
+      default:
+        print("유효하지 않은 타입입니다: $type");
+        return;
+    }
+
+    // 업데이트된 데이터를 저장
+    await dbHelper.saveCustomMode(
+      mode: modeKey,
+      bgFavorite: existingBgFavorite,
+      bgNow: existingBgNow,
+      sel1Favorite: existingSel1Favorite,
+      sel1Now: existingSel1Now,
+      sel2Favorite: existingSel2Favorite,
+      sel2Now: existingSel2Now,
+    );
+
+    print("커스텀 모드 저장 완료: $modeKey, type: $type");
+  }
+
+  List<Color> parseColorList(String? jsonString) {
+    if (jsonString == null || jsonString.isEmpty) return [];
+
+    // JSON 문자열을 List<dynamic>으로 파싱한 후, 각 항목을 Color로 변환
+    final List<dynamic> colorValues = jsonDecode(jsonString);
+    return colorValues.map((value) => Color(value)).toList();
+  }
+
+  void loadCustomMode(int mode) async {
+    final dbHelper = DatabaseHelper();
+    String modeKey = 'custom$mode';
+
+    // 데이터베이스에서 모드 데이터 가져오기
+    final result = await dbHelper.getCustomMode(modeKey);
+    if (result != null) {
+      selectedBgCustomColor.value = Color(result['bgNow'] ?? 0xFFFFFF);
+      customBgColors.value = parseColorList(result['bgFavorite']) ?? [];
+      selectedSel1CustomColor.value = Color(result['sel1Now'] ?? 0xFFFFFF);
+      customSel1Colors.value = parseColorList(result['sel1Favorite']) ?? [];
+      selectedSel2CustomColor.value = Color(result['sel2Now'] ?? 0xFFFFFF);
+      customSel2Colors.value = parseColorList(result['sel2Favorite']) ?? [];
+    }
+  }
+
+  void selectCustomSave(String type) {
+    switch (type) {
+      case 'bg':
+        isCustomSaveComplete.value = true;
+        customBgColors.add(selectedBgCustomColor.value);
+        break;
+      case 'sel1':
+        isCustomSaveComplete.value = true;
+        customSel1Colors.add(selectedSel1CustomColor.value);
+        break;
+      case 'sel2':
+        isCustomSaveComplete.value = true;
+        customSel2Colors.add(selectedSel2CustomColor.value);
+        break;
+      default:
+        return;
+    }
+  }
+
+  void selectCustomRemove(String type) {
+    switch (type) {
+      case 'bg':
+        customBgColors.remove(selectedBgCustomColor.value);
+        break;
+      case 'sel1':
+        customSel1Colors.remove(selectedSel1CustomColor.value);
+        break;
+      case 'sel2':
+        customSel2Colors.remove(selectedSel2CustomColor.value);
+        break;
+      default:
+        return;
+    }
+  }
+
+  void applyFromCustoms(Color color, String type) {
+    isCustomSaveComplete.value = false;
+    switch (type) {
+      case 'bg':
+        selectedBgCustomColor.value = color;
+        break;
+      case 'sel1':
+        selectedSel1CustomColor.value = color;
+        break;
+      case 'sel2':
+        selectedSel2CustomColor.value = color;
+        break;
+      default:
+        return;
+    }
+  }
+
+//커스텀모드 컬러 세팅
 //뮤직 모드 세팅
   void selectMusicSave() {
     if (musicColors.contains(selectedMusicColor.value)) {

@@ -39,22 +39,36 @@ class CustomTabView extends StatelessWidget {
 
   /// ActiveCard를 만드는 함수
   Widget _buildActiveCard(int index) {
+    String getMode() {
+      if (index == 0) {
+        return "bg";
+      } else if (index == 1) {
+        return "sel1";
+      } else {
+        return "sel2";
+      }
+    }
+
     return Obx(() => CustomCard(
           titleAlign: MainAxisAlignment.start,
           isSelected: controller.selectedMusicButtonIndex.value == index,
           onApply: () {
-            controller.selectedMusicButtonIndex.value = index;
+            controller.nowApplyCustomMode.value = getMode();
           },
           title: buttonTitles[index],
           onSetting: () {
-            controller.loadMusicMode(index + 1);
-            Get.toNamed('/music-setting',
+            controller.loadCustomMode(index + 1);
+            Get.toNamed('/custom-setting',
                 parameters: {"mode": index.toString()});
             // 설정 페이지로 이동 (필요 시 구현)
             // Get.toNamed("/active-mode", parameters: {"mode": index.toString()});
           },
-          nowApply: controller.selectedMusicButtonIndex.value == index,
-          isDisable: true,
+          nowApply: controller.nowApplyCustomMode.value == getMode(),
+          isDisable: getMode() == "bg"
+              ? controller.customBgColors.isEmpty
+              : getMode() == "sel1"
+                  ? controller.customSel1Colors.isEmpty
+                  : controller.customSel2Colors.isEmpty,
         ));
   }
 }

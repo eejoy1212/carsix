@@ -1,4 +1,6 @@
 import 'package:carsix/content/mode/active_mode.dart';
+import 'package:carsix/content/page/custom_color_setting.dart';
+import 'package:carsix/content/page/custom_setting.dart';
 import 'package:carsix/content/page/music_setting.dart';
 import 'package:carsix/modules/color/bindings/custom_color_binding.dart';
 import 'package:carsix/modules/color/views/custom_color_view.dart';
@@ -83,5 +85,7 @@ class AppPages {
       binding: MainBinding(),
     ),
     GetPage(name: '/music-setting', page: () => MusicSetting()),
+    GetPage(name: '/custom-setting', page: () => CustomSetting()),
+    GetPage(name: '/custom-color-setting', page: () => CustomColorSetting()),
   ];
 }
