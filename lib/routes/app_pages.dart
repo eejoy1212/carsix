@@ -9,6 +9,7 @@ import 'package:carsix/modules/favorite/controllers/favorite_controller.dart';
 import 'package:carsix/modules/favorite/views/favorite_view.dart';
 import 'package:carsix/modules/goodbye/bindings/goodbye_binding.dart';
 import 'package:carsix/modules/goodbye/views/goodbye_view.dart';
+import 'package:carsix/modules/loading/views/aos_info.dart';
 import 'package:carsix/modules/main/bindings/main_binding.dart';
 import 'package:carsix/modules/main/views/device_edit_view.dart';
 import 'package:carsix/modules/main/views/main_view.dart';
@@ -85,6 +86,10 @@ class AppPages {
       binding: MainBinding(),
     ),
     GetPage(name: '/music-setting', page: () => MusicSetting()),
+    GetPage(
+      name: '/aos-info',
+      page: () => AosInfo(),
+    ),
     GetPage(name: '/custom-setting', page: () => CustomSetting()),
     GetPage(name: '/custom-color-setting', page: () => CustomColorSetting()),
   ];
