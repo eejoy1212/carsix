@@ -36,90 +36,135 @@ class _DeviceContentState extends State<DeviceContent> {
         child: Center(
           child: Column(
             children: [
+              //타이틀
               Container(
-                margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
+                margin: const EdgeInsets.only(
+                  top: 20,
+                  bottom: 32,
+                ),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       "디바이스 ",
                       style: TextStyle(
-                        height: 1.6,
                         color: themeController.isDarkMode.value
                             ? CarsixColors.white1
                             : CarsixColors.grey6,
-                        fontSize: 26,
-                        fontWeight: FontWeight.w600,
-                        fontStyle: FontStyle.italic,
-                        letterSpacing: 2.6,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],
                 ),
               ),
-              Column(
-                children: [
-                  DeviceCard(
-                    title: '제조사',
-                    content:
-                        mainController.manufacturerController.text.isNotEmpty
-                            ? mainController.manufacturerController.text
-                            : 'N/A',
-                  ),
-                  DeviceCard(
-                    title: '차량',
-                    content: mainController.vehicleController.text.isNotEmpty
-                        ? mainController.vehicleController.text
-                        : 'N/A',
-                  ),
-                  DeviceCard(
-                    title: '차량번호',
-                    content:
-                        mainController.licensePlateController.text.isNotEmpty
-                            ? mainController.licensePlateController.text
-                            : 'N/A',
-                  ),
-                  DeviceCard(
-                    title: '시공점',
-                    content: mainController
-                            .installationPlaceController.text.isNotEmpty
-                        ? mainController.installationPlaceController.text
-                        : 'N/A',
-                  ),
-                  DeviceCard(
-                    title: '연결제품',
-                    content: "연결제품",
-                  ),
-                  DeviceCard(
-                    title: '펌웨어',
-                    content: "펌웨어",
-                  ),
-                  DeviceCard(
-                    title: '하드웨어 버전',
-                    content: "하드웨어 버전",
-                  ),
-                ],
-              ),
               Container(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                child: RedBtn(
-                  onPressed: () async {
-                    final result = await Get.toNamed('/device-edit');
-                    if (result == true) {
-                      await _refreshDeviceInfo(); // 데이터 새로고침
-                    }
-                  },
-                  color: CarsixColors.primaryRed,
-                  title: Text(
-                    "수정 하기",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: CarsixColors.white1,
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    DeviceCard(
+                      title: '제조사',
+                      content:
+                          mainController.manufacturerController.text.isNotEmpty
+                              ? mainController.manufacturerController.text
+                              : 'N/A',
                     ),
-                  ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    DeviceCard(
+                      title: '차량',
+                      content: mainController.vehicleController.text.isNotEmpty
+                          ? mainController.vehicleController.text
+                          : 'N/A',
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    DeviceCard(
+                      title: '차량번호',
+                      content:
+                          mainController.licensePlateController.text.isNotEmpty
+                              ? mainController.licensePlateController.text
+                              : 'N/A',
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    DeviceCard(
+                      title: '시공점',
+                      content: mainController
+                              .installationPlaceController.text.isNotEmpty
+                          ? mainController.installationPlaceController.text
+                          : 'N/A',
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    DeviceCard(
+                      title: '연결제품',
+                      content: "연결제품",
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    DeviceCard(
+                      title: '펌웨어',
+                      content: "펌웨어",
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    DeviceCard(
+                      title: '하드웨어 버전',
+                      content: "하드웨어 버전",
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        InkWell(
+                          onTap: () {},
+                          child: Text(
+                            "수정하기",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 100,
+                    ),
+                  ],
                 ),
-              )
+              ),
+              // Container(
+              //   margin:
+              //       const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              //   child: RedBtn(
+              //     onPressed: () async {
+              //       final result = await Get.toNamed('/device-edit');
+              //       if (result == true) {
+              //         await _refreshDeviceInfo(); // 데이터 새로고침
+              //       }
+              //     },
+              //     color: CarsixColors.primaryRed,
+              //     title: Text(
+              //       "수정 하기",
+              //       style: TextStyle(
+              //         fontSize: 16,
+              //         fontWeight: FontWeight.w500,
+              //         color: CarsixColors.white1,
+              //       ),
+              //     ),
+              //   ),
+              // )
             ],
           ),
         ),

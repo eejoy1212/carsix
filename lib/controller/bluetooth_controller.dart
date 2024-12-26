@@ -57,6 +57,8 @@ class BLEController extends GetxController {
   RxBool isSelectLoading = RxBool(false);
   RxBool isSingleSaveComplete = RxBool(false);
   RxBool isSliding = false.obs;
+  //설정 화면에서 버전 다섯번 터치 했는지 알기 위한 변수
+  RxInt touchVersionCount = 0.obs;
   //밝기 조절하는 다이얼
   void changeBrightness({
     required List<int> brightnessValues,

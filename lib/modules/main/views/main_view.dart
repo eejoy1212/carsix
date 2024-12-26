@@ -37,33 +37,34 @@ class MainView extends StatelessWidget {
             return LedContent();
           case 2:
             return DeviceContent();
+
           case 3:
-            return IndividualContent();
-          case 4:
             return MyPageContent();
           default:
             return DeviceContent();
         }
       }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: ApplyBtn(
-        nowApply: false,
-        onTap: () {
-          if (controller.currentIndex.value == 0) {
-            //액티브 모드
-            if (bleController.currentTabIndex == 1) {
-              bleController.sendActiveMode();
-              //단색 모드
-            } else if (bleController.currentTabIndex == 2) {
-              bleController.applySingleMode();
-            }
-            //뮤직 모드
-            else if (bleController.currentTabIndex == 3) {
-              bleController.applyMusicMode();
-            }
-          }
-        },
-      ),
+      floatingActionButton: Obx(() => controller.currentIndex.value == 0
+          ? ApplyBtn(
+              nowApply: false,
+              onTap: () {
+                if (controller.currentIndex.value == 0) {
+                  //액티브 모드
+                  if (bleController.currentTabIndex == 1) {
+                    bleController.sendActiveMode();
+                    //단색 모드
+                  } else if (bleController.currentTabIndex == 2) {
+                    bleController.applySingleMode();
+                  }
+                  //뮤직 모드
+                  else if (bleController.currentTabIndex == 3) {
+                    bleController.applyMusicMode();
+                  }
+                }
+              },
+            )
+          : Container()),
       bottomNavigationBar: Obx(() {
         return BottomNavigationBar(
           showUnselectedLabels: true,
@@ -111,18 +112,6 @@ class MainView extends StatelessWidget {
                 isActive: true,
               ),
               label: '연결',
-            ),
-            BottomNavigationBarItem(
-              backgroundColor: CarsixColors.black4,
-              icon: BottomNavIcon(
-                iconType: BottomNavIconType.color,
-                isActive: false,
-              ),
-              activeIcon: BottomNavIcon(
-                iconType: BottomNavIconType.color,
-                isActive: true,
-              ),
-              label: '색상',
             ),
             BottomNavigationBarItem(
               backgroundColor: CarsixColors.black4,

@@ -1,6 +1,7 @@
 import 'package:carsix/content/mode/active_mode.dart';
 import 'package:carsix/content/page/custom_color_setting.dart';
 import 'package:carsix/content/page/custom_setting.dart';
+import 'package:carsix/content/page/hidden.dart';
 import 'package:carsix/content/page/led_setting.dart';
 import 'package:carsix/content/page/music_setting.dart';
 import 'package:carsix/modules/color/bindings/custom_color_binding.dart';
@@ -102,6 +103,10 @@ class AppPages {
     GetPage(
       name: '/ios-info',
       page: () => IosInfo(),
+    ),
+    GetPage(
+      name: '/hidden',
+      page: () => Hidden(),
     ),
     GetPage(name: '/custom-setting', page: () => CustomSetting()),
     GetPage(name: '/custom-color-setting', page: () => CustomColorSetting()),
