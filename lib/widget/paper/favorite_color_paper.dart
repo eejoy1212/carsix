@@ -44,6 +44,7 @@ class FavoriteColorPaper extends StatelessWidget {
             wheelSquareBorderRadius: 16,
             wheelSquarePadding: 30,
             wheelWidth: 36,
+            wheelHasBorder: false,
             pickersEnabled: const <ColorPickerType, bool>{
               ColorPickerType.wheel: true, // 휠 활성화
               ColorPickerType.accent: false, // 비활성화

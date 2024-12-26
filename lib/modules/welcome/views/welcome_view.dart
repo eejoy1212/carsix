@@ -1,6 +1,9 @@
 import 'package:carsix/const/color.dart';
+import 'package:carsix/const/style.dart';
 import 'package:carsix/modules/main/controllers/main_controller.dart';
+import 'package:carsix/widget/bar/default_appbar.dart';
 import 'package:carsix/widget/btn/red_btn.dart';
+import 'package:carsix/widget/paper/favorite_color_paper.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,109 +15,87 @@ class WelcomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          "웰컴 색상 설정",
-          style: TextStyle(fontSize: 18),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              // 색상 선택기
-              Obx(
-                () => ColorPicker(
-                  color: controller.selectedColor.value, // 선택된 색상
-                  onColorChanged: (Color color) {
-                    controller.selectedColor.value = color; // 색상 업데이트
-                  },
-                  onColorChangeEnd: (Color color) {
-                    controller.addToWelcomes(color); // 선택된 색상을 즐겨찾기에 추가
-                  },
-                  subheading: const Text(
-                    '사용할 색상 선택',
-                    style: TextStyle(
-                      color: CarsixColors.grey2,
-                      fontSize: 14,
-                    ),
+      appBar: DefaultAppbar(title: "웰컴 1"),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(
+                    top: 28,
                   ),
-                  showColorName: true,
-                  pickersEnabled: const <ColorPickerType, bool>{
-                    ColorPickerType.wheel: true,
-                  },
-                ),
-              ),
-
-              const Divider(),
-              const SizedBox(height: 20),
-              // 즐겨찾기 색상 표시 및 제거 기능 추가
-              Obx(
-                () => Wrap(
-                  spacing: 5,
-                  children: controller.welcomeColors
-                      .map(
-                        (color) => GestureDetector(
-                          onTap: () {
-                            controller.removeFromWelcomes(color);
-                          },
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: color,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.white,
-                                width: 2,
-                              ),
-                            ),
-                            child: const Icon(
-                              Icons.clear, // 삭제 아이콘 추가
-                              color: Colors.white,
-                              size: 18,
-                            ),
-                          ),
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(
+                          left: 20,
+                          right: 20,
                         ),
-                      )
-                      .toList(),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Obx(
-                () => Text(
-                  '웰컴 색상: ${controller.welcomeColors.length}/3',
-                  style: const TextStyle(
-                    color: CarsixColors.grey2,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      margin: EdgeInsets.only(
-                          left: 20, right: 20, bottom: 10, top: 20),
-                      child: RedBtn(
-                        height: 52,
-                        onPressed: () {},
-                        title: Text(
-                          "확인",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
+                        child: Text(
+                          "웰컴 1 조명 밝기",
+                          style: CarsixTxtStyle.settingTitleStyle,
                         ),
                       ),
-                    ),
+                      SizedBox(
+                        height: 38,
+                      ),
+                      SliderTheme(
+                        data: SliderTheme.of(context).copyWith(
+                          // thumbShape: SliderComponentShape.noOverlay,
+
+                          activeTrackColor: CarsixColors.primaryRed,
+                          inactiveTrackColor: CarsixColors.primaryRed
+                              .withOpacity(0.2), //CarsixColors.grey2,
+                          thumbColor: CarsixColors.white1,
+                          overlayColor:
+                              CarsixColors.primaryRed.withOpacity(0.2),
+                          valueIndicatorColor:
+                              CarsixColors.primaryRed, // 라벨의 배경색 변경
+                          valueIndicatorTextStyle: TextStyle(
+                            color: CarsixColors.white1, // 라벨의 글자색 변경
+                            fontSize: 16,
+                          ),
+                        ),
+                        child: Slider(
+                          value: 10, //controller.musicSensitivity.value,
+                          min: 0.0,
+                          max: 100.0,
+                          divisions: 100,
+                          label:
+                              '10', //controller.musicSensitivity.value.round().toString(),
+                          onChanged: (double value) {
+                            // controller.musicSensitivity.value = value;
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                    ],
                   ),
-                ],
-              )
-            ],
+                ),
+
+                // 색상 선택기
+                FavoriteColorPaper(
+                    selectedColor: Colors.redAccent,
+                    onColorChange: (Color color) {},
+                    onTabColorSelectBtn: () {},
+                    colorStatus: 1,
+                    selectSave: () {},
+                    selectRemove: () {},
+                    completed: true,
+                    favoriteColors: [],
+                    onTabFavoriteColor: (Color color) {}),
+                SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
           ),
         ),
       ),

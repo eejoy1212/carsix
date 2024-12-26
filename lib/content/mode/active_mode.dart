@@ -1,5 +1,8 @@
 import 'package:carsix/const/color.dart';
+import 'package:carsix/const/style.dart';
+import 'package:carsix/widget/btn/cerymony_btn.dart';
 import 'package:carsix/widget/btn/moving_btn.dart';
+import 'package:carsix/widget/btn/weather_btn.dart';
 import 'package:carsix/widget/card/border_card.dart';
 import 'package:carsix/widget/chip/bottom_nav_icon.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +73,7 @@ class ActiveModeContent extends StatelessWidget {
                       ),
                       child: Text(
                         "속도 설정",
-                        style: titleStyle,
+                        style: CarsixTxtStyle.settingTitleStyle,
                       ),
                     ),
                     SizedBox(
@@ -110,20 +113,16 @@ class ActiveModeContent extends StatelessWidget {
                   ],
                 ),
               ),
-              //무빙 방향
+              //웰컴 세리머니 색상
               Container(
-                width: MediaQuery.of(context).size.width,
-                margin: EdgeInsets.only(
-                  left: 20,
-                  right: 20,
-                ),
+                margin: EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       child: Text(
-                        "무빙 방향",
+                        "웰컴 세리머니 색상",
                         style: titleStyle,
                       ),
                     ),
@@ -131,16 +130,77 @@ class ActiveModeContent extends StatelessWidget {
                       height: 8,
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        MovingBtn(),
+                        CerymonyBtn(
+                            width: (MediaQuery.of(context).size.width - 66) / 3,
+                            title: "웰컴 1",
+                            onTap: () {
+                              Get.toNamed("/welcome");
+                            }),
                         SizedBox(
                           width: 8,
                         ),
-                        MovingBtn(),
+                        CerymonyBtn(
+                            width: (MediaQuery.of(context).size.width - 66) / 3,
+                            title: "웰컴 2",
+                            onTap: () {}),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        WeatherBtn(
+                            width: (MediaQuery.of(context).size.width - 66) / 3,
+                            title: "웰컴 2",
+                            onTap: () {}),
                       ],
                     ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+
+              //굿바이 세리머니 색상
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      child: Text(
+                        "굿바이 세리머니 색상",
+                        style: titleStyle,
+                      ),
+                    ),
                     SizedBox(
-                      height: 20,
+                      height: 8,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CerymonyBtn(
+                            width: (MediaQuery.of(context).size.width - 66) / 3,
+                            title: "굿바이 1",
+                            onTap: () {}),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        CerymonyBtn(
+                            width: (MediaQuery.of(context).size.width - 66) / 3,
+                            title: "굿바이 2",
+                            onTap: () {}),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        CerymonyBtn(
+                            width: (MediaQuery.of(context).size.width - 66) / 3,
+                            title: "굿바이 3",
+                            onTap: () {}),
+                      ],
                     ),
                   ],
                 ),

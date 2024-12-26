@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class LoadingController extends GetxController {
@@ -10,6 +8,7 @@ class LoadingController extends GetxController {
       Get.toNamed('/aos-info');
     } else if (Platform.isIOS) {
       print("이 기기는 iOS입니다.");
+      Get.toNamed('/ios-info');
     } else {
       print("이 기기는 Android 또는 iOS가 아닙니다.");
     }

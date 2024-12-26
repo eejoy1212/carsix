@@ -47,7 +47,7 @@ class MainView extends StatelessWidget {
       }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: ApplyBtn(
-        title: "이 설정 적용하기",
+        nowApply: false,
         onTap: () {
           if (controller.currentIndex.value == 0) {
             //액티브 모드

@@ -1,6 +1,7 @@
 import 'package:carsix/content/mode/active_mode.dart';
 import 'package:carsix/content/page/custom_color_setting.dart';
 import 'package:carsix/content/page/custom_setting.dart';
+import 'package:carsix/content/page/led_setting.dart';
 import 'package:carsix/content/page/music_setting.dart';
 import 'package:carsix/modules/color/bindings/custom_color_binding.dart';
 import 'package:carsix/modules/color/views/custom_color_view.dart';
@@ -10,6 +11,7 @@ import 'package:carsix/modules/favorite/views/favorite_view.dart';
 import 'package:carsix/modules/goodbye/bindings/goodbye_binding.dart';
 import 'package:carsix/modules/goodbye/views/goodbye_view.dart';
 import 'package:carsix/modules/loading/views/aos_info.dart';
+import 'package:carsix/modules/loading/views/ios_info.dart';
 import 'package:carsix/modules/main/bindings/main_binding.dart';
 import 'package:carsix/modules/main/views/device_edit_view.dart';
 import 'package:carsix/modules/main/views/main_view.dart';
@@ -85,10 +87,21 @@ class AppPages {
       page: () => ActiveModeContent(),
       binding: MainBinding(),
     ),
-    GetPage(name: '/music-setting', page: () => MusicSetting()),
+    GetPage(
+      name: '/music-setting',
+      page: () => MusicSetting(),
+    ),
+    GetPage(
+      name: '/led-setting',
+      page: () => LedSetting(),
+    ),
     GetPage(
       name: '/aos-info',
       page: () => AosInfo(),
+    ),
+    GetPage(
+      name: '/ios-info',
+      page: () => IosInfo(),
     ),
     GetPage(name: '/custom-setting', page: () => CustomSetting()),
     GetPage(name: '/custom-color-setting', page: () => CustomColorSetting()),

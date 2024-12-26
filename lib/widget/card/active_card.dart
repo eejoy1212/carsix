@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class ActiveCard extends StatelessWidget {
   final void Function() onApply;
   final void Function() onSetting;
+  final bool useSetting;
   final String title;
   final bool isSelected;
   final bool nowApply;
@@ -16,6 +17,7 @@ class ActiveCard extends StatelessWidget {
     required this.onSetting,
     required this.nowApply,
     this.titleAlign = MainAxisAlignment.center,
+    this.useSetting = false,
   });
 
   @override
@@ -84,37 +86,39 @@ class ActiveCard extends StatelessWidget {
                 onTap: onApply,
               ),
             ),
-            SizedBox(
-              width: 8,
-            ),
-            Expanded(
-              child: BorderCard(
-                isSelected: false,
-                title: "설정하기",
-                widget: Container(),
-                selectedColors: [
-                  Color(0xFF6F0009), // 빨간색 시작
-                  Color(0xFF272727), // 회색 끝
-                ],
-                unSelectedColors: [
-                  Color(0xFF1a1a1a),
-                  Color(0xFF272727),
-                ],
-                selectedTxtColor: Colors.white,
-                unSelectedTxtColor: Colors.white,
-                selectedBorderColors: [
-                  Color(0xFF231616), // 배경 시작
-                  Color(0x00231616), // 배경 끝 (투명)
-                ],
-                unSelectedBorderColors: [
-                  Color(0xFF1b1b1b),
-                  Color(0xFF1b1b1b),
-                ],
-                borderBegin: Alignment.topCenter,
-                borderEnd: Alignment.bottomCenter,
-                onTap: onSetting,
+            if (useSetting)
+              SizedBox(
+                width: 8,
               ),
-            ),
+            if (useSetting)
+              Expanded(
+                child: BorderCard(
+                  isSelected: false,
+                  title: "설정하기",
+                  widget: Container(),
+                  selectedColors: [
+                    Color(0xFF6F0009), // 빨간색 시작
+                    Color(0xFF272727), // 회색 끝
+                  ],
+                  unSelectedColors: [
+                    Color(0xFF1a1a1a),
+                    Color(0xFF272727),
+                  ],
+                  selectedTxtColor: Colors.white,
+                  unSelectedTxtColor: Colors.white,
+                  selectedBorderColors: [
+                    Color(0xFF231616), // 배경 시작
+                    Color(0x00231616), // 배경 끝 (투명)
+                  ],
+                  unSelectedBorderColors: [
+                    Color(0xFF1b1b1b),
+                    Color(0xFF1b1b1b),
+                  ],
+                  borderBegin: Alignment.topCenter,
+                  borderEnd: Alignment.bottomCenter,
+                  onTap: onSetting,
+                ),
+              ),
             SizedBox(
               width: 10,
             ),

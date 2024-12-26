@@ -58,6 +58,7 @@ class MusicTabView extends StatelessWidget {
   /// ActiveCard를 만드는 함수
   Widget _buildActiveCard(int index) {
     return Obx(() => ActiveCard(
+          useSetting: true,
           isSelected: bleController.selectedMusicButtonIndex.value == index,
           onApply: () {
             bleController.selectedMusicButtonIndex.value = index;

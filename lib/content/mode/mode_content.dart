@@ -8,6 +8,7 @@ import 'package:carsix/controller/bluetooth_controller.dart';
 import 'package:carsix/theme/controllers/theme_controller.dart';
 import 'package:carsix/widget/btn/bright_btn.dart';
 import 'package:carsix/widget/indicator/circle_indicatio.dart';
+import 'package:carsix/widget/slider/circular_dashed_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
@@ -190,6 +191,23 @@ class ModeContent extends StatelessWidget {
                           ),
                         ),
                       ),
+
+                      // Obx(
+                      //   () => CircularDashedSlider(
+                      //     initialValue: bleController.brightValue.value,
+                      //     onChange: (value) {
+                      //       bleController.brightValue.value = value;
+                      //     },
+                      //     onChangeEnd: (value) {
+                      //       double actualBrightness = (value / 100) * 250;
+                      //       bleController.changeBrightness(
+                      //         brightnessValues:
+                      //             List.filled(7, actualBrightness.toInt()),
+                      //       );
+                      //     },
+                      //   ),
+                      // ),
+
                       SizedBox(height: 22),
                       Text(
                         "밝기 조절",
