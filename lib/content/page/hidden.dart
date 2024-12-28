@@ -1,4 +1,5 @@
 import 'package:carsix/widget/bar/default_appbar.dart';
+import 'package:carsix/widget/card/hidden_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 
@@ -31,12 +32,48 @@ class Hidden extends StatelessWidget {
             SizedBox(
               height: 20,
             ),
-            Column(
-              children: [
-                Row(
-                  children: [Text("센터 좌")],
-                )
-              ],
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  HiddenCard(
+                    title: '센터 좌',
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  HiddenCard(
+                    title: '센터 우',
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  HiddenCard(
+                    title: '1열 운전석 좌',
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  HiddenCard(
+                    title: '1열 조수석 우',
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  HiddenCard(
+                    title: '2열 운전석 좌',
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  HiddenCard(
+                    title: '2열 조수석 우',
+                  ),
+                  SizedBox(
+                    height: 200,
+                  ),
+                ],
+              ),
             )
           ],
         ),
