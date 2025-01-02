@@ -12,6 +12,24 @@ class BrightBtn extends StatelessWidget {
         onTap: () {
           print("자동밝기 버튼 클릭");
           bleController.isAutoBright.value = !bleController.isAutoBright.value;
+          if (bleController.isAutoBright.isTrue) {
+            bleController.brightValue.value = 100;
+          } else {
+            bleController.brightValue.value = 0;
+          }
+          double actualBrightness =
+              (bleController.brightValue.value / 100) * 250;
+          bleController.changeBrightness(
+            brightnessValues: [
+              actualBrightness.toInt(),
+              actualBrightness.toInt(),
+              actualBrightness.toInt(),
+              actualBrightness.toInt(),
+              actualBrightness.toInt(),
+              actualBrightness.toInt(),
+              actualBrightness.toInt()
+            ],
+          );
         },
         child: Obx(
           () => Container(

@@ -44,18 +44,22 @@ class MyPageContent extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SettingPaper(
-                      title: "제품 관련",
-                      settingCards: [
-                        SettingCard(
-                          content: '제품 연결',
-                          icon: Icons.bluetooth,
-                        ),
-                        SettingCard(
-                          content: '제품 업데이트',
-                          icon: Icons.update_outlined,
-                        ),
-                      ],
+                    Obx(
+                      () => SettingPaper(
+                        title: "제품 관련",
+                        settingCards: [
+                          SettingCard(
+                            content: bleController.isConnected.isTrue
+                                ? '${bleController.deviceName} 연결됨'
+                                : '블루투스 연결 하기',
+                            icon: Icons.bluetooth,
+                          ),
+                          SettingCard(
+                            content: '제품 업데이트',
+                            icon: Icons.update_outlined,
+                          ),
+                        ],
+                      ),
                     ),
                     SizedBox(
                       height: 20,
