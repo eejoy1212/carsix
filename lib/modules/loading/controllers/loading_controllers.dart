@@ -5,10 +5,10 @@ class LoadingController extends GetxController {
   void checkPlatform() {
     if (Platform.isAndroid) {
       print("이 기기는 Android입니다.");
-      Get.toNamed('/aos-info');
+      Get.offAndToNamed('/aos-info');
     } else if (Platform.isIOS) {
       print("이 기기는 iOS입니다.");
-      Get.toNamed('/ios-info');
+      Get.offAndToNamed('/ios-info');
     } else {
       print("이 기기는 Android 또는 iOS가 아닙니다.");
     }

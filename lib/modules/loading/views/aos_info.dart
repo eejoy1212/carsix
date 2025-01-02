@@ -74,7 +74,7 @@ class AosInfo extends StatelessWidget {
                     ),
                     InkWell(
                       onTap: () {
-                        Get.toNamed('/main');
+                        Get.offAndToNamed('/main');
                       },
                       child: Text(
                         "건너뛰기",
