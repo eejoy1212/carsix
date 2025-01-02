@@ -1,6 +1,7 @@
 import 'package:carsix/const/color.dart';
 import 'package:carsix/const/style.dart';
 import 'package:carsix/controller/bluetooth_controller.dart';
+import 'package:carsix/widget/bar/default_appbar.dart';
 import 'package:carsix/widget/btn/cerymony_btn.dart';
 import 'package:carsix/widget/btn/moving_btn.dart';
 import 'package:carsix/widget/btn/weather_btn.dart';
@@ -20,41 +21,20 @@ class ActiveModeContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BLEController controller = Get.find<BLEController>();
+    bool getSelected(String type) {
+      bool isSelected =
+          controller.activeModeModel.value.nowSelectedCeremony == type;
+      return isSelected;
+    }
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          leading: InkWell(
-              onTap: () {
-                Get.back();
-              },
-              child: Image.asset('assets/images/nav-arrow-left.png')),
-          actions: [
-            InkWell(
-              onTap: () {},
-              child: Text(
-                "저장하기",
-                style: TextStyle(
-                  color: Color(0xFFE60012),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 12,
-            )
-          ],
-          title: Text(
-            "액티브 모드 설정",
-            style: TextStyle(
-              color: CarsixColors.white1,
-              fontWeight: FontWeight.w700,
-              fontSize: 16,
-            ),
-          ),
-        ),
+        appBar: DefaultAppbar(
+            title: "액티브 모드 설정",
+            onSave: () {
+              controller.saveCeremonyMode(context);
+            }),
         body: Center(
           child: Column(
             children: [
@@ -145,35 +125,59 @@ class ActiveModeContent extends StatelessWidget {
                                   "type": "welcome"
                                 });
                               },
+                              onLongPress: () {
+                                final currentModel =
+                                    controller.activeModeModel.value;
+                                controller.activeModeModel.value = currentModel
+                                    .copyWith(nowSelectedCeremony: "welcome_1");
+                              },
                               selectedColor:
                                   controller.activeModeModel.value.welcome1,
+                              isSelected: getSelected("welcome_1"),
                             )),
                         SizedBox(
                           width: 8,
                         ),
                         Obx(() => CerymonyBtn(
-                            width: (MediaQuery.of(context).size.width - 66) / 3,
-                            title: "웰컴 2",
-                            selectedColor:
-                                controller.activeModeModel.value.welcome2,
-                            onTap: () {
-                              Get.toNamed("/welcome", parameters: {
-                                "mode": 2.toString(),
-                                "type": "welcome"
-                              });
-                            })),
+                              width:
+                                  (MediaQuery.of(context).size.width - 66) / 3,
+                              title: "웰컴 2",
+                              selectedColor:
+                                  controller.activeModeModel.value.welcome2,
+                              isSelected: getSelected("welcome_2"),
+                              onTap: () {
+                                Get.toNamed("/welcome", parameters: {
+                                  "mode": 2.toString(),
+                                  "type": "welcome"
+                                });
+                              },
+                              onLongPress: () {
+                                final currentModel =
+                                    controller.activeModeModel.value;
+                                controller.activeModeModel.value = currentModel
+                                    .copyWith(nowSelectedCeremony: "welcome_2");
+                              },
+                            )),
                         SizedBox(
                           width: 8,
                         ),
-                        WeatherBtn(
-                            width: (MediaQuery.of(context).size.width - 66) / 3,
-                            title: "웰컴 2",
-                            onTap: () {
-                              Get.toNamed("/welcome", parameters: {
-                                "mode": 1.toString(),
-                                "type": "weather"
-                              });
-                            }),
+                        Obx(() => WeatherBtn(
+                              width:
+                                  (MediaQuery.of(context).size.width - 66) / 3,
+                              isSelected: getSelected("weather"),
+                              onTap: () {
+                                Get.toNamed("/welcome", parameters: {
+                                  "mode": 1.toString(),
+                                  "type": "weather"
+                                });
+                              },
+                              onLongPress: () {
+                                final currentModel =
+                                    controller.activeModeModel.value;
+                                controller.activeModeModel.value = currentModel
+                                    .copyWith(nowSelectedCeremony: "weather");
+                              },
+                            )),
                       ],
                     ),
                   ],
@@ -204,44 +208,71 @@ class ActiveModeContent extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Obx(() => CerymonyBtn(
-                            width: (MediaQuery.of(context).size.width - 66) / 3,
-                            title: "굿바이 1",
-                            selectedColor:
-                                controller.activeModeModel.value.goodbye1,
-                            onTap: () {
-                              Get.toNamed("/welcome", parameters: {
-                                "mode": 1.toString(),
-                                "type": "goodbye"
-                              });
-                            })),
+                              width:
+                                  (MediaQuery.of(context).size.width - 66) / 3,
+                              title: "굿바이 1",
+                              selectedColor:
+                                  controller.activeModeModel.value.goodbye1,
+                              isSelected: getSelected("goodbye_1"),
+                              onTap: () {
+                                Get.toNamed("/welcome", parameters: {
+                                  "mode": 1.toString(),
+                                  "type": "goodbye"
+                                });
+                              },
+                              onLongPress: () {
+                                final currentModel =
+                                    controller.activeModeModel.value;
+                                controller.activeModeModel.value = currentModel
+                                    .copyWith(nowSelectedCeremony: "goodbye_1");
+                              },
+                            )),
                         SizedBox(
                           width: 8,
                         ),
                         Obx(() => CerymonyBtn(
-                            width: (MediaQuery.of(context).size.width - 66) / 3,
-                            title: "굿바이 2",
-                            selectedColor:
-                                controller.activeModeModel.value.goodbye2,
-                            onTap: () {
-                              Get.toNamed("/welcome", parameters: {
-                                "mode": 2.toString(),
-                                "type": "goodbye"
-                              });
-                            })),
+                              width:
+                                  (MediaQuery.of(context).size.width - 66) / 3,
+                              title: "굿바이 2",
+                              selectedColor:
+                                  controller.activeModeModel.value.goodbye2,
+                              isSelected: getSelected("goodbye_2"),
+                              onTap: () {
+                                Get.toNamed("/welcome", parameters: {
+                                  "mode": 2.toString(),
+                                  "type": "goodbye"
+                                });
+                              },
+                              onLongPress: () {
+                                final currentModel =
+                                    controller.activeModeModel.value;
+                                controller.activeModeModel.value = currentModel
+                                    .copyWith(nowSelectedCeremony: "goodbye_2");
+                              },
+                            )),
                         SizedBox(
                           width: 8,
                         ),
                         Obx(() => CerymonyBtn(
-                            width: (MediaQuery.of(context).size.width - 66) / 3,
-                            title: "굿바이 3",
-                            selectedColor:
-                                controller.activeModeModel.value.goodbye3,
-                            onTap: () {
-                              Get.toNamed("/welcome", parameters: {
-                                "mode": 3.toString(),
-                                "type": "goodbye"
-                              });
-                            })),
+                              width:
+                                  (MediaQuery.of(context).size.width - 66) / 3,
+                              title: "굿바이 3",
+                              selectedColor:
+                                  controller.activeModeModel.value.goodbye3,
+                              isSelected: getSelected("goodbye_3"),
+                              onTap: () {
+                                Get.toNamed("/welcome", parameters: {
+                                  "mode": 3.toString(),
+                                  "type": "goodbye"
+                                });
+                              },
+                              onLongPress: () {
+                                final currentModel =
+                                    controller.activeModeModel.value;
+                                controller.activeModeModel.value = currentModel
+                                    .copyWith(nowSelectedCeremony: "goodbye_3");
+                              },
+                            )),
                       ],
                     ),
                   ],

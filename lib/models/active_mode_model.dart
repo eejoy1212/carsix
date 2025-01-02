@@ -13,6 +13,7 @@ class ActiveMode {
   final List<Color> goodbye2Favorites;
   final Color goodbye3;
   final List<Color> goodbye3Favorites;
+  final String nowSelectedCeremony; // 추가된 변수
 
   ActiveMode({
     required this.welcome1,
@@ -26,7 +27,9 @@ class ActiveMode {
     required this.goodbye2Favorites,
     required this.goodbye3,
     required this.goodbye3Favorites,
+    required this.nowSelectedCeremony,
   });
+
   ActiveMode copyWith({
     Color? welcome1,
     List<Color>? welcome1Favorites,
@@ -39,6 +42,7 @@ class ActiveMode {
     List<Color>? goodbye2Favorites,
     Color? goodbye3,
     List<Color>? goodbye3Favorites,
+    String? nowSelectedCeremony, // copyWith에 추가
   }) {
     return ActiveMode(
       welcome1: welcome1 ?? this.welcome1,
@@ -52,6 +56,7 @@ class ActiveMode {
       goodbye2Favorites: goodbye2Favorites ?? this.goodbye2Favorites,
       goodbye3: goodbye3 ?? this.goodbye3,
       goodbye3Favorites: goodbye3Favorites ?? this.goodbye3Favorites,
+      nowSelectedCeremony: nowSelectedCeremony ?? this.nowSelectedCeremony,
     );
   }
 
@@ -60,11 +65,9 @@ class ActiveMode {
     List<Color> parseColorListForActiveMode(dynamic jsonData) {
       if (jsonData == null) return [];
       if (jsonData is String) {
-        // JSON 문자열을 파싱z
         final List<dynamic> colorValues = jsonDecode(jsonData);
         return colorValues.map((value) => Color(value)).toList();
       } else if (jsonData is List<dynamic>) {
-        // 이미 List<dynamic> 형식으로 들어온 경우
         return jsonData
             .map((value) => Color(int.tryParse(
                     value.replaceAll('Color(', '').replaceAll(')', '')) ??
@@ -74,17 +77,6 @@ class ActiveMode {
         throw TypeError();
       }
     }
-
-    // List<Color> parseColorList(String? jsonString) {
-    //   if (jsonString == null || jsonString.isEmpty) return [];
-    //   try {
-    //     final List<dynamic> colorValues = jsonDecode(jsonString);
-    //     return colorValues.map((value) => Color(value as int)).toList();
-    //   } catch (e) {
-    //     print("Error parsing color list: $e");
-    //     return [];
-    //   }
-    // }
 
     return ActiveMode(
       welcome1: Color(int.tryParse(
@@ -113,44 +105,35 @@ class ActiveMode {
                   '0') ??
           0x00000000),
       goodbye3Favorites: parseColorListForActiveMode(json['goodbye3Favorites']),
+      nowSelectedCeremony: json['nowSelectedCeremony'] ?? '', // 추가된 변수
     );
   }
 
   // JSON으로 변환
   Map<String, dynamic> toJson() {
     return {
-      'welcome1': Color(welcome1.value),
-      'welcome1Favorites':
-          welcome1Favorites.map((color) => Color(color.value)).toList(),
-      'welcome2': Color(welcome2.value),
-      'welcome2Favorites':
-          welcome2Favorites.map((color) => Color(color.value)).toList(),
+      'welcome1': welcome1.value.toRadixString(16),
+      'welcome1Favorites': welcome1Favorites
+          .map((color) => color.value.toRadixString(16))
+          .toList(),
+      'welcome2': welcome2.value.toRadixString(16),
+      'welcome2Favorites': welcome2Favorites
+          .map((color) => color.value.toRadixString(16))
+          .toList(),
       'weather': weather,
-      'goodbye1': Color(goodbye1.value),
-      'goodbye1Favorites':
-          goodbye1Favorites.map((color) => Color(color.value)).toList(),
-      'goodbye2': Color(goodbye2.value),
-      'goodbye2Favorites':
-          goodbye2Favorites.map((color) => Color(color.value)).toList(),
-      'goodbye3': Color(goodbye3.value),
-      'goodbye3Favorites':
-          goodbye3Favorites.map((color) => Color(color.value)).toList(),
+      'goodbye1': goodbye1.value.toRadixString(16),
+      'goodbye1Favorites': goodbye1Favorites
+          .map((color) => color.value.toRadixString(16))
+          .toList(),
+      'goodbye2': goodbye2.value.toRadixString(16),
+      'goodbye2Favorites': goodbye2Favorites
+          .map((color) => color.value.toRadixString(16))
+          .toList(),
+      'goodbye3': goodbye3.value.toRadixString(16),
+      'goodbye3Favorites': goodbye3Favorites
+          .map((color) => color.value.toRadixString(16))
+          .toList(),
+      'nowSelectedCeremony': nowSelectedCeremony, // 추가된 변수
     };
-  }
-
-  // 헬퍼 메서드: JSON에서 Color로 변환
-  static Color _colorFromString(String? colorString) {
-    if (colorString == null || colorString.isEmpty) {
-      return Colors.transparent;
-    }
-    return Color(int.tryParse(colorString, radix: 16) ?? 0x00000000);
-  }
-
-  // 헬퍼 메서드: JSON에서 List<Color>로 변환
-  static List<Color> _colorListFromJson(dynamic json) {
-    if (json == null || json is! List) {
-      return [];
-    }
-    return json.map((colorString) => _colorFromString(colorString)).toList();
   }
 }

@@ -78,6 +78,7 @@ class BLEController extends GetxController {
       goodbye2Favorites: [],
       goodbye3: Colors.transparent,
       goodbye3Favorites: [],
+      nowSelectedCeremony: '',
     ),
   );
   Rx<Color> selectedWelcome1Color = Colors.transparent.obs;
@@ -132,6 +133,7 @@ class BLEController extends GetxController {
         goodbye2Favorites: [],
         goodbye3: Colors.transparent,
         goodbye3Favorites: [],
+        nowSelectedCeremony: '',
       );
     }
 
@@ -288,6 +290,89 @@ class BLEController extends GetxController {
     }
   }
 
+  Future<void> saveCeremonyMode(
+    BuildContext context,
+  ) async {
+    try {
+      String ceremony = activeModeModel.value.nowSelectedCeremony;
+      // 모델에서 값 가져오기
+      final activeMode = activeModeModel.value;
+
+      await DatabaseHelper().saveActiveMode(
+        welcome1: activeMode.welcome1.value.toString(),
+        welcome1Favorites: activeMode.welcome1Favorites
+            .map((color) => color.value.toString())
+            .toList(),
+        welcome2: activeMode.welcome2.value.toString(),
+        welcome2Favorites: activeMode.welcome2Favorites
+            .map((color) => color.value.toString())
+            .toList(),
+        weather: activeMode.weather,
+        goodbye1: activeMode.goodbye1.value.toString(),
+        goodbye1Favorites: activeMode.goodbye1Favorites
+            .map((color) => color.value.toString())
+            .toList(),
+        goodbye2: activeMode.goodbye2.value.toString(),
+        goodbye2Favorites: activeMode.goodbye2Favorites
+            .map((color) => color.value.toString())
+            .toList(),
+        goodbye3: activeMode.goodbye3.value.toString(),
+        goodbye3Favorites: activeMode.goodbye3Favorites
+            .map((color) => color.value.toString())
+            .toList(),
+        nowSelectedCeremony: activeMode.nowSelectedCeremony,
+      );
+
+      Get.back();
+      String newMode = ceremony;
+      switch (ceremony) {
+        case "welcome_1":
+          newMode = "웰컴 1";
+          break;
+        case "welcome_2":
+          newMode = "웰컴 2";
+          break;
+        case "goodbye_1":
+          newMode = "굿바이 1";
+          break;
+        case "goodbye_2":
+          newMode = "굿바이 2";
+          break;
+        case "goodbye_3":
+          newMode = "굿바이 3";
+        case "wearther":
+          newMode = "날씨";
+          break;
+      }
+      Get.snackbar(
+        "",
+        "$newMode 로 변경되었습니다.", // 메시지
+        titleText: Text(
+          "$newMode 로 변경되었습니다.",
+          style: TextStyle(color: CarsixColors.white1, fontSize: 18),
+        ),
+        messageText: Text(
+          "$newMode 로 변경되었습니다.",
+          style: TextStyle(color: CarsixColors.white1, fontSize: 16),
+        ),
+        snackPosition: SnackPosition.BOTTOM, // Snackbar 위치
+        maxWidth: MediaQuery.of(context).size.width - 20,
+        margin: EdgeInsets.only(
+          bottom: 20,
+        ),
+        duration: Duration(seconds: 2),
+      );
+    } catch (e) {
+      print("Error in saveAllActiveMode: $e");
+      Get.snackbar(
+        "Error",
+        "저장에 실패했습니다: $e",
+        backgroundColor: Colors.red,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
   Future<void> saveAllActiveMode(BuildContext context, String mode) async {
     try {
       // 모델에서 값 가져오기
@@ -315,6 +400,7 @@ class BLEController extends GetxController {
         goodbye3Favorites: activeMode.goodbye3Favorites
             .map((color) => color.value.toString())
             .toList(),
+        nowSelectedCeremony: activeMode.nowSelectedCeremony,
       );
 
       Get.back();

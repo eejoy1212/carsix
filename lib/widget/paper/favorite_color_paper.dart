@@ -188,49 +188,36 @@ class FavoriteColorPaper extends StatelessWidget {
                   Container(
                       width: MediaQuery.of(context).size.width - 30,
                       height: 80,
-                      child: favoriteColors.isEmpty
-                          ? Center(
-                              child: Text(
-                                "저장한 색상이 없습니다.",
-                                style: TextStyle(
-                                  color: CarsixColors.white1,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
+                      child: Wrap(
+                        spacing: 18,
+                        runSpacing: 7,
+                        children: defaultColors
+                            .map(
+                              (color) => GestureDetector(
+                                onTap: () {
+                                  onTabFavoriteColor(color);
+                                },
+                                child: Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: color,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: selectedColor.value == color.value
+                                          ? Colors.white
+                                          : Colors.transparent,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: selectedColor.value == color.value
+                                      ? SelectedColorChip()
+                                      : Container(),
                                 ),
                               ),
                             )
-                          : Wrap(
-                              spacing: 18,
-                              runSpacing: 7,
-                              children: defaultColors
-                                  .map(
-                                    (color) => GestureDetector(
-                                      onTap: () {
-                                        onTabFavoriteColor(color);
-                                      },
-                                      child: Container(
-                                        width: 40,
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                          color: color,
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                            color: selectedColor.value ==
-                                                    color.value
-                                                ? Colors.white
-                                                : Colors.transparent,
-                                            width: 2,
-                                          ),
-                                        ),
-                                        child:
-                                            selectedColor.value == color.value
-                                                ? SelectedColorChip()
-                                                : Container(),
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
-                            )),
+                            .toList(),
+                      )),
                   SizedBox(
                     height: 12,
                   ),

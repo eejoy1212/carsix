@@ -19,11 +19,11 @@ class DatabaseHelper {
 
   Future<Database> _initDB() async {
     final path = await getDatabasesPath();
-    final databasePath = join(path, 'carsix_7.db');
+    final databasePath = join(path, 'carsix_8.db');
 
     return await openDatabase(
       databasePath,
-      version: 7, // 버전 업데이트
+      version: 8, // 버전 업데이트
       onCreate: (db, version) async {
         await db.execute('''
         CREATE TABLE music_modes (
@@ -66,22 +66,15 @@ class DatabaseHelper {
             goodbye2 TEXT,
             goodbye2Favorites TEXT,
             goodbye3 TEXT,
-            goodbye3Favorites TEXT
+            goodbye3Favorites TEXT,
+            now_selected_ceremony TEXT -- 새로 추가된 필드
           )
         ''');
       },
       onUpgrade: (db, oldVersion, newVersion) async {
-        if (oldVersion < 7) {
+        if (oldVersion < 8) {
           await db.execute(
-              'ALTER TABLE active_mode ADD COLUMN welcome1Favorites TEXT');
-          await db.execute(
-              'ALTER TABLE active_mode ADD COLUMN welcome2Favorites TEXT');
-          await db.execute(
-              'ALTER TABLE active_mode ADD COLUMN goodbye1Favorites TEXT');
-          await db.execute(
-              'ALTER TABLE active_mode ADD COLUMN goodbye2Favorites TEXT');
-          await db.execute(
-              'ALTER TABLE active_mode ADD COLUMN goodbye3Favorites TEXT');
+              'ALTER TABLE active_mode ADD COLUMN now_selected_ceremony TEXT');
         }
       },
     );
@@ -200,6 +193,7 @@ class DatabaseHelper {
     required List<String> goodbye2Favorites,
     required String goodbye3,
     required List<String> goodbye3Favorites,
+    required String nowSelectedCeremony, // 추가된 필드
   }) async {
     final db = await database;
 
@@ -218,6 +212,7 @@ class DatabaseHelper {
         'goodbye2Favorites': jsonEncode(goodbye2Favorites),
         'goodbye3': goodbye3,
         'goodbye3Favorites': jsonEncode(goodbye3Favorites),
+        'now_selected_ceremony': nowSelectedCeremony, // 저장
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -248,6 +243,7 @@ class DatabaseHelper {
         'goodbye3': row['goodbye3'] as String,
         'goodbye3Favorites':
             jsonDecode(row['goodbye3Favorites'] as String) as List<dynamic>,
+        'now_selected_ceremony': row['now_selected_ceremony'] as String, // 조회
       };
     }
     return null;
