@@ -1,5 +1,6 @@
 import 'package:carsix/const/color.dart';
 import 'package:carsix/const/style.dart';
+import 'package:carsix/controller/bluetooth_controller.dart';
 import 'package:carsix/widget/btn/cerymony_btn.dart';
 import 'package:carsix/widget/btn/moving_btn.dart';
 import 'package:carsix/widget/btn/weather_btn.dart';
@@ -18,6 +19,7 @@ class ActiveModeContent extends StatelessWidget {
   );
   @override
   Widget build(BuildContext context) {
+    final BLEController controller = Get.find<BLEController>();
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -133,26 +135,45 @@ class ActiveModeContent extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CerymonyBtn(
-                            width: (MediaQuery.of(context).size.width - 66) / 3,
-                            title: "웰컴 1",
-                            onTap: () {
-                              Get.toNamed("/welcome");
-                            }),
+                        Obx(() => CerymonyBtn(
+                              width:
+                                  (MediaQuery.of(context).size.width - 66) / 3,
+                              title: "웰컴 1",
+                              onTap: () {
+                                Get.toNamed("/welcome", parameters: {
+                                  "mode": 1.toString(),
+                                  "type": "welcome"
+                                });
+                              },
+                              selectedColor:
+                                  controller.activeModeModel.value.welcome1,
+                            )),
                         SizedBox(
                           width: 8,
                         ),
-                        CerymonyBtn(
+                        Obx(() => CerymonyBtn(
                             width: (MediaQuery.of(context).size.width - 66) / 3,
                             title: "웰컴 2",
-                            onTap: () {}),
+                            selectedColor:
+                                controller.activeModeModel.value.welcome2,
+                            onTap: () {
+                              Get.toNamed("/welcome", parameters: {
+                                "mode": 2.toString(),
+                                "type": "welcome"
+                              });
+                            })),
                         SizedBox(
                           width: 8,
                         ),
                         WeatherBtn(
                             width: (MediaQuery.of(context).size.width - 66) / 3,
                             title: "웰컴 2",
-                            onTap: () {}),
+                            onTap: () {
+                              Get.toNamed("/welcome", parameters: {
+                                "mode": 1.toString(),
+                                "type": "weather"
+                              });
+                            }),
                       ],
                     ),
                   ],
@@ -182,24 +203,45 @@ class ActiveModeContent extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CerymonyBtn(
+                        Obx(() => CerymonyBtn(
                             width: (MediaQuery.of(context).size.width - 66) / 3,
                             title: "굿바이 1",
-                            onTap: () {}),
+                            selectedColor:
+                                controller.activeModeModel.value.goodbye1,
+                            onTap: () {
+                              Get.toNamed("/welcome", parameters: {
+                                "mode": 1.toString(),
+                                "type": "goodbye"
+                              });
+                            })),
                         SizedBox(
                           width: 8,
                         ),
-                        CerymonyBtn(
+                        Obx(() => CerymonyBtn(
                             width: (MediaQuery.of(context).size.width - 66) / 3,
                             title: "굿바이 2",
-                            onTap: () {}),
+                            selectedColor:
+                                controller.activeModeModel.value.goodbye2,
+                            onTap: () {
+                              Get.toNamed("/welcome", parameters: {
+                                "mode": 2.toString(),
+                                "type": "goodbye"
+                              });
+                            })),
                         SizedBox(
                           width: 8,
                         ),
-                        CerymonyBtn(
+                        Obx(() => CerymonyBtn(
                             width: (MediaQuery.of(context).size.width - 66) / 3,
                             title: "굿바이 3",
-                            onTap: () {}),
+                            selectedColor:
+                                controller.activeModeModel.value.goodbye3,
+                            onTap: () {
+                              Get.toNamed("/welcome", parameters: {
+                                "mode": 3.toString(),
+                                "type": "goodbye"
+                              });
+                            })),
                       ],
                     ),
                   ],

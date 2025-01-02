@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -17,53 +19,74 @@ class DatabaseHelper {
 
   Future<Database> _initDB() async {
     final path = await getDatabasesPath();
-    final databasePath = join(path, 'colors.db');
+    final databasePath = join(path, 'carsix_7.db');
 
     return await openDatabase(
       databasePath,
-      version: 4, // 테이블 구조 수정으로 버전 업데이트
+      version: 7, // 버전 업데이트
       onCreate: (db, version) async {
         await db.execute('''
-          CREATE TABLE music_modes (
-            mode TEXT PRIMARY KEY,
-            favorite TEXT, -- favorite colors as JSON string
-            now INTEGER -- selected color (int value)
-          )
-        ''');
+        CREATE TABLE music_modes (
+          mode TEXT PRIMARY KEY,
+          favorite TEXT,
+          now INTEGER
+        )
+      ''');
 
         await db.execute('''
-          CREATE TABLE custom_modes (
-            mode TEXT PRIMARY KEY, -- 모드 번호
-            bgFavorite TEXT, -- 배경 즐겨찾기 색상
-            bgNow INTEGER, -- 현재 배경 색상
-            sel1Favorite TEXT, -- 선택 영역 1 즐겨찾기 색상
-            sel1Now INTEGER, -- 현재 선택 영역 1 색상
-            sel2Favorite TEXT, -- 선택 영역 2 즐겨찾기 색상
-            sel2Now INTEGER -- 현재 선택 영역 2 색상
+        CREATE TABLE custom_modes (
+          mode TEXT PRIMARY KEY,
+          bgFavorite TEXT,
+          bgNow INTEGER,
+          sel1Favorite TEXT,
+          sel1Now INTEGER,
+          sel2Favorite TEXT,
+          sel2Now INTEGER
+        )
+      ''');
+
+        await db.execute('''
+        CREATE TABLE apply_mode (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          currentApplyMode INTEGER
+        )
+      ''');
+
+        // active_mode 테이블 생성
+        await db.execute('''
+          CREATE TABLE active_mode (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            welcome1 TEXT,
+            welcome1Favorites TEXT,
+            welcome2 TEXT,
+            welcome2Favorites TEXT,
+            weather TEXT,
+            goodbye1 TEXT,
+            goodbye1Favorites TEXT,
+            goodbye2 TEXT,
+            goodbye2Favorites TEXT,
+            goodbye3 TEXT,
+            goodbye3Favorites TEXT
           )
         ''');
       },
       onUpgrade: (db, oldVersion, newVersion) async {
-        if (oldVersion < 4) {
-          // 테이블 수정 - 새로운 컬럼 추가
-          await db.execute("DROP TABLE IF EXISTS custom_modes");
-          await db.execute('''
-            CREATE TABLE custom_modes (
-              mode TEXT PRIMARY KEY,
-              bgFavorite TEXT,
-              bgNow INTEGER,
-              sel1Favorite TEXT,
-              sel1Now INTEGER,
-              sel2Favorite TEXT,
-              sel2Now INTEGER
-            )
-          ''');
+        if (oldVersion < 7) {
+          await db.execute(
+              'ALTER TABLE active_mode ADD COLUMN welcome1Favorites TEXT');
+          await db.execute(
+              'ALTER TABLE active_mode ADD COLUMN welcome2Favorites TEXT');
+          await db.execute(
+              'ALTER TABLE active_mode ADD COLUMN goodbye1Favorites TEXT');
+          await db.execute(
+              'ALTER TABLE active_mode ADD COLUMN goodbye2Favorites TEXT');
+          await db.execute(
+              'ALTER TABLE active_mode ADD COLUMN goodbye3Favorites TEXT');
         }
       },
     );
   }
 
-  // 음악 모드 저장
   Future<void> saveMusicMode({
     required String mode,
     required String favorite,
@@ -138,5 +161,95 @@ class DatabaseHelper {
     print("커스텀 모드 조회 결과 >>> $result");
 
     return result.isNotEmpty ? result.first : null;
+  }
+
+  // currentApplyMode 저장
+  Future<void> saveCurrentApplyMode(int currentApplyMode) async {
+    final db = await database;
+
+    // 기존 데이터를 삭제하고 새로운 데이터를 저장
+    await db.delete('apply_mode');
+    await db.insert(
+      'apply_mode',
+      {'currentApplyMode': currentApplyMode},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  // currentApplyMode 조회
+  Future<int?> getCurrentApplyMode() async {
+    final db = await database;
+
+    final result = await db.query('apply_mode', limit: 1);
+
+    if (result.isNotEmpty) {
+      return result.first['currentApplyMode'] as int;
+    }
+    return null;
+  }
+
+  Future<void> saveActiveMode({
+    required String welcome1,
+    required List<String> welcome1Favorites,
+    required String welcome2,
+    required List<String> welcome2Favorites,
+    required String weather,
+    required String goodbye1,
+    required List<String> goodbye1Favorites,
+    required String goodbye2,
+    required List<String> goodbye2Favorites,
+    required String goodbye3,
+    required List<String> goodbye3Favorites,
+  }) async {
+    final db = await database;
+
+    await db.delete('active_mode');
+    await db.insert(
+      'active_mode',
+      {
+        'welcome1': welcome1,
+        'welcome1Favorites': jsonEncode(welcome1Favorites),
+        'welcome2': welcome2,
+        'welcome2Favorites': jsonEncode(welcome2Favorites),
+        'weather': weather,
+        'goodbye1': goodbye1,
+        'goodbye1Favorites': jsonEncode(goodbye1Favorites),
+        'goodbye2': goodbye2,
+        'goodbye2Favorites': jsonEncode(goodbye2Favorites),
+        'goodbye3': goodbye3,
+        'goodbye3Favorites': jsonEncode(goodbye3Favorites),
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<Map<String, dynamic>?> getActiveMode() async {
+    final db = await database;
+
+    final result = await db.query('active_mode', limit: 1);
+
+    if (result.isNotEmpty) {
+      final row = result.first;
+
+      return {
+        'welcome1': row['welcome1'] as String,
+        'welcome1Favorites':
+            jsonDecode(row['welcome1Favorites'] as String) as List<dynamic>,
+        'welcome2': row['welcome2'] as String,
+        'welcome2Favorites':
+            jsonDecode(row['welcome2Favorites'] as String) as List<dynamic>,
+        'weather': row['weather'] as String,
+        'goodbye1': row['goodbye1'] as String,
+        'goodbye1Favorites':
+            jsonDecode(row['goodbye1Favorites'] as String) as List<dynamic>,
+        'goodbye2': row['goodbye2'] as String,
+        'goodbye2Favorites':
+            jsonDecode(row['goodbye2Favorites'] as String) as List<dynamic>,
+        'goodbye3': row['goodbye3'] as String,
+        'goodbye3Favorites':
+            jsonDecode(row['goodbye3Favorites'] as String) as List<dynamic>,
+      };
+    }
+    return null;
   }
 }

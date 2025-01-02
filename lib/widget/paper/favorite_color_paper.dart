@@ -15,21 +15,36 @@ class FavoriteColorPaper extends StatelessWidget {
   final int colorStatus;
   final bool completed;
   final List<Color> favoriteColors;
+  // final List<Color> defaultColors;
+  final bool useDefaultColors;
   final void Function(Color) onTabFavoriteColor;
-  const FavoriteColorPaper(
-      {super.key,
-      required this.selectedColor,
-      required this.onColorChange,
-      required this.onTabColorSelectBtn,
-      required this.colorStatus,
-      required this.selectSave,
-      required this.selectRemove,
-      required this.completed,
-      required this.favoriteColors,
-      required this.onTabFavoriteColor});
+  final void Function(Color)? onTabDefaultColor;
+  const FavoriteColorPaper({
+    super.key,
+    required this.selectedColor,
+    required this.onColorChange,
+    required this.onTabColorSelectBtn,
+    required this.colorStatus,
+    required this.selectSave,
+    required this.selectRemove,
+    required this.completed,
+    required this.favoriteColors,
+    required this.onTabFavoriteColor,
+    this.useDefaultColors = false,
+    this.onTabDefaultColor,
+  });
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<BLEController>();
+    List<Color> defaultColors = const [
+      Color(0xFFFF0004),
+      Color(0xFFFF8C00),
+      Color(0xFFFFD000),
+      Color(0xFF09FF00),
+      Color(0XFF006FFF),
+      Color(0XFF0021A5),
+      Color(0XFFEA00FF),
+      Colors.white,
+    ];
     int getColorStatus() {
       return 0;
     }
@@ -84,6 +99,9 @@ class FavoriteColorPaper extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(
+                  height: 12,
+                ),
                 Text(
                   "색상 즐겨찾기",
                   style: TextStyle(
@@ -139,10 +157,86 @@ class FavoriteColorPaper extends StatelessWidget {
                                   ),
                                 )
                                 .toList(),
-                          ))
+                          )),
+                SizedBox(
+                  height: 12,
+                ),
               ],
             ),
           ),
+          if (useDefaultColors)
+            Container(
+              width: MediaQuery.of(context).size.width - 30,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 12,
+                  ),
+                  Text(
+                    "기본 색상",
+                    style: TextStyle(
+                      color: Color(0xFF868687),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 7,
+                  ),
+                  Container(
+                      width: MediaQuery.of(context).size.width - 30,
+                      height: 80,
+                      child: favoriteColors.isEmpty
+                          ? Center(
+                              child: Text(
+                                "저장한 색상이 없습니다.",
+                                style: TextStyle(
+                                  color: CarsixColors.white1,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            )
+                          : Wrap(
+                              spacing: 18,
+                              runSpacing: 7,
+                              children: defaultColors
+                                  .map(
+                                    (color) => GestureDetector(
+                                      onTap: () {
+                                        onTabFavoriteColor(color);
+                                      },
+                                      child: Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          color: color,
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: selectedColor.value ==
+                                                    color.value
+                                                ? Colors.white
+                                                : Colors.transparent,
+                                            width: 2,
+                                          ),
+                                        ),
+                                        child:
+                                            selectedColor.value == color.value
+                                                ? SelectedColorChip()
+                                                : Container(),
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                            )),
+                  SizedBox(
+                    height: 12,
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );

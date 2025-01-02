@@ -2,12 +2,16 @@ import 'dart:convert';
 
 import 'package:carsix/const/color.dart';
 import 'package:carsix/const/databas_helper.dart';
+import 'package:carsix/models/active_mode_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class BLEController extends GetxController {
+  //처음 시작 시 적용 모드 가져오기
+  //0은 아무 모드도 적용안된거
+  RxInt currentApplyMode = 0.obs;
   //커스텀 모드 설정
   // Rx<Color> selectedCustomColor = Colors.transparent.obs;
   // RxList<Color> customColors = <Color>[].obs;
@@ -36,7 +40,7 @@ class BLEController extends GetxController {
   var isScanning = false.obs;
   BluetoothDevice? connectedDevice;
   String deviceName = "CAR-SIX LED Controller";
-  RxInt currentTabIndex = 0.obs;
+  RxInt currentTabIndex = 1.obs;
   // 속도 설정 변수
   RxDouble speedValue = 10.0.obs;
   BluetoothCharacteristic? characteristic; // 데이터 전송을 위한 BLE 특성
@@ -59,6 +63,291 @@ class BLEController extends GetxController {
   RxBool isSliding = false.obs;
   //설정 화면에서 버전 다섯번 터치 했는지 알기 위한 변수
   RxInt touchVersionCount = 0.obs;
+  //액티브 모드 설정-세팅화면
+//디비에 저장돼있는거 모델
+  Rx<ActiveMode> activeModeModel = Rx<ActiveMode>(
+    ActiveMode(
+      welcome1: Colors.transparent,
+      welcome1Favorites: [],
+      welcome2: Colors.transparent,
+      welcome2Favorites: [],
+      weather: '',
+      goodbye1: Colors.transparent,
+      goodbye1Favorites: [],
+      goodbye2: Colors.transparent,
+      goodbye2Favorites: [],
+      goodbye3: Colors.transparent,
+      goodbye3Favorites: [],
+    ),
+  );
+  Rx<Color> selectedWelcome1Color = Colors.transparent.obs;
+  Rx<Color> selectedWelcome2Color = Colors.transparent.obs;
+  Rx<String> selectedWeather = ''.obs;
+  Rx<Color> selectedGoodbye1Color = Colors.transparent.obs;
+  Rx<Color> selectedGoodbye2Color = Colors.transparent.obs;
+  Rx<Color> selectedGoodbye3Color = Colors.transparent.obs;
+  RxList<Color> welcome1Favorites = <Color>[].obs;
+  RxList<Color> welcome2Favorites = <Color>[].obs;
+  RxList<Color> goodbye1Favorites = <Color>[].obs;
+  RxList<Color> goodbye2Favorites = <Color>[].obs;
+  RxList<Color> goodbye3Favorites = <Color>[].obs;
+  RxBool isWelcome1SaveComplete = RxBool(false);
+  RxBool isWelcome2SaveComplete = RxBool(false);
+  RxBool isGoodbye1SaveComplete = RxBool(false);
+  RxBool isGoodbye2SaveComplete = RxBool(false);
+  RxBool isGoodbye3SaveComplete = RxBool(false);
+  //액티브 모드 설정
+  bool getActiveComplete(String mode) {
+    if (mode == "welcome_1") {
+      return isWelcome1SaveComplete.value;
+    } else if (mode == "welcome_2") {
+      return isWelcome2SaveComplete.value;
+    } else if (mode == "goodbye_1") {
+      return isGoodbye1SaveComplete.value;
+    } else if (mode == "goodbye_2") {
+      return isGoodbye2SaveComplete.value;
+    } else {
+      return false;
+    }
+  }
+
+//액티브 모드 설정 함수
+  Future<void> initActiveModeSetting() async {
+    final activeModeData = await DatabaseHelper().getActiveMode();
+
+    if (activeModeData != null) {
+      // 데이터베이스에서 가져온 값을 ActiveMode 모델로 초기화
+      activeModeModel.value = ActiveMode.fromJson(activeModeData);
+    } else {
+      // 데이터가 없을 경우 기본값으로 초기화
+      activeModeModel.value = ActiveMode(
+        welcome1: Colors.transparent,
+        welcome1Favorites: [],
+        welcome2: Colors.transparent,
+        welcome2Favorites: [],
+        weather: '',
+        goodbye1: Colors.transparent,
+        goodbye1Favorites: [],
+        goodbye2: Colors.transparent,
+        goodbye2Favorites: [],
+        goodbye3: Colors.transparent,
+        goodbye3Favorites: [],
+      );
+    }
+
+    // 로드된 모델 값을 확인하는 디버그 출력
+    print('ActiveMode initialized00: ${activeModeData}');
+    print('ActiveMode initialized11: ${activeModeModel.value?.toJson()}');
+  }
+
+  // Future<void> initActiveModeSetting() async {
+  //   final activeMode = await DatabaseHelper().getActiveMode();
+  //   print('>>>>>>>>>>> Active Mode: $activeMode');
+
+  //   if (activeMode != null) {
+  //     // welcome1 색상 및 즐겨찾기 설정
+  //     selectedWelcome1Color.value = Color(int.tryParse(activeMode['welcome1']
+  //             .replaceAll('Color(', '')
+  //             .replaceAll(')', '')) ??
+  //         0x00000000);
+  //     welcome1Favorites.value =
+  //         parseColorListForActiveMode(activeMode['welcome1Favorites']);
+
+  //     // welcome2 색상 및 즐겨찾기 설정
+  //     selectedWelcome2Color.value = Color(int.tryParse(activeMode['welcome2']
+  //             .replaceAll('Color(', '')
+  //             .replaceAll(')', '')) ??
+  //         0x00000000);
+  //     welcome2Favorites.value =
+  //         parseColorListForActiveMode(activeMode['welcome2Favorites']);
+
+  //     // weather 설정
+  //     selectedWeather.value = activeMode['weather'] ?? '';
+
+  //     // goodbye1 색상 및 즐겨찾기 설정
+  //     selectedGoodbye1Color.value = Color(int.tryParse(activeMode['goodbye1']
+  //             .replaceAll('Color(', '')
+  //             .replaceAll(')', '')) ??
+  //         0x00000000);
+  //     goodbye1Favorites.value =
+  //         parseColorListForActiveMode(activeMode['goodbye1Favorites']);
+
+  //     // goodbye2 색상 및 즐겨찾기 설정
+  //     selectedGoodbye2Color.value = Color(int.tryParse(activeMode['goodbye2']
+  //             .replaceAll('Color(', '')
+  //             .replaceAll(')', '')) ??
+  //         0x00000000);
+  //     goodbye2Favorites.value =
+  //         parseColorListForActiveMode(activeMode['goodbye2Favorites']);
+
+  //     // goodbye3 색상 및 즐겨찾기 설정
+  //     selectedGoodbye3Color.value = Color(int.tryParse(activeMode['goodbye3']
+  //             .replaceAll('Color(', '')
+  //             .replaceAll(')', '')) ??
+  //         0x00000000);
+  //     goodbye3Favorites.value =
+  //         parseColorListForActiveMode(activeMode['goodbye3Favorites']);
+  //   }
+  // }
+
+  List<Color> parseColorListForActiveMode(dynamic jsonData) {
+    if (jsonData == null) return [];
+    if (jsonData is String) {
+      // JSON 문자열을 파싱z
+      final List<dynamic> colorValues = jsonDecode(jsonData);
+      return colorValues.map((value) => Color(value)).toList();
+    } else if (jsonData is List<dynamic>) {
+      // 이미 List<dynamic> 형식으로 들어온 경우
+      return jsonData
+          .map((value) => Color(int.tryParse(
+                  value.replaceAll('Color(', '').replaceAll(')', '')) ??
+              0x00000000))
+          .toList();
+    } else {
+      throw TypeError();
+    }
+  }
+
+  void selectActiveSave(String mode) {
+    // 현재 모델 가져오기
+    final currentModel = activeModeModel.value;
+
+    switch (mode) {
+      case "welcome_1":
+        if (currentModel.welcome1Favorites.contains(currentModel.welcome1)) {
+          return;
+        } else {
+          isWelcome1SaveComplete.value = true;
+          activeModeModel.value = currentModel.copyWith(
+            welcome1Favorites: [
+              ...currentModel.welcome1Favorites,
+              currentModel.welcome1
+            ],
+          );
+        }
+        break;
+
+      case "welcome_2":
+        if (currentModel.welcome2Favorites.contains(currentModel.welcome2)) {
+          return;
+        } else {
+          isWelcome2SaveComplete.value = true;
+          activeModeModel.value = currentModel.copyWith(
+            welcome2Favorites: [
+              ...currentModel.welcome2Favorites,
+              currentModel.welcome2
+            ],
+          );
+        }
+        break;
+
+      case "goodbye_1":
+        if (currentModel.goodbye1Favorites.contains(currentModel.goodbye1)) {
+          return;
+        } else {
+          isGoodbye1SaveComplete.value = true;
+          activeModeModel.value = currentModel.copyWith(
+            goodbye1Favorites: [
+              ...currentModel.goodbye1Favorites,
+              currentModel.goodbye1
+            ],
+          );
+        }
+        break;
+
+      case "goodbye_2":
+        if (currentModel.goodbye2Favorites.contains(currentModel.goodbye2)) {
+          return;
+        } else {
+          isGoodbye2SaveComplete.value = true;
+          activeModeModel.value = currentModel.copyWith(
+            goodbye2Favorites: [
+              ...currentModel.goodbye2Favorites,
+              currentModel.goodbye2
+            ],
+          );
+        }
+        break;
+
+      case "goodbye_3":
+        if (currentModel.goodbye3Favorites.contains(currentModel.goodbye3)) {
+          return;
+        } else {
+          isGoodbye3SaveComplete.value = true;
+          activeModeModel.value = currentModel.copyWith(
+            goodbye3Favorites: [
+              ...currentModel.goodbye3Favorites,
+              currentModel.goodbye3
+            ],
+          );
+        }
+        break;
+
+      default:
+        return;
+    }
+  }
+
+  Future<void> saveAllActiveMode(BuildContext context, String mode) async {
+    try {
+      // 모델에서 값 가져오기
+      final activeMode = activeModeModel.value;
+
+      await DatabaseHelper().saveActiveMode(
+        welcome1: activeMode.welcome1.value.toString(),
+        welcome1Favorites: activeMode.welcome1Favorites
+            .map((color) => color.value.toString())
+            .toList(),
+        welcome2: activeMode.welcome2.value.toString(),
+        welcome2Favorites: activeMode.welcome2Favorites
+            .map((color) => color.value.toString())
+            .toList(),
+        weather: activeMode.weather,
+        goodbye1: activeMode.goodbye1.value.toString(),
+        goodbye1Favorites: activeMode.goodbye1Favorites
+            .map((color) => color.value.toString())
+            .toList(),
+        goodbye2: activeMode.goodbye2.value.toString(),
+        goodbye2Favorites: activeMode.goodbye2Favorites
+            .map((color) => color.value.toString())
+            .toList(),
+        goodbye3: activeMode.goodbye3.value.toString(),
+        goodbye3Favorites: activeMode.goodbye3Favorites
+            .map((color) => color.value.toString())
+            .toList(),
+      );
+
+      Get.back();
+      Get.snackbar(
+        "",
+        "$mode 저장", // 메시지
+        titleText: Text(
+          "$mode 저장",
+          style: TextStyle(color: CarsixColors.white1, fontSize: 18),
+        ),
+        messageText: Text(
+          "$mode 저장",
+          style: TextStyle(color: CarsixColors.white1, fontSize: 16),
+        ),
+        snackPosition: SnackPosition.BOTTOM, // Snackbar 위치
+        maxWidth: MediaQuery.of(context).size.width - 20,
+        margin: EdgeInsets.only(
+          bottom: 20,
+        ),
+        duration: Duration(seconds: 2),
+      );
+    } catch (e) {
+      print("Error in saveAllActiveMode: $e");
+      Get.snackbar(
+        "Error",
+        "저장에 실패했습니다: $e",
+        backgroundColor: Colors.red,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+//액티브 모드 설정 함수
   //밝기 조절하는 다이얼
   void changeBrightness({
     required List<int> brightnessValues,
@@ -241,11 +530,11 @@ class BLEController extends GetxController {
     final result = await dbHelper.getCustomMode(modeKey);
     if (result != null) {
       selectedBgCustomColor.value = Color(result['bgNow'] ?? 0xFFFFFF);
-      customBgColors.value = parseColorList(result['bgFavorite']) ?? [];
+      customBgColors.value = parseColorList(result['bgFavorite']);
       selectedSel1CustomColor.value = Color(result['sel1Now'] ?? 0xFFFFFF);
-      customSel1Colors.value = parseColorList(result['sel1Favorite']) ?? [];
+      customSel1Colors.value = parseColorList(result['sel1Favorite']);
       selectedSel2CustomColor.value = Color(result['sel2Now'] ?? 0xFFFFFF);
-      customSel2Colors.value = parseColorList(result['sel2Favorite']) ?? [];
+      customSel2Colors.value = parseColorList(result['sel2Favorite']);
     }
   }
 
@@ -360,7 +649,7 @@ class BLEController extends GetxController {
     }
   }
 
-  void applyMusicMode() {
+  Future<void> applyMusicMode() async {
     // final Color selectedColor = toApplySingleColor.value;
 
     // RGB 값 추출
@@ -370,6 +659,8 @@ class BLEController extends GetxController {
 
     // BLE 명령 호출
     changeMusicMode(selectedMusicButtonIndex.value);
+    await DatabaseHelper().saveCurrentApplyMode(3);
+    currentApplyMode.value = 3;
   }
 
 //뮤직 모드 세팅
@@ -391,7 +682,7 @@ class BLEController extends GetxController {
     print("현재 탭 인덱스: $index");
   }
 
-  void applySingleMode() {
+  Future<void> applySingleMode() async {
     // final Color selectedColor = toApplySingleColor.value;
 
     // RGB 값 추출
@@ -401,6 +692,8 @@ class BLEController extends GetxController {
 
     // BLE 명령 호출
     changeSingleColorMode(red: red, green: green, blue: blue);
+    await DatabaseHelper().saveCurrentApplyMode(2);
+    currentApplyMode.value = 2;
   }
 
   void addToSingleColors(Color color) {
@@ -477,9 +770,16 @@ class BLEController extends GetxController {
     selectedColor.value = color;
   }
 
+  Future<void> initCurrentMode() async {
+    int? currentMode = await DatabaseHelper().getCurrentApplyMode();
+    currentApplyMode.value = currentMode ?? 0;
+  }
+
   @override
   void onInit() {
     super.onInit();
+    initActiveModeSetting();
+    initCurrentMode();
     requestPermissions();
     scanAndConnect();
     changeMode(1);
@@ -640,6 +940,8 @@ class BLEController extends GetxController {
         await characteristic!.write(command, withoutResponse: false);
         print(
             "${selectedButtonIndex.value == 0 ? "Rainbow" : "Active"} Mode $selectedButtonIndex.value 명령 전송 성공: $command");
+        await DatabaseHelper().saveCurrentApplyMode(1);
+        currentApplyMode.value = 1;
       } catch (e) {
         print(
             "${selectedButtonIndex.value == 0 ? "Rainbow" : "Active"} Mode $selectedButtonIndex.value 명령 전송 실패: $e");

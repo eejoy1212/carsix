@@ -5,11 +5,13 @@ class CerymonyBtn extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
   final double width;
+  final Color selectedColor;
   const CerymonyBtn({
     Key? key,
     required this.title,
     required this.onTap,
     this.width = 110,
+    required this.selectedColor,
   }) : super(key: key);
 
   @override
@@ -62,7 +64,10 @@ class CerymonyBtn extends StatelessWidget {
                   SizedBox(
                     width: 12,
                   ),
-                  ColorChip(width: 24, selected: Colors.pink),
+                  ColorChip(
+                    width: 24,
+                    selected: selectedColor,
+                  ),
                   SizedBox(
                     width: 10,
                   ),

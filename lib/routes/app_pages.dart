@@ -7,7 +7,6 @@ import 'package:carsix/content/page/music_setting.dart';
 import 'package:carsix/modules/color/bindings/custom_color_binding.dart';
 import 'package:carsix/modules/color/views/custom_color_view.dart';
 import 'package:carsix/modules/favorite/bindings/favorite_binding.dart';
-import 'package:carsix/modules/favorite/controllers/favorite_controller.dart';
 import 'package:carsix/modules/favorite/views/favorite_view.dart';
 import 'package:carsix/modules/goodbye/bindings/goodbye_binding.dart';
 import 'package:carsix/modules/goodbye/views/goodbye_view.dart';

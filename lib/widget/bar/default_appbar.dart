@@ -4,7 +4,8 @@ import 'package:get/get.dart';
 
 class DefaultAppbar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  const DefaultAppbar({super.key, required this.title});
+  final void Function()? onSave;
+  const DefaultAppbar({super.key, required this.title, this.onSave});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class DefaultAppbar extends StatelessWidget implements PreferredSizeWidget {
           child: Image.asset('assets/images/nav-arrow-left.png')),
       actions: [
         InkWell(
-          onTap: () {},
+          onTap: onSave,
           child: Text(
             "저장하기",
             style: TextStyle(

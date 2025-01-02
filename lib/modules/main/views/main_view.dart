@@ -47,18 +47,24 @@ class MainView extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Obx(() => controller.currentIndex.value == 0
           ? ApplyBtn(
-              nowApply: false,
+              title: bleController.currentApplyMode.value ==
+                      bleController.currentTabIndex.value
+                  ? "현재 적용중인 모드입니다."
+                  : "이 설정 적용하기",
+              nowApply: bleController.currentApplyMode.value ==
+                  bleController.currentTabIndex.value,
               onTap: () {
                 if (controller.currentIndex.value == 0) {
                   //액티브 모드
-                  if (bleController.currentTabIndex == 1) {
+                  if (bleController.currentTabIndex.value == 1) {
                     bleController.sendActiveMode();
+
                     //단색 모드
-                  } else if (bleController.currentTabIndex == 2) {
+                  } else if (bleController.currentTabIndex.value == 2) {
                     bleController.applySingleMode();
                   }
                   //뮤직 모드
-                  else if (bleController.currentTabIndex == 3) {
+                  else if (bleController.currentTabIndex.value == 3) {
                     bleController.applyMusicMode();
                   }
                 }
