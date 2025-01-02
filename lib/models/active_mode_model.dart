@@ -105,7 +105,7 @@ class ActiveMode {
                   '0') ??
           0x00000000),
       goodbye3Favorites: parseColorListForActiveMode(json['goodbye3Favorites']),
-      nowSelectedCeremony: json['nowSelectedCeremony'] ?? '', // 추가된 변수
+      nowSelectedCeremony: json['now_selected_ceremony'] ?? '', // 추가된 변수
     );
   }
 

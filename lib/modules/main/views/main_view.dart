@@ -61,7 +61,7 @@ class MainView extends StatelessWidget {
 
                     //단색 모드
                   } else if (bleController.currentTabIndex.value == 2) {
-                    bleController.applySingleMode();
+                    bleController.applySingleMode(context);
                   }
                   //뮤직 모드
                   else if (bleController.currentTabIndex.value == 3) {

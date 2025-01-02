@@ -1,11 +1,8 @@
 import 'package:carsix/const/color.dart';
 import 'package:carsix/controller/bluetooth_controller.dart';
-import 'package:carsix/modules/favorite/controllers/favorite_controller.dart';
 import 'package:carsix/widget/btn/color_select_btn.dart';
-import 'package:carsix/widget/btn/favorite_color_btn.dart';
-import 'package:carsix/widget/btn/red_btn.dart';
-import 'package:carsix/widget/card/selected_favorite_card.dart';
 import 'package:carsix/widget/chip/selected_color_chip.dart';
+import 'package:carsix/widget/paper/favorite_color_paper.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,11 +15,31 @@ class SingleColorTabView extends StatelessWidget {
     final BLEController controller = Get.find<BLEController>();
     int getColorStatus() {
       //즐겨찾기에 선택색상 없는 경우-저장하기
-      if (!controller.singleColors.contains(controller.selectedColor.value)) {
+      if (!controller.singleModeModel.value.favoriteColors
+          .contains(controller.singleModeModel.value.selectedColor)) {
         return 0;
       } else {
         return 2;
       }
+    }
+
+    void selectSave() {
+      final currentModel = controller.singleModeModel.value;
+
+      // 선택된 색상이 즐겨찾기에 없을 경우 추가
+      if (!currentModel.favoriteColors.contains(currentModel.selectedColor)) {
+        final updatedFavorites = List<Color>.from(currentModel.favoriteColors)
+          ..add(currentModel.selectedColor);
+
+        controller.singleModeModel.value =
+            currentModel.copyWith(favoriteColors: updatedFavorites);
+      } else {}
+    }
+
+    void onTabFavoriteColor(Color color) {
+      final currentModel = controller.singleModeModel.value;
+      controller.singleModeModel.value =
+          currentModel.copyWith(selectedColor: color);
     }
 
     return SingleChildScrollView(
@@ -31,130 +48,21 @@ class SingleColorTabView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  // 색상 선택기
-                  Obx(
-                    () => ColorPicker(
-                      wheelDiameter: 300,
-                      wheelSquareBorderRadius: 16,
-                      wheelSquarePadding: 30,
-                      wheelWidth: 36,
-                      pickersEnabled: const <ColorPickerType, bool>{
-                        ColorPickerType.wheel: true, // 휠 활성화
-                        ColorPickerType.accent: false, // 비활성화
-                        ColorPickerType.primary: false, // 비활성화
-                      },
-                      enableTonalPalette: false,
-                      enableShadesSelection: false,
-                      colorNameTextStyle: TextStyle(color: Colors.transparent),
-                      color: controller.selectedColor.value, // 선택된 색상
-                      onColorChanged: (Color color) {
-                        controller.isSingleSaveComplete.value = false;
-                        controller.selectedColor.value = color; // 색상 업데이트
-                      },
-                      onColorChangeEnd: (Color color) {},
-                      onColorChangeStart: (Color color) {},
-
-                      subheading: const Text(
-                        '사용할 색상 선택',
-                        style: TextStyle(
-                          color: CarsixColors.grey2,
-                          fontSize: 14,
-                        ),
-                      ),
-                      showColorName: true,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Obx(() => ColorSelectBtn(
-                        selected: controller.selectedColor.value,
-                        onTab: getColorStatus() == 0
-                            ? controller.selectSave
-                            : controller.selectRemove,
-                        status: getColorStatus(),
-                        completed: controller.isSingleSaveComplete.value,
-                      )),
-                  SizedBox(
-                    height: 20,
-                  ),
-
-                  Container(
-                    width: MediaQuery.of(context).size.width - 30,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "색상 즐겨찾기",
-                          style: TextStyle(
-                            color: Color(0xFF868687),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 7,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width - 30,
-                          height: 80,
-                          child: Obx(() => controller.singleColors.isEmpty
-                              ? Center(
-                                  child: Text(
-                                    "저장한 색상이 없습니다.",
-                                    style: TextStyle(
-                                      color: CarsixColors.white1,
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                )
-                              : Wrap(
-                                  spacing: 18,
-                                  runSpacing: 7,
-                                  children: controller.singleColors
-                                      .map(
-                                        (color) => GestureDetector(
-                                          onTap: () {
-                                            controller.isApplySingleColor
-                                                .value = false;
-                                            // controller
-                                            //     .removeFromSingles(color); // 클릭 시 즐겨찾기에서 제거
-                                            controller.applyFromSingles(color);
-                                          },
-                                          child: Container(
-                                            width: 40,
-                                            height: 40,
-                                            decoration: BoxDecoration(
-                                              color: color,
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                color: controller.selectedColor
-                                                            .value.value ==
-                                                        color.value
-                                                    ? Colors.white
-                                                    : Colors.transparent,
-                                                width: 2,
-                                              ),
-                                            ),
-                                            child: controller.selectedColor
-                                                        .value.value ==
-                                                    color.value
-                                                ? SelectedColorChip()
-                                                : Container(),
-                                          ),
-                                        ),
-                                      )
-                                      .toList(),
-                                )),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+              child: Obx(() => FavoriteColorPaper(
+                  selectedColor: controller.singleModeModel.value.selectedColor,
+                  onColorChange: (Color color) {
+                    final currentModel = controller.singleModeModel.value;
+                    controller.singleModeModel.value =
+                        currentModel.copyWith(selectedColor: color);
+                  },
+                  onTabColorSelectBtn: () {},
+                  colorStatus: getColorStatus(),
+                  selectSave: selectSave,
+                  selectRemove: () {},
+                  completed: controller.isSingleSaveComplete.value,
+                  favoriteColors:
+                      controller.singleModeModel.value.favoriteColors,
+                  onTabFavoriteColor: onTabFavoriteColor)),
             ),
           ],
         ),

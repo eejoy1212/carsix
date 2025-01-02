@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:carsix/const/color.dart';
 import 'package:carsix/const/databas_helper.dart';
 import 'package:carsix/models/active_mode_model.dart';
+import 'package:carsix/models/single_mode_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:get/get.dart';
@@ -81,22 +82,20 @@ class BLEController extends GetxController {
       nowSelectedCeremony: '',
     ),
   );
-  Rx<Color> selectedWelcome1Color = Colors.transparent.obs;
-  Rx<Color> selectedWelcome2Color = Colors.transparent.obs;
-  Rx<String> selectedWeather = ''.obs;
-  Rx<Color> selectedGoodbye1Color = Colors.transparent.obs;
-  Rx<Color> selectedGoodbye2Color = Colors.transparent.obs;
-  Rx<Color> selectedGoodbye3Color = Colors.transparent.obs;
-  RxList<Color> welcome1Favorites = <Color>[].obs;
-  RxList<Color> welcome2Favorites = <Color>[].obs;
-  RxList<Color> goodbye1Favorites = <Color>[].obs;
-  RxList<Color> goodbye2Favorites = <Color>[].obs;
-  RxList<Color> goodbye3Favorites = <Color>[].obs;
   RxBool isWelcome1SaveComplete = RxBool(false);
   RxBool isWelcome2SaveComplete = RxBool(false);
   RxBool isGoodbye1SaveComplete = RxBool(false);
   RxBool isGoodbye2SaveComplete = RxBool(false);
   RxBool isGoodbye3SaveComplete = RxBool(false);
+  //단색 모드 모델
+  Rx<SingleMode> singleModeModel = Rx<SingleMode>(
+    SingleMode(
+      selectedColor: Colors.transparent,
+      favoriteColors: [],
+    ),
+  );
+
+  //단색 모드 모델
   //액티브 모드 설정
   bool getActiveComplete(String mode) {
     if (mode == "welcome_1") {
@@ -109,6 +108,57 @@ class BLEController extends GetxController {
       return isGoodbye2SaveComplete.value;
     } else {
       return false;
+    }
+  }
+
+  // 웰컴 세레모니 색상 선택 프로토콜 함수
+  Future<void> sendWelcomeCeremonyColor(int subCommand) async {
+    // subCommand 유효성 검사 (0x00 ~ 0x03 범위)
+    if (subCommand < 0x00 || subCommand > 0x03) {
+      print("유효하지 않은 Sub Command입니다: $subCommand");
+      return;
+    }
+
+    // 프로토콜 명령어 생성
+    List<int> command = [
+      0xEA, // Header 1
+      0xBF, // Header 2
+      0xCC, // Command (Welcome Ceremony)
+      subCommand, // Sub Command (0x00 ~ 0x03)
+      0x00, // Data1
+      0x00, // Data2
+      0x00, // Data3
+      0x00, // Data4
+      0x00, // Data5
+      0x00, // Data6
+      0x00, // Data7
+      0x00, // Data8
+      0x00, // Data9
+      0xEB, // End
+    ];
+
+    // BLE 명령 전송
+    if (characteristic != null && isConnected.value) {
+      try {
+        await characteristic!.write(command, withoutResponse: false);
+        print("세리머니 명령 전송 성공: $command");
+      } catch (e) {
+        print("세리머니 명령 전송 실패: $e");
+      }
+    } else {
+      print("(세리머니)BLE 연결이 설정되지 않았습니다.");
+    }
+  }
+
+  Future<void> initSingleMode() async {
+    final singleModeData = await DatabaseHelper().getSingleColor();
+    if (singleModeData != null) {
+      singleModeModel.value = SingleMode.fromJson(singleModeData);
+    } else {
+      singleModeModel.value = SingleMode(
+        selectedColor: Colors.transparent,
+        favoriteColors: [],
+      );
     }
   }
 
@@ -133,7 +183,7 @@ class BLEController extends GetxController {
         goodbye2Favorites: [],
         goodbye3: Colors.transparent,
         goodbye3Favorites: [],
-        nowSelectedCeremony: '',
+        nowSelectedCeremony: 'welcome_1',
       );
     }
 
@@ -320,7 +370,7 @@ class BLEController extends GetxController {
         goodbye3Favorites: activeMode.goodbye3Favorites
             .map((color) => color.value.toString())
             .toList(),
-        nowSelectedCeremony: activeMode.nowSelectedCeremony,
+        nowSelectedCeremony: ceremony,
       );
 
       Get.back();
@@ -344,6 +394,15 @@ class BLEController extends GetxController {
           newMode = "날씨";
           break;
       }
+
+      if (ceremony.contains("welcome")) {
+        if (ceremony.contains("1")) {
+          sendWelcomeCeremonyColor(0x01);
+        } else {
+          sendWelcomeCeremonyColor(0x02);
+        }
+      }
+
       Get.snackbar(
         "",
         "$newMode 로 변경되었습니다.", // 메시지
@@ -768,18 +827,45 @@ class BLEController extends GetxController {
     print("현재 탭 인덱스: $index");
   }
 
-  Future<void> applySingleMode() async {
-    // final Color selectedColor = toApplySingleColor.value;
+  Future<void> applySingleMode(BuildContext context) async {
+    try {
+      // final Color selectedColor = toApplySingleColor.value;
 
-    // RGB 값 추출
-    int red = selectedColor.value.red;
-    int green = selectedColor.value.green;
-    int blue = selectedColor.value.blue;
-
-    // BLE 명령 호출
-    changeSingleColorMode(red: red, green: green, blue: blue);
-    await DatabaseHelper().saveCurrentApplyMode(2);
-    currentApplyMode.value = 2;
+      // RGB 값 추출
+      int red = singleModeModel.value.selectedColor.red;
+      int green = singleModeModel.value.selectedColor.green;
+      int blue = singleModeModel.value.selectedColor.blue;
+//디비에 저장
+      await DatabaseHelper().saveSingleColor(
+        selectedColor: singleModeModel.value.selectedColor.value.toString(),
+        favoriteColors: singleModeModel.value.favoriteColors
+            .map((color) => color.value.toString())
+            .toList(),
+      );
+      // BLE 명령 호출
+      changeSingleColorMode(red: red, green: green, blue: blue);
+      //현재 모드 설정하는 로컬스토리지
+      await DatabaseHelper().saveCurrentApplyMode(2);
+      currentApplyMode.value = 2;
+      Get.snackbar(
+        "",
+        "단색모드가 저장되었습니다.", // 메시지
+        titleText: Text(
+          "단색모드가 저장되었습니다.",
+          style: TextStyle(color: CarsixColors.white1, fontSize: 18),
+        ),
+        messageText: Text(
+          "단색모드가 저장되었습니다.",
+          style: TextStyle(color: CarsixColors.white1, fontSize: 16),
+        ),
+        snackPosition: SnackPosition.BOTTOM, // Snackbar 위치
+        maxWidth: MediaQuery.of(context).size.width - 20,
+        margin: EdgeInsets.only(
+          bottom: 20,
+        ),
+        duration: Duration(seconds: 2),
+      );
+    } catch (e) {}
   }
 
   void addToSingleColors(Color color) {
@@ -864,8 +950,12 @@ class BLEController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    //액티브 모드 세팅
     initActiveModeSetting();
+    //현재 모드
     initCurrentMode();
+    //단색 모드
+    initSingleMode();
     requestPermissions();
     scanAndConnect();
     changeMode(1);

@@ -3,12 +3,8 @@ import 'package:carsix/const/style.dart';
 import 'package:carsix/controller/bluetooth_controller.dart';
 import 'package:carsix/widget/bar/default_appbar.dart';
 import 'package:carsix/widget/btn/cerymony_btn.dart';
-import 'package:carsix/widget/btn/moving_btn.dart';
 import 'package:carsix/widget/btn/weather_btn.dart';
-import 'package:carsix/widget/card/border_card.dart';
-import 'package:carsix/widget/chip/bottom_nav_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class ActiveModeContent extends StatelessWidget {
