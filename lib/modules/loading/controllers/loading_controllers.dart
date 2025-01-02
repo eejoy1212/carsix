@@ -10,6 +10,7 @@ class LoadingController extends GetxController {
       print("이 기기는 iOS입니다.");
       Get.offAndToNamed('/ios-info');
     } else {
+      Get.offAndToNamed('/aos-info');
       print("이 기기는 Android 또는 iOS가 아닙니다.");
     }
   }
