@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:carsix/const/color.dart';
 import 'package:carsix/const/databas_helper.dart';
 import 'package:carsix/models/active_mode_model.dart';
+import 'package:carsix/models/custom_mode_model.dart';
+import 'package:carsix/models/lighting_model.dart';
+import 'package:carsix/models/music_mode_model.dart';
 import 'package:carsix/models/single_mode_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
@@ -11,11 +14,48 @@ import 'package:permission_handler/permission_handler.dart';
 
 class BLEController extends GetxController {
   //처음 시작 시 적용 모드 가져오기
+  //조명 화면 모델
+  Rx<LightingModel> lightingModel = Rx(LightingModel(
+    leftCenterColor: Colors.black,
+    leftCenterBright: 0.0,
+    rightCenterColor: Colors.black,
+    rightCenterBright: 0.0,
+    leftFirstDriverColor: Colors.black,
+    leftFirstDriverBright: 0.0,
+    rightFirstPassengerColor: Colors.black,
+    rightFirstPassengerBright: 0.0,
+    leftSecondDriverColor: Colors.black,
+    leftSecondDriverBright: 0.0,
+    rightSecondPassengerColor: Colors.black,
+    rightSecondPassengerBright: 0.0,
+    leftCenterFavorites: [],
+    rightCenterFavorites: [],
+    leftFirstDriverFavorites: [],
+    rightFirstPassengerFavorites: [],
+    leftSecondDriverFavorites: [],
+    rightSecondPassengerFavorites: [],
+  ));
+  RxBool isLightingSaveComplete = RxBool(false);
   //0은 아무 모드도 적용안된거
   RxInt currentApplyMode = 0.obs;
   //커스텀 모드 설정
-  // Rx<Color> selectedCustomColor = Colors.transparent.obs;
-  // RxList<Color> customColors = <Color>[].obs;
+  List<Rx<CustomMode>> customModeModels = List.generate(
+      3,
+      (int idx) => Rx<CustomMode>(CustomMode(
+            apply: false,
+            selectedBgCustomColor: Colors.transparent,
+            customBgColors: [],
+            selectedSel1CustomColor: Colors.transparent,
+            customSel1Colors: [],
+            selectedSel2CustomColor: Colors.transparent,
+            customSel2Colors: [],
+            bgBright: 0.0,
+            bgVelocity: 0.0,
+            sel1Bright: 0.0,
+            sel1Velocity: 0.0,
+            sel2Bright: 0.0,
+            sel2Velocity: 0.0,
+          )));
   RxString nowApplyCustomMode = "".obs;
   Rx<Color> selectedBgCustomColor = Colors.transparent.obs;
   RxList<Color> customBgColors = <Color>[].obs;
@@ -29,6 +69,15 @@ class BLEController extends GetxController {
   RxDouble customVelocity = 0.0.obs;
   //커스텀 모드 설정
   //뮤직 모드 설정
+  RxDouble musicBright = 0.0.obs;
+  List<Rx<MusicMode>> musicModeModel = List<Rx<MusicMode>>.generate(
+      4,
+      (int idx) => Rx<MusicMode>(MusicMode(
+            selectedMusicColor: Colors.transparent,
+            musicColors: [],
+            musicBright: 0.0,
+            apply: false,
+          )));
   Rx<Color> selectedMusicColor = Colors.transparent.obs;
   RxList<Color> musicColors = <Color>[].obs;
   RxBool isMusicSaveComplete = RxBool(false);
@@ -109,6 +158,39 @@ class BLEController extends GetxController {
     } else {
       return false;
     }
+  }
+
+  void updateCustomModeApply(int index, bool applyValue) {
+    final currentModel = customModeModels[index].value;
+
+    // 기존 모델 객체를 copyWith로 수정
+    final updatedModel = currentModel.copyWith(apply: applyValue);
+
+    // 수정된 모델을 다시 할당
+    customModeModels[index].value = updatedModel;
+  }
+
+  //뮤직모드 모델 apply 수정
+  void updateMusicModeApply(int index, bool applyValue) {
+    final currentModel = musicModeModel[index].value;
+
+    // 기존 모델 객체를 copyWith로 수정
+    final updatedModel = currentModel.copyWith(apply: applyValue);
+
+    // 수정된 모델을 다시 할당
+    musicModeModel[index].value = updatedModel;
+  }
+
+//뮤직모드 모델
+
+  void updateMusicModeBright(int index, double brightValue) {
+    final currentModel = musicModeModel[index].value;
+
+    // 기존 모델 객체를 copyWith로 수정
+    final updatedModel = currentModel.copyWith(musicBright: brightValue);
+
+    // 수정된 모델을 다시 할당
+    musicModeModel[index].value = updatedModel;
   }
 
   // 웰컴 세레모니 색상 선택 프로토콜 함수
@@ -536,47 +618,65 @@ class BLEController extends GetxController {
   //밝기 조절하는 다이얼
   //로컬 디비
   final DatabaseHelper _dbHelper = DatabaseHelper();
-  void initMusicSetting() {
-    selectedMusicColor.value = Colors.transparent;
-    musicColors.value = <Color>[];
-    isMusicSaveComplete.value = false;
+  // Future<void> initMusicSetting() async {
+  //   // selectedMusicColor.value = Colors.transparent;
+  //   // musicColors.value = <Color>[];
+  //   final DatabaseHelper _dbHelper = DatabaseHelper();
+  //   final musicModes = await _dbHelper.getMusicModes();
+  //   print("musicmodels>>>>>>>>>>>>>>>>>>>>>>>>>$musicModes");
+  //   musicModeModel = musicModes;
+  //   isMusicSaveComplete.value = false;
+  // }
+  Future<bool> saveCustomMode() async {
+    try {
+      final DatabaseHelper _dbHelper = DatabaseHelper();
+      await _dbHelper.saveCustomModes(customModeModels);
+
+      isCustomSaveComplete.value = true;
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
-  Future<void> saveMusicMode(int mode) async {
-    final String modeKey = "music$mode";
+  Future<bool> saveMusicMode() async {
+    try {
+      final DatabaseHelper _dbHelper = DatabaseHelper();
+      await _dbHelper.saveMusicModes(musicModeModel);
 
-    // favorite 컬러 리스트를 JSON 문자열로 변환
-    final String favoriteJson = jsonEncode(
-      musicColors.map((color) => color.value).toList(),
-    );
+      isMusicSaveComplete.value = true;
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 
-    // 현재 선택된 컬러 (now)
-    final int nowColor = selectedMusicColor.value.value;
+  Future<bool> saveLighting() async {
+    try {
+      final DatabaseHelper _dbHelper = DatabaseHelper();
+      await _dbHelper.saveLightingModel(lightingModel);
 
-    await _dbHelper.saveMusicMode(
-      mode: modeKey,
-      favorite: favoriteJson,
-      now: nowColor,
-    );
-
-    isMusicSaveComplete.value = true;
-    print('저장 완료: mode=$modeKey, favorite=$favoriteJson, now=$nowColor');
+      isLightingSaveComplete.value = true;
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   // 데이터 불러오기
   Future<void> loadMusicMode(int mode) async {
-    final String modeKey = "music$mode";
-    final data = await _dbHelper.getMusicMode(modeKey);
+    // final String modeKey = "music$mode";
+    // final data = await _dbHelper.getMusicMode(modeKey);
 
-    if (data != null) {
-      // favorite 컬러 로드
-      final List<dynamic> favoriteList = jsonDecode(data['favorite']);
-      musicColors.value = favoriteList.map((color) => Color(color)).toList();
+    // if (data != null) {
+    //   // favorite 컬러 로드
+    //   final List<dynamic> favoriteList = jsonDecode(data['favorite']);
+    //   musicColors.value = favoriteList.map((color) => Color(color)).toList();
 
-      // now 컬러 로드
-      selectedMusicColor.value = Color(data['now']);
-      print('불러오기 완료: mode=$modeKey');
-    }
+    //   // now 컬러 로드
+    //   selectedMusicColor.value = Color(data['now']);
+    //   print('불러오기 완료: mode=$modeKey');
+    // }
   } //로컬 디비
 
 //커스텀모드 컬러 세팅
@@ -590,74 +690,74 @@ class BLEController extends GetxController {
     isCustomSaveComplete.value = false;
   }
 
-  void saveCustomMode(
-    int mode,
-    String type,
-  ) async {
-    String modeKey = 'custom$mode';
-    final dbHelper = DatabaseHelper();
+  // void saveCustomMode(
+  //   int mode,
+  //   String type,
+  // ) async {
+  //   String modeKey = 'custom$mode';
+  //   final dbHelper = DatabaseHelper();
 
-    // 기존 데이터 조회
-    final existingData = await dbHelper.getCustomMode(modeKey);
+  //   // 기존 데이터 조회
+  //   final existingData = await dbHelper.getCustomMode(modeKey);
 
-    // 기존 값 설정 (기본값도 포함)
-    String existingBgFavorite = existingData?['bgFavorite'] ?? '';
-    int existingBgNow = existingData?['bgNow'] ?? 0;
+  //   // 기존 값 설정 (기본값도 포함)
+  //   String existingBgFavorite = existingData?['bgFavorite'] ?? '';
+  //   int existingBgNow = existingData?['bgNow'] ?? 0;
 
-    String existingSel1Favorite = existingData?['sel1Favorite'] ?? '';
-    int existingSel1Now = existingData?['sel1Now'] ?? 0;
+  //   String existingSel1Favorite = existingData?['sel1Favorite'] ?? '';
+  //   int existingSel1Now = existingData?['sel1Now'] ?? 0;
 
-    String existingSel2Favorite = existingData?['sel2Favorite'] ?? '';
-    int existingSel2Now = existingData?['sel2Now'] ?? 0;
+  //   String existingSel2Favorite = existingData?['sel2Favorite'] ?? '';
+  //   int existingSel2Now = existingData?['sel2Now'] ?? 0;
 
-    // 새로운 favorite 색상 리스트 JSON 형태로 변환
-    final String favoriteBgJson = jsonEncode(
-      customBgColors.map((color) => color.value).toList(),
-    );
-    final int nowBgColor = selectedBgCustomColor.value.value;
+  //   // 새로운 favorite 색상 리스트 JSON 형태로 변환
+  //   final String favoriteBgJson = jsonEncode(
+  //     customBgColors.map((color) => color.value).toList(),
+  //   );
+  //   final int nowBgColor = selectedBgCustomColor.value.value;
 
-    final String favoriteSel1Json = jsonEncode(
-      customSel1Colors.map((color) => color.value).toList(),
-    );
-    final int nowSel1Color = selectedSel1CustomColor.value.value;
+  //   final String favoriteSel1Json = jsonEncode(
+  //     customSel1Colors.map((color) => color.value).toList(),
+  //   );
+  //   final int nowSel1Color = selectedSel1CustomColor.value.value;
 
-    final String favoriteSel2Json = jsonEncode(
-      customSel2Colors.map((color) => color.value).toList(),
-    );
-    final int nowSel2Color = selectedSel2CustomColor.value.value;
+  //   final String favoriteSel2Json = jsonEncode(
+  //     customSel2Colors.map((color) => color.value).toList(),
+  //   );
+  //   final int nowSel2Color = selectedSel2CustomColor.value.value;
 
-    // type에 따라 새로운 데이터로 업데이트, 나머지는 기존 값 유지
-    switch (type) {
-      case 'bg':
-        existingBgFavorite = favoriteBgJson;
-        existingBgNow = nowBgColor;
-        break;
-      case 'sel1':
-        existingSel1Favorite = favoriteSel1Json;
-        existingSel1Now = nowSel1Color;
-        break;
-      case 'sel2':
-        existingSel2Favorite = favoriteSel2Json;
-        existingSel2Now = nowSel2Color;
-        break;
-      default:
-        print("유효하지 않은 타입입니다: $type");
-        return;
-    }
+  //   // type에 따라 새로운 데이터로 업데이트, 나머지는 기존 값 유지
+  //   switch (type) {
+  //     case 'bg':
+  //       existingBgFavorite = favoriteBgJson;
+  //       existingBgNow = nowBgColor;
+  //       break;
+  //     case 'sel1':
+  //       existingSel1Favorite = favoriteSel1Json;
+  //       existingSel1Now = nowSel1Color;
+  //       break;
+  //     case 'sel2':
+  //       existingSel2Favorite = favoriteSel2Json;
+  //       existingSel2Now = nowSel2Color;
+  //       break;
+  //     default:
+  //       print("유효하지 않은 타입입니다: $type");
+  //       return;
+  //   }
 
-    // 업데이트된 데이터를 저장
-    await dbHelper.saveCustomMode(
-      mode: modeKey,
-      bgFavorite: existingBgFavorite,
-      bgNow: existingBgNow,
-      sel1Favorite: existingSel1Favorite,
-      sel1Now: existingSel1Now,
-      sel2Favorite: existingSel2Favorite,
-      sel2Now: existingSel2Now,
-    );
+  //   // 업데이트된 데이터를 저장
+  //   await dbHelper.saveCustomMode(
+  //     mode: modeKey,
+  //     bgFavorite: existingBgFavorite,
+  //     bgNow: existingBgNow,
+  //     sel1Favorite: existingSel1Favorite,
+  //     sel1Now: existingSel1Now,
+  //     sel2Favorite: existingSel2Favorite,
+  //     sel2Now: existingSel2Now,
+  //   );
 
-    print("커스텀 모드 저장 완료: $modeKey, type: $type");
-  }
+  //   print("커스텀 모드 저장 완료: $modeKey, type: $type");
+  // }
 
   List<Color> parseColorList(String? jsonString) {
     if (jsonString == null || jsonString.isEmpty) return [];
@@ -683,19 +783,34 @@ class BLEController extends GetxController {
     }
   }
 
-  void selectCustomSave(String type) {
+  void selectCustomSave(int index, String type) {
     switch (type) {
       case 'bg':
         isCustomSaveComplete.value = true;
-        customBgColors.add(selectedBgCustomColor.value);
+        final newColors = [
+          ...customModeModels[index].value.customBgColors,
+          customModeModels[index].value.selectedBgCustomColor
+        ];
+        customModeModels[index].value =
+            customModeModels[index].value.copyWith(customBgColors: newColors);
         break;
       case 'sel1':
         isCustomSaveComplete.value = true;
-        customSel1Colors.add(selectedSel1CustomColor.value);
+        final newColors = [
+          ...customModeModels[index].value.customSel1Colors,
+          customModeModels[index].value.selectedSel1CustomColor
+        ];
+        customModeModels[index].value =
+            customModeModels[index].value.copyWith(customSel1Colors: newColors);
         break;
       case 'sel2':
         isCustomSaveComplete.value = true;
-        customSel2Colors.add(selectedSel2CustomColor.value);
+        final newColors = [
+          ...customModeModels[index].value.customSel2Colors,
+          customModeModels[index].value.selectedSel2CustomColor
+        ];
+        customModeModels[index].value =
+            customModeModels[index].value.copyWith(customSel2Colors: newColors);
         break;
       default:
         return;
@@ -718,17 +833,23 @@ class BLEController extends GetxController {
     }
   }
 
-  void applyFromCustoms(Color color, String type) {
+  void applyFromCustoms(int index, Color color, String type) {
     isCustomSaveComplete.value = false;
     switch (type) {
       case 'bg':
-        selectedBgCustomColor.value = color;
+        customModeModels[index].value = customModeModels[index]
+            .value
+            .copyWith(selectedBgCustomColor: color);
         break;
       case 'sel1':
-        selectedSel1CustomColor.value = color;
+        customModeModels[index].value = customModeModels[index]
+            .value
+            .copyWith(selectedSel1CustomColor: color);
         break;
       case 'sel2':
-        selectedSel2CustomColor.value = color;
+        customModeModels[index].value = customModeModels[index]
+            .value
+            .copyWith(selectedSel2CustomColor: color);
         break;
       default:
         return;
@@ -737,22 +858,32 @@ class BLEController extends GetxController {
 
 //커스텀모드 컬러 세팅
 //뮤직 모드 세팅
-  void selectMusicSave() {
-    if (musicColors.contains(selectedMusicColor.value)) {
-      return;
+  void selectMusicSave(int index) {
+    final currentMusic = musicModeModel[index].value;
+    if (currentMusic.musicColors.contains(currentMusic.selectedMusicColor)) {
+      // return;
     } else {
       isMusicSaveComplete.value = true;
-      musicColors.add(selectedMusicColor.value);
+      final newColors = [
+        ...musicModeModel[index].value.musicColors,
+        currentMusic.selectedMusicColor
+      ];
+      musicModeModel[index].value =
+          musicModeModel[index].value.copyWith(musicColors: newColors);
     }
   }
 
-  void selectMusicRemove() {
-    musicColors.remove(selectedMusicColor.value);
+  void selectMusicRemove(int index) {
+    final currentMusic = musicModeModel[index];
+    currentMusic.value.musicColors
+        .remove(currentMusic.value.selectedMusicColor);
   }
 
-  void applyFromMusics(Color color) {
+  void applyFromMusics(Color color, int index) {
+    final currentMusic = musicModeModel[index].value;
     isMusicSaveComplete.value = false;
-    selectedMusicColor.value = color;
+    musicModeModel[index].value =
+        currentMusic.copyWith(selectedMusicColor: color);
   }
 
   void changeMusicMode(int newMode) async {
@@ -806,6 +937,64 @@ class BLEController extends GetxController {
     changeMusicMode(selectedMusicButtonIndex.value);
     await DatabaseHelper().saveCurrentApplyMode(3);
     currentApplyMode.value = 3;
+    //디비에 모델 저장
+    await saveMusicMode();
+  }
+
+  Future<void> applyCustomMode() async {
+    final applyModel =
+        customModeModels.firstWhere((el) => el.value.apply == true).value;
+
+    // 유효한 값인지 확인 (0x00 ~ 0xFF)
+    List<int> colors = [
+      applyModel.selectedBgCustomColor.red,
+      applyModel.selectedBgCustomColor.green,
+      applyModel.selectedBgCustomColor.blue,
+      applyModel.selectedSel1CustomColor.red,
+      applyModel.selectedSel1CustomColor.green,
+      applyModel.selectedSel1CustomColor.blue,
+      applyModel.selectedSel2CustomColor.red,
+      applyModel.selectedSel2CustomColor.green,
+      applyModel.selectedSel2CustomColor.blue,
+    ];
+
+    if (colors.any((color) => color < 0x00 || color > 0xFF)) {
+      print("유효하지 않은 색상 값이 포함되어 있습니다: $colors");
+      return;
+    }
+
+    // 커스텀 모드 색상 변경 명령어 생성
+    List<int> command = [
+      0xEA, // Header 1
+      0xBF, // Header 2
+      0xC6, // CMD (커스텀 모드 색상 변경)
+      0x00, // Sub Command
+      applyModel.selectedBgCustomColor.red,
+      applyModel.selectedBgCustomColor.green,
+      applyModel.selectedBgCustomColor.blue,
+      applyModel.selectedSel1CustomColor.red,
+      applyModel.selectedSel1CustomColor.green,
+      applyModel.selectedSel1CustomColor.blue,
+      applyModel.selectedSel2CustomColor.red,
+      applyModel.selectedSel2CustomColor.green,
+      applyModel.selectedSel2CustomColor.blue,
+      0xEB, // End
+    ];
+
+    print("커스텀 모드 명령어 >>> ${command}");
+
+    // BLE 명령어 전송
+    if (characteristic != null && isConnected.value) {
+      try {
+        await saveCustomMode();
+        await characteristic!.write(command, withoutResponse: false);
+        print("커스텀 모드 명령 전송 성공: $command");
+      } catch (e) {
+        print("커스텀 모드 명령 전송 실패: $e");
+      }
+    } else {
+      print("BLE 연결이 설정되지 않았습니다.");
+    }
   }
 
 //뮤직 모드 세팅
@@ -947,6 +1136,41 @@ class BLEController extends GetxController {
     currentApplyMode.value = currentMode ?? 0;
   }
 
+  Future<void> initMusicModes() async {
+    final DatabaseHelper _dbHelper = DatabaseHelper();
+    final musicModes = await _dbHelper.getMusicModes();
+
+    if (musicModes.isNotEmpty) {
+      musicModeModel = musicModes;
+      print(
+          "musicmodels>>>>>>>>>>>>>>>>>>>>>>>>>${musicModeModel.map((e) => e.value.apply)}");
+      isMusicSaveComplete.value = false;
+    }
+  }
+
+  Future<void> initCustomModes() async {
+    final DatabaseHelper _dbHelper = DatabaseHelper();
+    final customModes = await _dbHelper.getCustomModes();
+    if (customModes.isNotEmpty) {
+      customModeModels = customModes;
+      isCustomSaveComplete.value = false;
+    }
+  }
+
+  Future<void> initLightingMode() async {
+    try {
+      final DatabaseHelper _dbHelper = DatabaseHelper();
+      final dbLightingModel = await _dbHelper.getLightingModel();
+      // if (lightingModel.value!=null) {
+      lightingModel = dbLightingModel;
+      isLightingSaveComplete.value = false;
+    } catch (e) {
+      print("조명 모델 없음");
+    }
+
+    // }
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -956,6 +1180,10 @@ class BLEController extends GetxController {
     initCurrentMode();
     //단색 모드
     initSingleMode();
+    //뮤직모드
+    initMusicModes();
+    initCustomModes();
+    initLightingMode();
     requestPermissions();
     scanAndConnect();
     changeMode(1);

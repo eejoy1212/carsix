@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 
 class CarsixSlider extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
-  const CarsixSlider({super.key, this.margin});
+  final double value;
+  final void Function(double value) onChange;
+  const CarsixSlider(
+      {super.key, this.margin, required this.value, required this.onChange});
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +26,13 @@ class CarsixSlider extends StatelessWidget {
           ),
         ),
         child: Slider(
-          value: 10, //controller.musicSensitivity.value,
+          value: value, //controller.musicSensitivity.value,
           min: 0.0,
           max: 100.0,
           divisions: 100,
-          label: '10', //controller.musicSensitivity.value.round().toString(),
-          onChanged: (double value) {
-            // controller.musicSensitivity.value = value;
-          },
+          label: value.toStringAsFixed(
+              0), //controller.musicSensitivity.value.round().toString(),
+          onChanged: onChange,
         ),
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:carsix/const/color.dart';
 import 'package:carsix/const/style.dart';
+import 'package:carsix/controller/bluetooth_controller.dart';
 import 'package:carsix/theme/controllers/theme_controller.dart';
 import 'package:carsix/widget/gauge/circular_gauge.dart';
 import 'package:carsix/widget/paper/led_status_paper.dart';
@@ -10,10 +11,11 @@ import 'package:get/get.dart';
 
 class LedContent extends StatelessWidget {
   LedContent({super.key});
-  final themeController = Get.find<ThemeController>();
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    final BLEController controller = Get.find<BLEController>();
     return SafeArea(
       child: SingleChildScrollView(
         child: Center(
@@ -37,62 +39,106 @@ class LedContent extends StatelessWidget {
                 children: [
                   SvgPicture.asset(
                     'assets/images/car_topview.svg',
-                    width: width - 180,
+                    width: width - 160,
                   ),
                   // 좌측센터
                   Positioned(
                       top: 70,
-                      left: 10,
-                      child: LedStatusPaper(
-                        onTap: () {
-                          Get.toNamed("/led-setting");
-                        },
-                      )),
+                      left: 20,
+                      child: Obx(() => LedStatusPaper(
+                            color: Rx<Color>(controller
+                                    .lightingModel.value.leftCenterColor)
+                                .value,
+                            onTap: () {
+                              Get.toNamed("/led-setting",
+                                  parameters: {"type": "좌측 센터"});
+                            },
+                            title: '좌측 센터',
+                            value: controller
+                                .lightingModel.value.leftCenterBright
+                                .toInt(),
+                          ))),
                   // 우측 센터
                   Positioned(
                       top: 70,
-                      right: 10,
-                      child: LedStatusPaper(
-                        onTap: () {
-                          Get.toNamed("/led-setting");
-                        },
-                      )),
+                      right: 20,
+                      child: Obx(() => LedStatusPaper(
+                            color: Rx<Color>(controller
+                                    .lightingModel.value.rightCenterColor)
+                                .value,
+                            onTap: () {
+                              Get.toNamed("/led-setting",
+                                  parameters: {"type": "우측 센터"});
+                            },
+                            title: '우측 센터',
+                            value: controller
+                                .lightingModel.value.rightCenterBright
+                                .toInt(),
+                          ))),
                   //좌측 1열 운전석
                   Positioned(
                       top: 175,
                       left: 0,
-                      child: LedStatusPaper(
-                        onTap: () {
-                          Get.toNamed("/led-setting");
-                        },
-                      )),
+                      child: Obx(() => LedStatusPaper(
+                          color: Rx<Color>(controller
+                                  .lightingModel.value.leftFirstDriverColor)
+                              .value,
+                          onTap: () {
+                            Get.toNamed("/led-setting",
+                                parameters: {"type": "좌측 1열 운전석"});
+                          },
+                          title: '좌측 1열 운전석',
+                          value: controller
+                              .lightingModel.value.leftFirstDriverBright
+                              .toInt()))),
                   //우측 1열 조수석
                   Positioned(
                       top: 175,
                       right: 0,
-                      child: LedStatusPaper(
-                        onTap: () {
-                          Get.toNamed("/led-setting");
-                        },
-                      )),
+                      child: Obx(() => LedStatusPaper(
+                          color: Rx<Color>(controller
+                                  .lightingModel.value.rightFirstPassengerColor)
+                              .value,
+                          onTap: () {
+                            Get.toNamed("/led-setting",
+                                parameters: {"type": "우측 1열 조수석"});
+                          },
+                          title: '우측 1열 조수석',
+                          value: controller
+                              .lightingModel.value.rightFirstPassengerBright
+                              .toInt()))),
                   //좌측 2열 운전석
                   Positioned(
                       top: 280,
                       left: 0,
-                      child: LedStatusPaper(
-                        onTap: () {
-                          Get.toNamed("/led-setting");
-                        },
-                      )),
+                      child: Obx(() => LedStatusPaper(
+                          color: Rx<Color>(controller
+                                  .lightingModel.value.leftSecondDriverColor)
+                              .value,
+                          onTap: () {
+                            Get.toNamed("/led-setting",
+                                parameters: {"type": "좌측 2열 운전석"});
+                          },
+                          title: '좌측 2열 운전석',
+                          value: controller
+                              .lightingModel.value.leftSecondDriverBright
+                              .toInt()))),
                   //우측 2열 조수석
                   Positioned(
                       top: 280,
                       right: 0,
-                      child: LedStatusPaper(
-                        onTap: () {
-                          Get.toNamed("/led-setting");
-                        },
-                      )),
+                      child: Obx(() => LedStatusPaper(
+                          color: Rx<Color>(controller.lightingModel.value
+                                  .rightSecondPassengerColor)
+                              .value,
+                          onTap: () {
+                            Get.toNamed("/led-setting",
+                                parameters: {"type": "우측 2열 조수석"});
+                          },
+                          title: '우측 2열 조수석',
+                          value: controller
+                              .lightingModel.value.rightSecondPassengerBright
+                              .toInt()))),
                 ],
               ),
               Container(
@@ -117,34 +163,10 @@ class LedContent extends StatelessWidget {
                     SizedBox(
                       height: 38,
                     ),
-                    SliderTheme(
-                      data: SliderTheme.of(context).copyWith(
-                        // thumbShape: SliderComponentShape.noOverlay,
-
-                        activeTrackColor: CarsixColors.primaryRed,
-                        inactiveTrackColor: CarsixColors.primaryRed
-                            .withOpacity(0.2), //CarsixColors.grey2,
-                        thumbColor: CarsixColors.white1,
-                        overlayColor: CarsixColors.primaryRed.withOpacity(0.2),
-                        valueIndicatorColor:
-                            CarsixColors.primaryRed, // 라벨의 배경색 변경
-                        valueIndicatorTextStyle: TextStyle(
-                          color: CarsixColors.white1, // 라벨의 글자색 변경
-                          fontSize: 16,
-                        ),
-                      ),
-                      child: Slider(
-                        value: 10, //controller.musicSensitivity.value,
-                        min: 0.0,
-                        max: 100.0,
-                        divisions: 100,
-                        label:
-                            '10', //controller.musicSensitivity.value.round().toString(),
-                        onChanged: (double value) {
-                          // controller.musicSensitivity.value = value;
-                        },
-                      ),
-                    ),
+                    CarsixSlider(
+                      value: 10,
+                      onChange: (double value) {},
+                    )
                   ],
                 ),
               ),

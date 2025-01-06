@@ -2,8 +2,16 @@ import 'package:carsix/widget/gauge/circular_gauge.dart';
 import 'package:flutter/material.dart';
 
 class LedStatusPaper extends StatelessWidget {
+  final String title;
+  final int value;
   final void Function() onTap;
-  const LedStatusPaper({super.key, required this.onTap});
+  final Color color;
+  const LedStatusPaper(
+      {super.key,
+      required this.onTap,
+      required this.color,
+      required this.title,
+      required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -12,9 +20,10 @@ class LedStatusPaper extends StatelessWidget {
         InkWell(
           onTap: onTap,
           child: CircularGauge(
+            backgroundColor: color,
             fontSize: 10,
             width: 40,
-            currentValue: 20,
+            currentValue: value,
             maxValue: 100,
           ),
         ),
@@ -51,7 +60,7 @@ class LedStatusPaper extends StatelessWidget {
               ),
               Container(
                 child: Text(
-                  "좌측 센터",
+                  title,
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 8,

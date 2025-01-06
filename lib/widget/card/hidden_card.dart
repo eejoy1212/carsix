@@ -76,7 +76,11 @@ class HiddenCard extends StatelessWidget {
               SizedBox(
                 width: 10,
               ),
-              Expanded(child: CarsixSlider())
+              Expanded(
+                  child: CarsixSlider(
+                value: 1,
+                onChange: (double value) {},
+              ))
             ],
           ),
           SizedBox(
@@ -104,7 +108,11 @@ class HiddenCard extends StatelessWidget {
               SizedBox(
                 width: 10,
               ),
-              Expanded(child: CarsixSlider())
+              Expanded(
+                  child: CarsixSlider(
+                value: 1,
+                onChange: (double value) {},
+              ))
             ],
           ),
           SizedBox(

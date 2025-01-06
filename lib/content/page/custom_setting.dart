@@ -31,7 +31,7 @@ class CustomSetting extends StatelessWidget {
             onTap: () {
               //에러나서 페이지빌드중에 겟백 호출 안되게 함
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                controller.initCustomSetting();
+                // controller.initCustomSetting();
                 Get.back();
               });
             },
@@ -39,27 +39,50 @@ class CustomSetting extends StatelessWidget {
         actions: [
           InkWell(
             onTap: () async {
-              await controller.saveMusicMode(mode + 1);
-              Get.snackbar(
-                "",
-                ""
-                    "이것은 메시지입니다.", // 메시지
-                titleText: Text(
-                  "저장 완료",
-                  style: TextStyle(color: CarsixColors.white1, fontSize: 18),
-                ),
-                messageText: Text(
-                  "커스텀 모드 ${mode + 1} 설정이 저장되었습니다.",
-                  style: TextStyle(color: CarsixColors.white1, fontSize: 16),
-                ),
-                // backgroundColor: Colors.black, // Snackbar 배경색
-                snackPosition: SnackPosition.BOTTOM, // Snackbar 위치
-                maxWidth: MediaQuery.of(context).size.width - 20,
-                margin: EdgeInsets.only(
-                  bottom: 20,
-                ),
-                duration: Duration(seconds: 2),
-              );
+              bool res = await controller.saveMusicMode();
+              if (res) {
+                Get.snackbar(
+                  "",
+                  ""
+                      "저장 완료", // 메시지
+                  titleText: Text(
+                    "저장 완료",
+                    style: TextStyle(color: CarsixColors.white1, fontSize: 18),
+                  ),
+                  messageText: Text(
+                    "커스텀 모드 ${mode + 1} 설정이 저장되었습니다.",
+                    style: TextStyle(color: CarsixColors.white1, fontSize: 16),
+                  ),
+                  // backgroundColor: Colors.black, // Snackbar 배경색
+                  snackPosition: SnackPosition.BOTTOM, // Snackbar 위치
+                  maxWidth: MediaQuery.of(context).size.width - 20,
+                  margin: EdgeInsets.only(
+                    bottom: 20,
+                  ),
+                  duration: Duration(seconds: 2),
+                );
+              } else {
+                Get.snackbar(
+                  "",
+                  ""
+                      "저장 실패", // 메시지
+                  titleText: Text(
+                    "저장 실패",
+                    style: TextStyle(color: CarsixColors.white1, fontSize: 18),
+                  ),
+                  messageText: Text(
+                    "커스텀 모드 ${mode + 1} 설정을 실패했습니다.",
+                    style: TextStyle(color: CarsixColors.white1, fontSize: 16),
+                  ),
+                  // backgroundColor: Colors.black, // Snackbar 배경색
+                  snackPosition: SnackPosition.BOTTOM, // Snackbar 위치
+                  maxWidth: MediaQuery.of(context).size.width - 20,
+                  margin: EdgeInsets.only(
+                    bottom: 20,
+                  ),
+                  duration: Duration(seconds: 2),
+                );
+              }
             },
             child: Text(
               "저장하기",
@@ -97,18 +120,27 @@ class CustomSetting extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _customTileSet(
-                          "배경색", mode, controller.selectedBgCustomColor.value),
+                      Obx(() => _customTileSet(
+                          "배경색",
+                          mode,
+                          controller.customModeModels[mode].value
+                              .selectedBgCustomColor)),
                       SizedBox(
                         height: 20,
                       ),
-                      _customTileSet("선택 색상 1", mode,
-                          controller.selectedSel1CustomColor.value),
+                      Obx(() => _customTileSet(
+                          "선택 색상 1",
+                          mode,
+                          controller.customModeModels[mode].value
+                              .selectedSel1CustomColor)),
                       SizedBox(
                         height: 20,
                       ),
-                      _customTileSet("선택 색상 2", mode,
-                          controller.selectedSel2CustomColor.value),
+                      Obx(() => _customTileSet(
+                          "선택 색상 2",
+                          mode,
+                          controller.customModeModels[mode].value
+                              .selectedSel2CustomColor)),
                       SizedBox(
                         height: 20,
                       ),

@@ -2,6 +2,7 @@ import 'package:carsix/const/color.dart';
 import 'package:carsix/widget/card/border_card.dart';
 import 'package:carsix/widget/chip/color_chip.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CustomCard extends StatelessWidget {
   final void Function() onApply;
@@ -11,6 +12,10 @@ class CustomCard extends StatelessWidget {
   final bool nowApply;
   final MainAxisAlignment titleAlign;
   final bool isDisable;
+  final Color bgColor;
+  final Color sel1Color;
+  final Color sel2Color;
+
   const CustomCard({
     super.key,
     required this.onApply,
@@ -20,6 +25,9 @@ class CustomCard extends StatelessWidget {
     required this.nowApply,
     required this.isDisable,
     this.titleAlign = MainAxisAlignment.center,
+    required this.bgColor,
+    required this.sel1Color,
+    required this.sel2Color,
   });
 
   @override
@@ -66,9 +74,8 @@ class CustomCard extends StatelessWidget {
                   Row(
                     children: [
                       ColorChip(
-                        selected: isDisable
-                            ? Colors.black.withOpacity(0.2)
-                            : Colors.red,
+                        selected:
+                            isDisable ? Colors.black.withOpacity(0.2) : bgColor,
                         width: 24,
                       ),
                       SizedBox(
@@ -88,7 +95,7 @@ class CustomCard extends StatelessWidget {
                       ColorChip(
                         selected: isDisable
                             ? Colors.black.withOpacity(0.2)
-                            : Colors.red,
+                            : sel1Color,
                         width: 24,
                       ),
                       SizedBox(
@@ -108,7 +115,7 @@ class CustomCard extends StatelessWidget {
                       ColorChip(
                         selected: isDisable
                             ? Colors.black.withOpacity(0.2)
-                            : Colors.red,
+                            : sel2Color,
                         width: 24,
                       ),
                       SizedBox(
@@ -163,7 +170,34 @@ class CustomCard extends StatelessWidget {
                           ],
                     borderBegin: Alignment.topCenter,
                     borderEnd: Alignment.bottomCenter,
-                    onTap: onApply,
+                    onTap: () {
+                      if (isDisable) {
+                        Get.snackbar(
+                          "",
+                          ""
+                              "", // 메시지
+                          titleText: Text(
+                            "적용할 컬러가 없습니다. \n컬러 설정을 먼저 해 주세요",
+                            style: TextStyle(
+                                color: CarsixColors.white1, fontSize: 18),
+                          ),
+                          // messageText: Text(
+                          //   "적용할 컬러가 없습니다. 컬러 설정을 해 주세요",
+                          //   style: TextStyle(
+                          //       color: CarsixColors.white1, fontSize: 16),
+                          // ),
+                          // backgroundColor: Colors.black, // Snackbar 배경색
+                          snackPosition: SnackPosition.BOTTOM, // Snackbar 위치
+                          maxWidth: MediaQuery.of(context).size.width - 20,
+                          margin: EdgeInsets.only(
+                            bottom: 20,
+                          ),
+                          duration: Duration(seconds: 2),
+                        );
+                      } else {
+                        onApply();
+                      }
+                    },
                   ),
                 ),
                 SizedBox(

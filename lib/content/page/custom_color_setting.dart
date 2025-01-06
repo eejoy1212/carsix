@@ -14,27 +14,77 @@ class CustomColorSetting extends StatelessWidget {
     final BLEController controller = Get.find<BLEController>();
     final String? modeString = Get.parameters['mode'];
     final String? typeString = Get.parameters['type'];
-    print("유효하지 않은 타입>>>$typeString");
+    // print("유효하지 않은 타입>>>$typeString");
     final int mode = int.tryParse(modeString ?? '0') ?? 0;
+    double getBright() {
+      if (typeString == "bg") {
+        return controller.customModeModels[mode].value.bgBright;
+      } else if (typeString == "sel1") {
+        return controller.customModeModels[mode].value.sel1Bright;
+      } else {
+        return controller.customModeModels[mode].value.sel2Bright;
+      }
+    }
+
+    void onChangeBright(double value) {
+      if (typeString == "bg") {
+        controller.customModeModels[mode].value =
+            controller.customModeModels[mode].value.copyWith(bgBright: value);
+      } else if (typeString == "sel1") {
+        controller.customModeModels[mode].value =
+            controller.customModeModels[mode].value.copyWith(sel1Bright: value);
+      } else {
+        controller.customModeModels[mode].value =
+            controller.customModeModels[mode].value.copyWith(sel2Bright: value);
+      }
+    }
+
+    double getVelocity() {
+      if (typeString == "bg") {
+        return controller.customModeModels[mode].value.bgVelocity;
+      } else if (typeString == "sel1") {
+        return controller.customModeModels[mode].value.sel1Velocity;
+      } else {
+        return controller.customModeModels[mode].value.sel2Velocity;
+      }
+    }
+
+    void onChangeVelocity(double value) {
+      if (typeString == "bg") {
+        controller.customModeModels[mode].value =
+            controller.customModeModels[mode].value.copyWith(bgVelocity: value);
+      } else if (typeString == "sel1") {
+        controller.customModeModels[mode].value = controller
+            .customModeModels[mode].value
+            .copyWith(sel1Velocity: value);
+      } else {
+        controller.customModeModels[mode].value = controller
+            .customModeModels[mode].value
+            .copyWith(sel2Velocity: value);
+      }
+    }
 
     int getColorStatus() {
       if (typeString == "bg") {
-        if (!controller.customBgColors
-            .contains(controller.selectedBgCustomColor.value)) {
+        if (!controller.customModeModels[mode].value.customBgColors.contains(
+            controller
+                .customModeModels[mode].value.selectedBgCustomColor.value)) {
           return 0;
         } else {
           return 2;
         }
       } else if (typeString == "sel1") {
-        if (!controller.customSel1Colors
-            .contains(controller.selectedSel1CustomColor.value)) {
+        if (!controller.customModeModels[mode].value.customSel1Colors.contains(
+            controller
+                .customModeModels[mode].value.selectedSel1CustomColor.value)) {
           return 0;
         } else {
           return 2;
         }
       } else {
-        if (!controller.customSel2Colors
-            .contains(controller.selectedSel2CustomColor.value)) {
+        if (!controller.customModeModels[mode].value.customSel2Colors.contains(
+            controller
+                .customModeModels[mode].value.selectedSel2CustomColor.value)) {
           return 0;
         } else {
           return 2;
@@ -57,27 +107,50 @@ class CustomColorSetting extends StatelessWidget {
         actions: [
           InkWell(
             onTap: () async {
-              controller.saveCustomMode(mode + 1, typeString ?? "");
-              Get.snackbar(
-                "",
-                ""
-                    "이것은 메시지입니다.", // 메시지
-                titleText: Text(
-                  "저장 완료",
-                  style: TextStyle(color: CarsixColors.white1, fontSize: 18),
-                ),
-                messageText: Text(
-                  "커스텀 모드 ${mode + 1} 설정의 ${typeString == "bg" ? "배경색이" : typeString == "sel1" ? "선택 색상1이" : "선택 색상2가"} 저장되었습니다.",
-                  style: TextStyle(color: CarsixColors.white1, fontSize: 16),
-                ),
-                // backgroundColor: Colors.black, // Snackbar 배경색
-                snackPosition: SnackPosition.BOTTOM, // Snackbar 위치
-                maxWidth: MediaQuery.of(context).size.width - 20,
-                margin: EdgeInsets.only(
-                  bottom: 20,
-                ),
-                duration: Duration(seconds: 2),
-              );
+              bool res = await controller.saveCustomMode();
+              if (res) {
+                Get.snackbar(
+                  "",
+                  ""
+                      "저장 완료", // 메시지
+                  titleText: Text(
+                    "저장 완료",
+                    style: TextStyle(color: CarsixColors.white1, fontSize: 18),
+                  ),
+                  messageText: Text(
+                    "커스텀 모드 ${mode + 1} 설정의 ${typeString == "bg" ? "배경색이" : typeString == "sel1" ? "선택 색상1이" : "선택 색상2가"} 저장되었습니다.",
+                    style: TextStyle(color: CarsixColors.white1, fontSize: 16),
+                  ),
+                  // backgroundColor: Colors.black, // Snackbar 배경색
+                  snackPosition: SnackPosition.BOTTOM, // Snackbar 위치
+                  maxWidth: MediaQuery.of(context).size.width - 20,
+                  margin: EdgeInsets.only(
+                    bottom: 20,
+                  ),
+                  duration: Duration(seconds: 2),
+                );
+              } else {
+                Get.snackbar(
+                  "",
+                  ""
+                      "저장 실패", // 메시지
+                  titleText: Text(
+                    "저장 실패",
+                    style: TextStyle(color: CarsixColors.white1, fontSize: 18),
+                  ),
+                  messageText: Text(
+                    "커스텀 모드가 저장되었습니다.",
+                    style: TextStyle(color: CarsixColors.white1, fontSize: 16),
+                  ),
+                  // backgroundColor: Colors.black, // Snackbar 배경색
+                  snackPosition: SnackPosition.BOTTOM, // Snackbar 위치
+                  maxWidth: MediaQuery.of(context).size.width - 20,
+                  margin: EdgeInsets.only(
+                    bottom: 20,
+                  ),
+                  duration: Duration(seconds: 2),
+                );
+              }
             },
             child: Text(
               "저장하기",
@@ -128,7 +201,10 @@ class CustomColorSetting extends StatelessWidget {
                       SizedBox(
                         height: 38,
                       ),
-                      CarsixSlider(),
+                      Obx(() => CarsixSlider(
+                            value: RxDouble(getBright()).value,
+                            onChange: onChangeBright,
+                          )),
                       SizedBox(
                         height: 8,
                       ),
@@ -145,40 +221,62 @@ class CustomColorSetting extends StatelessWidget {
                       SizedBox(
                         height: 38,
                       ),
-                      CarsixSlider(),
+                      Obx(() => CarsixSlider(
+                            value: RxDouble(getVelocity()).value,
+                            onChange: onChangeVelocity,
+                          )),
                       Obx(
                         () => FavoriteColorPaper(
                           selectedColor: typeString == "bg"
-                              ? controller.selectedBgCustomColor.value
+                              ? Rx<Color>(controller.customModeModels[mode]
+                                      .value.selectedBgCustomColor)
+                                  .value
                               : typeString == "sel1"
-                                  ? controller.selectedSel1CustomColor.value
-                                  : controller.selectedSel2CustomColor.value,
+                                  ? Rx<Color>(controller.customModeModels[mode]
+                                          .value.selectedSel1CustomColor)
+                                      .value
+                                  : Rx<Color>(controller.customModeModels[mode]
+                                          .value.selectedSel2CustomColor)
+                                      .value,
                           onColorChange: (Color color) {
                             typeString == "bg"
-                                ? controller.selectedBgCustomColor.value = color
+                                ? controller.customModeModels[mode].value =
+                                    controller.customModeModels[mode].value
+                                        .copyWith(selectedBgCustomColor: color)
                                 : typeString == "sel1"
-                                    ? controller.selectedSel1CustomColor.value =
-                                        color
-                                    : controller.selectedSel2CustomColor.value =
-                                        color;
+                                    ? controller.customModeModels[mode].value =
+                                        controller.customModeModels[mode].value
+                                            .copyWith(
+                                                selectedSel1CustomColor: color)
+                                    : controller.customModeModels[mode].value =
+                                        controller.customModeModels[mode].value
+                                            .copyWith(
+                                                selectedSel2CustomColor: color);
                           },
                           onTabColorSelectBtn: () {},
                           colorStatus: getColorStatus(),
                           selectSave: () {
-                            controller.selectCustomSave(typeString ?? "");
+                            controller.selectCustomSave(mode, typeString ?? "");
                           },
                           selectRemove: () {
                             controller.selectCustomRemove(typeString ?? "");
                           },
                           completed: controller.isCustomSaveComplete.value,
                           favoriteColors: typeString == "bg"
-                              ? controller.customBgColors
+                              ? RxList<Color>(controller
+                                  .customModeModels[mode].value.customBgColors)
                               : typeString == "sel1"
-                                  ? controller.customSel1Colors
-                                  : controller.customSel2Colors,
+                                  ? RxList<Color>(controller
+                                      .customModeModels[mode]
+                                      .value
+                                      .customSel1Colors)
+                                  : RxList<Color>(controller
+                                      .customModeModels[mode]
+                                      .value
+                                      .customSel2Colors),
                           onTabFavoriteColor: (Color color) {
                             controller.applyFromCustoms(
-                                color, typeString ?? "");
+                                mode, color, typeString ?? "");
                           },
                         ),
                       ),

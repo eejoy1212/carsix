@@ -59,15 +59,27 @@ class MusicTabView extends StatelessWidget {
   Widget _buildActiveCard(int index) {
     return Obx(() => ActiveCard(
           useSetting: true,
-          isSelected: bleController.selectedMusicButtonIndex.value == index,
+          isSelected:
+              RxBool(bleController.musicModeModel[index].value.apply).value,
           onApply: () {
-            bleController.selectedMusicButtonIndex.value = index;
+            // 특정 인덱스의 apply 값을 true로 업데이트
+            bleController.updateMusicModeApply(index, true);
+
+            // 다른 모든 버튼의 apply 값을 false로 업데이트
+            for (int i = 0; i < bleController.musicModeModel.length; i++) {
+              if (i != index) {
+                bleController.updateMusicModeApply(i, false);
+              }
+            }
+
+            // bleController.selectedMusicButtonIndex.value = index;
           },
           title: buttonTitles[index],
           onSetting: () {
-            bleController.loadMusicMode(index + 1);
+            // bleController.loadMusicMode(index + 1);
             Get.toNamed('/music-setting',
                 parameters: {"mode": index.toString()});
+
             // 설정 페이지로 이동 (필요 시 구현)
             // Get.toNamed("/active-mode", parameters: {"mode": index.toString()});
           },
