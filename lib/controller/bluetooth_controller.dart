@@ -656,7 +656,7 @@ class BLEController extends GetxController {
       final DatabaseHelper _dbHelper = DatabaseHelper();
       await _dbHelper.saveLightingModel(lightingModel);
 
-      isLightingSaveComplete.value = true;
+      // isLightingSaveComplete.value = true;
       return true;
     } catch (e) {
       return false;

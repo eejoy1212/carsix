@@ -171,6 +171,9 @@ class WelcomeView extends StatelessWidget {
           String mode = typeString == "welcome" ? "웰컴" : "굿바이";
           bleController.saveAllActiveMode(context, mode + modeString);
         },
+        backRoute: '',
+        isComplete:
+            bleController.getActiveComplete(typeString + "_" + modeString),
       ),
       body: SafeArea(
         child: SingleChildScrollView(

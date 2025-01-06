@@ -27,10 +27,13 @@ class ActiveModeContent extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: DefaultAppbar(
-            title: "액티브 모드 설정",
-            onSave: () {
-              controller.saveCeremonyMode(context);
-            }),
+          title: "액티브 모드 설정",
+          onSave: () {
+            controller.saveCeremonyMode(context);
+          },
+          backRoute: '',
+          isComplete: true,
+        ),
         body: Center(
           child: Column(
             children: [

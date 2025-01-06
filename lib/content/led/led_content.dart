@@ -16,6 +16,7 @@ class LedContent extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     final BLEController controller = Get.find<BLEController>();
+
     return SafeArea(
       child: SingleChildScrollView(
         child: Center(

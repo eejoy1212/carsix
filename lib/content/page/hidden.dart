@@ -9,7 +9,11 @@ class Hidden extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: DefaultAppbar(title: "관리자 세팅 메뉴 (히든메뉴)"),
+      appBar: DefaultAppbar(
+        title: "관리자 세팅 메뉴 (히든메뉴)",
+        backRoute: '',
+        isComplete: true,
+      ),
       body: SafeArea(
           child: SingleChildScrollView(
         child: Column(
