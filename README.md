@@ -5,15 +5,6 @@
 <br/>
 <br/>
 
-# 0. Getting Started (시작하기)
-```bash
-$ npm start
-```
-[서비스 링크](https://club-project-one.vercel.app/)
-
-<br/>
-<br/>
-
 # 1. Project Overview (프로젝트 개요)
 - 프로젝트 이름: 카식스 차량 조명 제어 앱
 - 프로젝트 설명: 블루투스 연동을 이용한 차량 조명 제어 앱
@@ -36,7 +27,7 @@ $ npm start
 ##3.1 Language
 |  |  |
 |-----------------|-----------------|
-| Flutter(Dart)    |<img src="https://github.com/user-attachments/assets/2e122e74-a28b-4ce7-aff6-382959216d31" alt="HTML5" width="100">| 
+| Flutter(Dart)    |<img src="https://img.shields.io/badge/flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white">| 
 
 
 
