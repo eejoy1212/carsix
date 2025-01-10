@@ -1,5 +1,5 @@
 
-[![차량 조명 제어 영상]](https://youtube.com/shorts/x_4js_AQkw4?si=Y5eMFsBeEQuQWWJq) 
+[차량 조명 제어 영상](https://youtube.com/shorts/x_4js_AQkw4?si=Y5eMFsBeEQuQWWJq) 
 
 </a>
 
