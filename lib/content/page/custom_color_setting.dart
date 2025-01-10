@@ -68,24 +68,21 @@ class CustomColorSetting extends StatelessWidget {
     int getColorStatus() {
       if (typeString == "bg") {
         if (!controller.customModeModels[mode].value.customBgColors.contains(
-            controller
-                .customModeModels[mode].value.selectedBgCustomColor.value)) {
+            controller.customModeModels[mode].value.selectedBgCustomColor)) {
           return 0;
         } else {
           return 2;
         }
       } else if (typeString == "sel1") {
         if (!controller.customModeModels[mode].value.customSel1Colors.contains(
-            controller
-                .customModeModels[mode].value.selectedSel1CustomColor.value)) {
+            controller.customModeModels[mode].value.selectedSel1CustomColor)) {
           return 0;
         } else {
           return 2;
         }
       } else {
         if (!controller.customModeModels[mode].value.customSel2Colors.contains(
-            controller
-                .customModeModels[mode].value.selectedSel2CustomColor.value)) {
+            controller.customModeModels[mode].value.selectedSel2CustomColor)) {
           return 0;
         } else {
           return 2;
@@ -312,7 +309,8 @@ class CustomColorSetting extends StatelessWidget {
                             controller.selectCustomSave(mode, typeString ?? "");
                           },
                           selectRemove: () {
-                            controller.selectCustomRemove(typeString ?? "");
+                            controller.selectCustomRemove(
+                                mode, typeString ?? "");
                           },
                           completed: controller.isCustomSaveComplete.value,
                           favoriteColors: typeString == "bg"

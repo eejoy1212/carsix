@@ -1000,16 +1000,26 @@ class BLEController extends GetxController {
     }
   }
 
-  void selectCustomRemove(String type) {
+  void selectCustomRemove(int index, String type) {
+    final currentModel = customModeModels[index].value;
     switch (type) {
       case 'bg':
-        customBgColors.remove(selectedBgCustomColor.value);
+        final updatedFavorites = List<Color>.from(currentModel.customBgColors)
+          ..remove(currentModel.selectedBgCustomColor);
+        customModeModels[index].value =
+            currentModel.copyWith(customBgColors: updatedFavorites);
         break;
       case 'sel1':
-        customSel1Colors.remove(selectedSel1CustomColor.value);
+        final updatedFavorites = List<Color>.from(currentModel.customSel1Colors)
+          ..remove(currentModel.selectedSel1CustomColor);
+        customModeModels[index].value =
+            currentModel.copyWith(customSel1Colors: updatedFavorites);
         break;
       case 'sel2':
-        customSel2Colors.remove(selectedSel2CustomColor.value);
+        final updatedFavorites = List<Color>.from(currentModel.customSel2Colors)
+          ..remove(currentModel.selectedSel2CustomColor);
+        customModeModels[index].value =
+            currentModel.copyWith(customSel2Colors: updatedFavorites);
         break;
       default:
         return;
