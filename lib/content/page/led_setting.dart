@@ -273,7 +273,7 @@ class LedSetting extends StatelessWidget {
           }
         },
         backRoute: 'main',
-        isComplete: controller.isLightingSaveComplete.value,
+        // isComplete: controller.isLightingSaveComplete.value,
         initComplete: () async {
           controller.isLightingSaveComplete.value = false;
         },

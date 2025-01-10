@@ -6,38 +6,42 @@ class DefaultAppbar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final void Function()? onSave;
   final String backRoute;
-  final bool isComplete;
+  // final bool isComplete;
   final void Function()? initComplete;
+
   const DefaultAppbar(
       {super.key,
       required this.title,
       this.onSave,
       required this.backRoute,
-      required this.isComplete,
+      // required this.isComplete,
       this.initComplete});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: false,
       backgroundColor: Colors.transparent,
-      leading: InkWell(
-          onTap: () async {
-            print("isComplete>>>$isComplete");
-            if (!isComplete) {
-              showContinueDialog(context, backRoute);
-              // if (initComplete != null) {
-              //   initComplete!();
-              // }
-            } else {
-              Get.back();
-            }
-          },
-          child: Image.asset('assets/images/nav-arrow-left.png')),
+      // leading: InkWell(
+      //     onTap: () async {
+      //       print("isComplete>>>$isComplete");
+      //       if (!isComplete) {
+      //         showContinueDialog(context, backRoute);
+      //       } else {
+      //         // sdss
+      //         final result = await Get.toNamed("/$backRoute");
+      //         print("Get.toNamed result: $isComplete");
+      //         // if (initComplete != null && result) {
+      //         //   initComplete!();
+      //         // }
+      //       }
+      //     },
+      //     child: Image.asset('assets/images/nav-arrow-left.png')),
       actions: [
         InkWell(
           onTap: onSave,
           child: Text(
-            "저장하기",
+            "저장 후 뒤로가기",
             style: TextStyle(
               color: Color(0xFFE60012),
               fontSize: 16,

@@ -20,6 +20,7 @@ class WelcomeView extends StatelessWidget {
       String mode = typeString + "_" + modeString;
       switch (mode) {
         case "welcome_1":
+          //즐겨찾기에 선택한 컬러가 없는 경우->선택 색상 저장하기
           if (!bleController.activeModeModel.value.welcome1Favorites
               .contains(bleController.activeModeModel.value.welcome1)) {
             return 0;
@@ -169,11 +170,26 @@ class WelcomeView extends StatelessWidget {
         title: "${typeString == "welcome" ? "웰컴" : "굿바이"} $modeString",
         onSave: () {
           String mode = typeString == "welcome" ? "웰컴" : "굿바이";
-          bleController.saveAllActiveMode(context, mode + modeString);
+          String activeMode = typeString + "_" + modeString;
+          bleController.saveAllActiveMode(
+              context, mode + modeString, activeMode);
         },
-        backRoute: '',
-        isComplete:
-            bleController.getActiveComplete(typeString + "_" + modeString),
+        backRoute: 'active-mode',
+        // isComplete:
+        //     bleController.getActiveComplete(typeString + "_" + modeString),
+        initComplete: () {
+          // 2. 저장 됐으면, 백버튼 누를때 저장하라는 창 안뜨고, 바로 뒤로가기 되면서 isComplete 초기화(false)
+          String activeMode = typeString + "_" + modeString;
+          if (activeMode == "welcome_1") {
+            bleController.isWelcome1SaveComplete.value = false;
+          } else if (activeMode == "welcome_2") {
+            bleController.isWelcome2SaveComplete.value = false;
+          } else if (activeMode == "goodbye_1") {
+            bleController.isGoodbye1SaveComplete.value = false;
+          } else {
+            bleController.isGoodbye2SaveComplete.value = false;
+          }
+        },
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -196,7 +212,7 @@ class WelcomeView extends StatelessWidget {
                           right: 20,
                         ),
                         child: Text(
-                          "웰컴 1 조명 밝기",
+                          "${typeString == "welcome" ? "웰컴" : "굿바이"} $modeString 조명 밝기",
                           style: CarsixTxtStyle.settingTitleStyle,
                         ),
                       ),
@@ -246,12 +262,15 @@ class WelcomeView extends StatelessWidget {
                         onColorChange(color);
                       },
                       onTabColorSelectBtn: () {},
-                      colorStatus: getColorStatus(),
+                      colorStatus: Rx(getColorStatus()).value,
                       selectSave: () {
                         bleController
                             .selectActiveSave(typeString + "_" + modeString);
                       },
-                      selectRemove: () {},
+                      selectRemove: () {
+                        bleController
+                            .removeActive(typeString + "_" + modeString);
+                      },
                       completed: bleController
                           .getActiveComplete(typeString + "_" + modeString),
                       favoriteColors: getFavoriteColors(),

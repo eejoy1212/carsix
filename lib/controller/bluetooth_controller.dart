@@ -18,6 +18,7 @@ import 'package:geolocator/geolocator.dart';
 class BLEController extends GetxController {
   final Dio _dio = Dio();
   //처음 시작 시 적용 모드 가져오기
+  RxBool isActiveSaveComplete = RxBool(false);
   //조명 화면 모델
   Rx<LightingModel> lightingModel = Rx(LightingModel(
     leftCenterColor: Colors.black,
@@ -459,7 +460,7 @@ class BLEController extends GetxController {
         nowSelectedCeremony: ceremony,
       );
 
-      Get.back();
+      // Get.back();
       String newMode = ceremony;
       switch (ceremony) {
         case "welcome_1":
@@ -489,6 +490,9 @@ class BLEController extends GetxController {
         }
       }
 
+      isActiveSaveComplete.value = true;
+      print("saveComplete>>>${isActiveSaveComplete.value}");
+      Get.back();
       Get.snackbar(
         "",
         "$newMode 로 변경되었습니다.", // 메시지
@@ -505,7 +509,7 @@ class BLEController extends GetxController {
         margin: EdgeInsets.only(
           bottom: 20,
         ),
-        duration: Duration(seconds: 2),
+        duration: Duration(seconds: 1),
       );
     } catch (e) {
       print("Error in saveAllActiveMode: $e");
@@ -518,7 +522,83 @@ class BLEController extends GetxController {
     }
   }
 
-  Future<void> saveAllActiveMode(BuildContext context, String mode) async {
+  void removeActive(String mode) {
+    // 현재 모델 가져오기
+    final currentModel = activeModeModel.value;
+
+    switch (mode) {
+      case "welcome_1":
+        if (!currentModel.welcome1Favorites.contains(currentModel.welcome1)) {
+          return;
+        } else {
+          isWelcome1SaveComplete.value = false; // 제거 상태로 변경
+          activeModeModel.value = currentModel.copyWith(
+            welcome1Favorites: currentModel.welcome1Favorites
+                .where((item) => item != currentModel.welcome1)
+                .toList(),
+          );
+        }
+        break;
+
+      case "welcome_2":
+        if (!currentModel.welcome2Favorites.contains(currentModel.welcome2)) {
+          return;
+        } else {
+          isWelcome2SaveComplete.value = false;
+          activeModeModel.value = currentModel.copyWith(
+            welcome2Favorites: currentModel.welcome2Favorites
+                .where((item) => item != currentModel.welcome2)
+                .toList(),
+          );
+        }
+        break;
+
+      case "goodbye_1":
+        if (!currentModel.goodbye1Favorites.contains(currentModel.goodbye1)) {
+          return;
+        } else {
+          isGoodbye1SaveComplete.value = false;
+          activeModeModel.value = currentModel.copyWith(
+            goodbye1Favorites: currentModel.goodbye1Favorites
+                .where((item) => item != currentModel.goodbye1)
+                .toList(),
+          );
+        }
+        break;
+
+      case "goodbye_2":
+        if (!currentModel.goodbye2Favorites.contains(currentModel.goodbye2)) {
+          return;
+        } else {
+          isGoodbye2SaveComplete.value = false;
+          activeModeModel.value = currentModel.copyWith(
+            goodbye2Favorites: currentModel.goodbye2Favorites
+                .where((item) => item != currentModel.goodbye2)
+                .toList(),
+          );
+        }
+        break;
+
+      case "goodbye_3":
+        if (!currentModel.goodbye3Favorites.contains(currentModel.goodbye3)) {
+          return;
+        } else {
+          isGoodbye3SaveComplete.value = false;
+          activeModeModel.value = currentModel.copyWith(
+            goodbye3Favorites: currentModel.goodbye3Favorites
+                .where((item) => item != currentModel.goodbye3)
+                .toList(),
+          );
+        }
+        break;
+
+      default:
+        return;
+    }
+  }
+
+  Future<void> saveAllActiveMode(
+      BuildContext context, String mode, String activeModeString) async {
     try {
       // 모델에서 값 가져오기
       final activeMode = activeModeModel.value;
@@ -547,7 +627,16 @@ class BLEController extends GetxController {
             .toList(),
         nowSelectedCeremony: activeMode.nowSelectedCeremony,
       );
-
+      print("activeMode string>>>$activeModeString");
+      if (activeModeString == "welcome_1") {
+        isWelcome1SaveComplete.value = true;
+      } else if (activeModeString == "welcome_2") {
+        isWelcome2SaveComplete.value = true;
+      } else if (activeModeString == "goodbye_1") {
+        isGoodbye1SaveComplete.value = true;
+      } else {
+        isGoodbye2SaveComplete.value = true;
+      }
       Get.back();
       Get.snackbar(
         "",
@@ -565,7 +654,7 @@ class BLEController extends GetxController {
         margin: EdgeInsets.only(
           bottom: 20,
         ),
-        duration: Duration(seconds: 2),
+        duration: Duration(seconds: 1),
       );
     } catch (e) {
       print("Error in saveAllActiveMode: $e");
@@ -968,9 +1057,12 @@ class BLEController extends GetxController {
   }
 
   void selectMusicRemove(int index) {
-    final currentMusic = musicModeModel[index];
-    currentMusic.value.musicColors
-        .remove(currentMusic.value.selectedMusicColor);
+    final currentMusic = musicModeModel[index].value;
+    final updatedFavorites = List<Color>.from(currentMusic.musicColors)
+      ..remove(currentMusic.selectedMusicColor);
+
+    musicModeModel[index].value =
+        musicModeModel[index].value.copyWith(musicColors: updatedFavorites);
   }
 
   void applyFromMusics(Color color, int index) {

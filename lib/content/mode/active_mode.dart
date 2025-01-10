@@ -6,6 +6,7 @@ import 'package:carsix/widget/btn/cerymony_btn.dart';
 import 'package:carsix/widget/btn/weather_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 
 class ActiveModeContent extends StatelessWidget {
   ActiveModeContent({super.key});
@@ -23,16 +24,24 @@ class ActiveModeContent extends StatelessWidget {
       return isSelected;
     }
 
+//1.저장하기 누르면 save 후 Get.back()
+//2.뒤로가기 누르면 save하지 않고 Get.back()
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: DefaultAppbar(
           title: "액티브 모드 설정",
           onSave: () {
+            // 1. 저장할때 isComplete true로
             controller.saveCeremonyMode(context);
           },
-          backRoute: '',
-          isComplete: true,
+          backRoute: 'main',
+          // isComplete: controller.isActiveSaveComplete.value,
+          // initComplete: () {
+          //   // 2. 저장 됐으면, 백버튼 누를때 저장하라는 창 안뜨고, 바로 뒤로가기 되면서 isComplete 초기화(false)
+          //   controller.isActiveSaveComplete.value = false;
+          //   print("initComplete>>>${controller.isActiveSaveComplete.value}");
+          // },
         ),
         body: Center(
           child: Column(

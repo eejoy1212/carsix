@@ -71,7 +71,7 @@ class ColorSelectBtn extends StatelessWidget {
                 width: 10,
               ),
               Text(
-                completed ? "색상 저장완료!" : getTitle(),
+                getTitle(),
                 style: TextStyle(
                   color: completed ? Color(0xFFA0A0A0) : CarsixColors.white1,
                   fontSize: 16,

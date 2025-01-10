@@ -26,6 +26,7 @@ class MainView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bleController.isActiveSaveComplete.value = false;
     return Scaffold(
       // backgroundColor: Color(0xfff5f5f5),
       body: Obx(() {

@@ -12,7 +12,7 @@ class Hidden extends StatelessWidget {
       appBar: DefaultAppbar(
         title: "관리자 세팅 메뉴 (히든메뉴)",
         backRoute: '',
-        isComplete: true,
+        // isComplete: true,
       ),
       body: SafeArea(
           child: SingleChildScrollView(

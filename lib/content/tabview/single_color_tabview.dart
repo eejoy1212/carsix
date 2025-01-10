@@ -36,6 +36,19 @@ class SingleColorTabView extends StatelessWidget {
       } else {}
     }
 
+    void removeSingle() {
+      final currentModel = controller.singleModeModel.value;
+
+      // 선택된 색상이 즐겨찾기에 있을 경우 제거
+      if (currentModel.favoriteColors.contains(currentModel.selectedColor)) {
+        final updatedFavorites = List<Color>.from(currentModel.favoriteColors)
+          ..remove(currentModel.selectedColor);
+
+        controller.singleModeModel.value =
+            currentModel.copyWith(favoriteColors: updatedFavorites);
+      } else {}
+    }
+
     void onTabFavoriteColor(Color color) {
       final currentModel = controller.singleModeModel.value;
       controller.singleModeModel.value =
@@ -56,9 +69,9 @@ class SingleColorTabView extends StatelessWidget {
                         currentModel.copyWith(selectedColor: color);
                   },
                   onTabColorSelectBtn: () {},
-                  colorStatus: getColorStatus(),
+                  colorStatus: Rx(getColorStatus()).value,
                   selectSave: selectSave,
-                  selectRemove: () {},
+                  selectRemove: removeSingle,
                   completed: controller.isSingleSaveComplete.value,
                   favoriteColors:
                       controller.singleModeModel.value.favoriteColors,

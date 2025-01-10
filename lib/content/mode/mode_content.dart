@@ -17,6 +17,7 @@ class ModeContent extends StatelessWidget {
   ModeContent({super.key});
   final themeController = Get.find<ThemeController>();
   final BLEController bleController = Get.find<BLEController>();
+
   void showBrightnessDialog(BuildContext context) {
     bool isAutoBrightnessOn = true; // 초기값 설정
     double brightnessLevel = 50; // 초기 밝기 설정

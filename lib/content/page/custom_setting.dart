@@ -1,5 +1,6 @@
 import 'package:carsix/const/color.dart';
 import 'package:carsix/controller/bluetooth_controller.dart';
+import 'package:carsix/widget/bar/default_appbar.dart';
 import 'package:carsix/widget/card/border_card.dart';
 import 'package:carsix/widget/card/custom_mode_card.dart';
 import 'package:flutter/material.dart';
@@ -25,86 +26,138 @@ class CustomSetting extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        leading: InkWell(
-            onTap: () {
-              //에러나서 페이지빌드중에 겟백 호출 안되게 함
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                // controller.initCustomSetting();
-                Get.back();
-              });
-            },
-            child: Image.asset('assets/images/nav-arrow-left.png')),
-        actions: [
-          InkWell(
-            onTap: () async {
-              bool res = await controller.saveMusicMode();
-              if (res) {
-                Get.snackbar(
-                  "",
-                  ""
-                      "저장 완료", // 메시지
-                  titleText: Text(
-                    "저장 완료",
-                    style: TextStyle(color: CarsixColors.white1, fontSize: 18),
-                  ),
-                  messageText: Text(
-                    "커스텀 모드 ${mode + 1} 설정이 저장되었습니다.",
-                    style: TextStyle(color: CarsixColors.white1, fontSize: 16),
-                  ),
-                  // backgroundColor: Colors.black, // Snackbar 배경색
-                  snackPosition: SnackPosition.BOTTOM, // Snackbar 위치
-                  maxWidth: MediaQuery.of(context).size.width - 20,
-                  margin: EdgeInsets.only(
-                    bottom: 20,
-                  ),
-                  duration: Duration(seconds: 2),
-                );
-              } else {
-                Get.snackbar(
-                  "",
-                  ""
-                      "저장 실패", // 메시지
-                  titleText: Text(
-                    "저장 실패",
-                    style: TextStyle(color: CarsixColors.white1, fontSize: 18),
-                  ),
-                  messageText: Text(
-                    "커스텀 모드 ${mode + 1} 설정을 실패했습니다.",
-                    style: TextStyle(color: CarsixColors.white1, fontSize: 16),
-                  ),
-                  // backgroundColor: Colors.black, // Snackbar 배경색
-                  snackPosition: SnackPosition.BOTTOM, // Snackbar 위치
-                  maxWidth: MediaQuery.of(context).size.width - 20,
-                  margin: EdgeInsets.only(
-                    bottom: 20,
-                  ),
-                  duration: Duration(seconds: 2),
-                );
-              }
-            },
-            child: Text(
-              "저장하기",
-              style: TextStyle(
-                color: Color(0xFFE60012),
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
+      // appBar: AppBar(
+      //   backgroundColor: Colors.transparent,
+      //   leading: InkWell(
+      //       onTap: () {
+      //         //에러나서 페이지빌드중에 겟백 호출 안되게 함
+      //         WidgetsBinding.instance.addPostFrameCallback((_) {
+      //           // controller.initCustomSetting();
+      //           Get.back();
+      //         });
+      //       },
+      //       child: Image.asset('assets/images/nav-arrow-left.png')),
+      //   actions: [
+      //     InkWell(
+      // onTap: () async {
+      //   bool res = await controller.saveMusicMode();
+      //   if (res) {
+      //     Get.snackbar(
+      //       "",
+      //       ""
+      //           "저장 완료", // 메시지
+      //       titleText: Text(
+      //         "저장 완료",
+      //         style: TextStyle(color: CarsixColors.white1, fontSize: 18),
+      //       ),
+      //       messageText: Text(
+      //         "커스텀 모드 ${mode + 1} 설정이 저장되었습니다.",
+      //         style: TextStyle(color: CarsixColors.white1, fontSize: 16),
+      //       ),
+      //       // backgroundColor: Colors.black, // Snackbar 배경색
+      //       snackPosition: SnackPosition.BOTTOM, // Snackbar 위치
+      //       maxWidth: MediaQuery.of(context).size.width - 20,
+      //       margin: EdgeInsets.only(
+      //         bottom: 20,
+      //       ),
+      //       duration: Duration(seconds: 2),
+      //     );
+      //   } else {
+      //     Get.snackbar(
+      //       "",
+      //       ""
+      //           "저장 실패", // 메시지
+      //       titleText: Text(
+      //         "저장 실패",
+      //         style: TextStyle(color: CarsixColors.white1, fontSize: 18),
+      //       ),
+      //       messageText: Text(
+      //         "커스텀 모드 ${mode + 1} 설정을 실패했습니다.",
+      //         style: TextStyle(color: CarsixColors.white1, fontSize: 16),
+      //       ),
+      //       // backgroundColor: Colors.black, // Snackbar 배경색
+      //       snackPosition: SnackPosition.BOTTOM, // Snackbar 위치
+      //       maxWidth: MediaQuery.of(context).size.width - 20,
+      //       margin: EdgeInsets.only(
+      //         bottom: 20,
+      //       ),
+      //       duration: Duration(seconds: 2),
+      //     );
+      //   }
+      // },
+      //       child: Text(
+      //         "저장하기",
+      //         style: TextStyle(
+      //           color: Color(0xFFE60012),
+      //           fontSize: 16,
+      //           fontWeight: FontWeight.w700,
+      //         ),
+      //       ),
+      //     ),
+      //     SizedBox(
+      //       width: 12,
+      //     )
+      //   ],
+      //   title: Text(
+      //     "커스텀 모드 ${mode + 1}",
+      //     style: TextStyle(
+      //       color: CarsixColors.white1,
+      //       fontWeight: FontWeight.w700,
+      //       fontSize: 16,
+      //     ),
+      //   ),
+      // ),
+
+      appBar: DefaultAppbar(
+        title: "커스텀 모드 ${mode + 1}",
+        backRoute: "main",
+        onSave: () async {
+          bool res = await controller.saveMusicMode();
+          if (res) {
+            Get.back();
+            Get.snackbar(
+              "",
+              ""
+                  "저장 완료", // 메시지
+              titleText: Text(
+                "저장 완료",
+                style: TextStyle(color: CarsixColors.white1, fontSize: 18),
               ),
-            ),
-          ),
-          SizedBox(
-            width: 12,
-          )
-        ],
-        title: Text(
-          "커스텀 모드 ${mode + 1}",
-          style: TextStyle(
-            color: CarsixColors.white1,
-            fontWeight: FontWeight.w700,
-            fontSize: 16,
-          ),
-        ),
+              messageText: Text(
+                "커스텀 모드 ${mode + 1} 설정이 저장되었습니다.",
+                style: TextStyle(color: CarsixColors.white1, fontSize: 16),
+              ),
+              // backgroundColor: Colors.black, // Snackbar 배경색
+              snackPosition: SnackPosition.BOTTOM, // Snackbar 위치
+              maxWidth: MediaQuery.of(context).size.width - 20,
+              margin: EdgeInsets.only(
+                bottom: 20,
+              ),
+              duration: Duration(seconds: 2),
+            );
+          } else {
+            Get.snackbar(
+              "",
+              ""
+                  "저장 실패", // 메시지
+              titleText: Text(
+                "저장 실패",
+                style: TextStyle(color: CarsixColors.white1, fontSize: 18),
+              ),
+              messageText: Text(
+                "커스텀 모드 ${mode + 1} 설정을 실패했습니다.",
+                style: TextStyle(color: CarsixColors.white1, fontSize: 16),
+              ),
+              // backgroundColor: Colors.black, // Snackbar 배경색
+              snackPosition: SnackPosition.BOTTOM, // Snackbar 위치
+              maxWidth: MediaQuery.of(context).size.width - 20,
+              margin: EdgeInsets.only(
+                bottom: 20,
+              ),
+              duration: Duration(seconds: 2),
+            );
+          }
+        },
       ),
       body: SafeArea(
         child: SingleChildScrollView(
