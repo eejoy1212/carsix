@@ -53,6 +53,33 @@ class MyPageContent extends StatelessWidget {
                                 ? '${bleController.deviceName} 연결됨'
                                 : '블루투스 연결 하기',
                             icon: Icons.bluetooth,
+                            onTap: () {
+                              bleController.scanAndConnect();
+                              Get.snackbar(
+                                "",
+                                ""
+                                    "블루투스 연결", // 메시지
+                                titleText: Text(
+                                  "블루투스 연결",
+                                  style: TextStyle(
+                                      color: CarsixColors.white1, fontSize: 18),
+                                ),
+                                messageText: Text(
+                                  "블루투스 연결",
+                                  style: TextStyle(
+                                      color: CarsixColors.white1, fontSize: 16),
+                                ),
+                                // backgroundColor: Colors.black, // Snackbar 배경색
+                                snackPosition:
+                                    SnackPosition.BOTTOM, // Snackbar 위치
+                                maxWidth:
+                                    MediaQuery.of(context).size.width - 20,
+                                margin: EdgeInsets.only(
+                                  bottom: 20,
+                                ),
+                                duration: Duration(seconds: 1),
+                              );
+                            },
                           ),
                           SettingCard(
                             content: '제품 업데이트',

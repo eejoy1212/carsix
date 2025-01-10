@@ -1816,6 +1816,7 @@ class BLEController extends GetxController {
         if (char.uuid.toString() == "6e400002-b5a3-f393-e0a9-e50e24dcca9e") {
           characteristic = char;
           print("필요한 characteristic 발견: ${char.uuid}");
+
           print("  >>>>>>>>>>속성: ${char.uuid} // ${char.properties}");
           break;
         }
