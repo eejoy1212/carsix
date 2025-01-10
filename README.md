@@ -1,6 +1,7 @@
 <a href="https://club-project-one.vercel.app/" target="_blank">
 <img src="https://github.com/user-attachments/assets/daa622b9-7c69-4786-8db3-4996b7f140be" alt="배너" width="100%"/>
-<img src="https://youtube.com/shorts/x_4js_AQkw4?si=ueGLs_VuA2pkRiFL">
+[![카식스](https://youtube.com/shorts/x_4js_AQkw4?si=Y5eMFsBeEQuQWWJq)](https://youtube.com/shorts/x_4js_AQkw4?si=Y5eMFsBeEQuQWWJq) 
+
 </a>
 
 <br/>
