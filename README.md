@@ -1,6 +1,9 @@
 
 [차량 조명 제어 영상](https://youtube.com/shorts/x_4js_AQkw4?si=Y5eMFsBeEQuQWWJq) 
 
+https://github.com/user-attachments/assets/aeb6f093-8ebc-408d-a74d-0bb591ed4c93
+
+
 </a>
 
 <br/>
