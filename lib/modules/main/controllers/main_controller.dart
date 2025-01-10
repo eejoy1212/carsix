@@ -44,15 +44,15 @@ class MainController extends GetxController {
     loadDeviceInfo(); // 데이터 초기화
   }
 
-  @override
-  void onClose() {
-    // Dispose controllers when done
-    manufacturerController.dispose();
-    vehicleController.dispose();
-    licensePlateController.dispose();
-    installationPlaceController.dispose();
-    super.onClose();
-  }
+  // @override
+  // void onClose() {
+  //   // Dispose controllers when done
+  //   manufacturerController.dispose();
+  //   vehicleController.dispose();
+  //   licensePlateController.dispose();
+  //   installationPlaceController.dispose();
+  //   super.onClose();
+  // }
 
   Future<Database> _initDatabase() async {
     return await openDatabase(
@@ -67,18 +67,22 @@ class MainController extends GetxController {
   }
 
   Future<void> saveDeviceInfo() async {
-    final db = await _database; // 데이터베이스가 초기화되기를 기다림
-    await db!.insert(
-      'device',
-      {
-        'manufacturer': manufacturerController.text,
-        'vehicle': vehicleController.text,
-        'licensePlate': licensePlateController.text,
-        'installationPlace': installationPlaceController.text,
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-    Get.back(); // 이전 화면으로 이동
+    try {
+      final db = await _database; // 데이터베이스가 초기화되기를 기다림
+      await db!.insert(
+        'device',
+        {
+          'manufacturer': manufacturerController.text,
+          'vehicle': vehicleController.text,
+          'licensePlate': licensePlateController.text,
+          'installationPlace': installationPlaceController.text,
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      Get.back(); // 이전 화면으로 이동
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> loadDeviceInfo() async {

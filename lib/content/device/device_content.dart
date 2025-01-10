@@ -1,33 +1,16 @@
 import 'package:carsix/const/color.dart';
 import 'package:carsix/controller/bluetooth_controller.dart';
-import 'package:carsix/modules/main/controllers/main_controller.dart';
 import 'package:carsix/theme/controllers/theme_controller.dart';
-import 'package:carsix/widget/btn/red_btn.dart';
 import 'package:carsix/widget/card/device_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class DeviceContent extends StatefulWidget {
+class DeviceContent extends StatelessWidget {
   DeviceContent({super.key});
 
-  @override
-  _DeviceContentState createState() => _DeviceContentState();
-}
-
-class _DeviceContentState extends State<DeviceContent> {
   final themeController = Get.find<ThemeController>();
   final bleController = Get.find<BLEController>();
-  final mainController = Get.find<MainController>();
-
-  @override
-  void initState() {
-    super.initState();
-    mainController.loadDeviceInfo(); // 초기 데이터 로드
-  }
-
-  Future<void> _refreshDeviceInfo() async {
-    await mainController.loadDeviceInfo(); // 데이터 새로고침
-  }
+  // final mainController = Get.find<MainController>();
 
   @override
   Widget build(BuildContext context) {
@@ -62,62 +45,60 @@ class _DeviceContentState extends State<DeviceContent> {
                 margin: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   children: [
-                    DeviceCard(
-                      title: '제조사',
-                      content:
-                          mainController.manufacturerController.text.isNotEmpty
-                              ? mainController.manufacturerController.text
-                              : 'N/A',
-                    ),
+                    Obx(() => DeviceCard(
+                          title: '제조사',
+                          content: bleController.manufacturerText.value.isEmpty
+                              ? "입력 해 주세요."
+                              : bleController.manufacturerText.value,
+                        )),
                     SizedBox(
                       height: 20,
                     ),
-                    DeviceCard(
-                      title: '차량',
-                      content: mainController.vehicleController.text.isNotEmpty
-                          ? mainController.vehicleController.text
-                          : 'N/A',
-                    ),
+                    Obx(() => DeviceCard(
+                          title: '차량',
+                          content: bleController.vehicleText.value.isEmpty
+                              ? "입력 해 주세요."
+                              : bleController.vehicleText.value,
+                        )),
                     SizedBox(
                       height: 20,
                     ),
-                    DeviceCard(
-                      title: '차량번호',
-                      content:
-                          mainController.licensePlateController.text.isNotEmpty
-                              ? mainController.licensePlateController.text
-                              : 'N/A',
-                    ),
+                    Obx(() => DeviceCard(
+                          title: '차량번호',
+                          content: bleController.licenseText.value.isEmpty
+                              ? "입력 해 주세요."
+                              : bleController.licenseText.value,
+                        )),
                     SizedBox(
                       height: 20,
                     ),
-                    DeviceCard(
-                      title: '시공점',
-                      content: mainController
-                              .installationPlaceController.text.isNotEmpty
-                          ? mainController.installationPlaceController.text
-                          : 'N/A',
-                    ),
+                    Obx(() => DeviceCard(
+                          title: '시공점',
+                          content:
+                              bleController.installationPlaceText.value.isEmpty
+                                  ? "입력 해 주세요."
+                                  : bleController.installationPlaceText.value,
+                        )),
                     SizedBox(
                       height: 20,
                     ),
                     DeviceCard(
                       title: '연결제품',
-                      content: "연결제품",
+                      content: bleController.deviceName,
                     ),
                     SizedBox(
                       height: 20,
                     ),
                     DeviceCard(
                       title: '펌웨어',
-                      content: "펌웨어",
+                      content: "V.10.10",
                     ),
                     SizedBox(
                       height: 20,
                     ),
                     DeviceCard(
                       title: '하드웨어 버전',
-                      content: "하드웨어 버전",
+                      content: "V.10.10",
                     ),
                     SizedBox(
                       height: 20,
@@ -126,7 +107,9 @@ class _DeviceContentState extends State<DeviceContent> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Get.toNamed("/device-edit");
+                          },
                           child: Text(
                             "수정하기",
                             style: TextStyle(

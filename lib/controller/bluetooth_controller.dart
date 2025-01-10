@@ -19,6 +19,20 @@ class BLEController extends GetxController {
   final Dio _dio = Dio();
   //처음 시작 시 적용 모드 가져오기
   RxBool isActiveSaveComplete = RxBool(false);
+  final RxString manufacturerText = ''.obs;
+  final manufacturerController =
+      Rx<TextEditingController>(TextEditingController());
+  final RxString vehicleText = ''.obs;
+  final vehicleController = Rx<TextEditingController>(TextEditingController());
+
+  final RxString licenseText = ''.obs;
+  final licenseController = Rx<TextEditingController>(TextEditingController());
+
+  final RxString installationPlaceText = ''.obs;
+  final installationPlaceController =
+      Rx<TextEditingController>(TextEditingController());
+
+  // final installationPlaceController = TextEditingController();
   //조명 화면 모델
   Rx<LightingModel> lightingModel = Rx(LightingModel(
     leftCenterColor: Colors.black,
@@ -786,7 +800,7 @@ class BLEController extends GetxController {
     }
   }
 
-  Future<String> fetchWeather() async {
+  Future<String> fetchWeather(BuildContext context) async {
     try {
       //위치 권한 확인
       bool serviceEnabled;
@@ -829,6 +843,26 @@ class BLEController extends GetxController {
 
         String weather = _mapWeatherToKorean(condition);
         print("현재 날씨>>>$weather");
+        Get.snackbar(
+          "",
+          ""
+              "현재 날씨 $weather", // 메시지
+          titleText: Text(
+            "현재 날씨 $weather",
+            style: TextStyle(color: CarsixColors.white1, fontSize: 18),
+          ),
+          messageText: Text(
+            "현재 날씨 $weather",
+            style: TextStyle(color: CarsixColors.white1, fontSize: 16),
+          ),
+          // backgroundColor: Colors.black, // Snackbar 배경색
+          snackPosition: SnackPosition.BOTTOM, // Snackbar 위치
+          maxWidth: MediaQuery.of(context).size.width - 20,
+          margin: EdgeInsets.only(
+            bottom: 20,
+          ),
+          duration: Duration(seconds: 1),
+        );
         return weather;
       } else {
         return '날씨 정보를 가져오지 못했습니다.';
@@ -1138,6 +1172,7 @@ class BLEController extends GetxController {
   }
 
   Future<void> applyCustomMode() async {
+    currentApplyMode.value = 4;
     final applyModel =
         customModeModels.firstWhere((el) => el.value.apply == true).value;
 
@@ -1367,9 +1402,44 @@ class BLEController extends GetxController {
     // }
   }
 
+  Future<void> initDeviceInfo() async {
+    final DatabaseHelper _dbHelper = DatabaseHelper();
+    final deviceInfo = await _dbHelper.getDeviceInfo();
+    if (deviceInfo != null) {
+      print('Manufacturer: ${deviceInfo['manufacturer']}');
+      manufacturerText.value = deviceInfo['manufacturer'].toString();
+      manufacturerController.value.text = deviceInfo['manufacturer'].toString();
+      print('Vehicle: ${deviceInfo['vehicle']}');
+      vehicleText.value = deviceInfo['vehicle'].toString();
+      vehicleController.value.text = deviceInfo['vehicle'].toString();
+      print('License Plate: ${deviceInfo['licensePlate']}');
+      licenseText.value = deviceInfo['licensePlate'].toString();
+      licenseController.value.text = deviceInfo['licensePlate'].toString();
+      print('Installation Place: ${deviceInfo['installationPlace']}');
+      installationPlaceText.value = deviceInfo['installationPlace'].toString();
+      installationPlaceController.value.text =
+          deviceInfo['installationPlace'].toString();
+    }
+  }
+
+  Future<void> saveDeviceInfo() async {
+    final DatabaseHelper _dbHelper = DatabaseHelper();
+    manufacturerText.value = manufacturerController.value.text;
+    vehicleText.value = vehicleController.value.text;
+    licenseText.value = licenseController.value.text;
+    installationPlaceText.value = installationPlaceController.value.text;
+    await _dbHelper.saveDeviceInfo(
+      manufacturer: manufacturerController.value.text,
+      vehicle: vehicleController.value.text,
+      licensePlate: licenseController.value.text,
+      installationPlace: installationPlaceController.value.text,
+    );
+  }
+
   @override
   void onInit() {
     super.onInit();
+    initDeviceInfo();
     //액티브 모드 세팅
     initActiveModeSetting();
     //현재 모드

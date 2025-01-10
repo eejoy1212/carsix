@@ -130,6 +130,7 @@ class ModeContent extends StatelessWidget {
                                     fontSize: 48,
                                     color: CarsixColors.white1,
                                     fontWeight: FontWeight.w800,
+                                    fontFamily: "AkiraExpanded",
                                   ),
                                 ),
                                 Text(
@@ -138,6 +139,7 @@ class ModeContent extends StatelessWidget {
                                     fontSize: 16,
                                     color: CarsixColors.white1,
                                     fontWeight: FontWeight.w800,
+                                    fontFamily: "AkiraExpanded",
                                   ),
                                 )
                               ],

@@ -1,6 +1,7 @@
 import 'package:carsix/widget/bar/default_appbar.dart';
 import 'package:carsix/widget/card/hidden_card.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 
 class Hidden extends StatelessWidget {
@@ -12,6 +13,9 @@ class Hidden extends StatelessWidget {
       appBar: DefaultAppbar(
         title: "관리자 세팅 메뉴 (히든메뉴)",
         backRoute: '',
+        onSave: () {
+          Get.back();
+        },
         // isComplete: true,
       ),
       body: SafeArea(

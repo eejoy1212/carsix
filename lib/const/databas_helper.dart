@@ -24,12 +24,21 @@ class DatabaseHelper {
 
   Future<Database> _initDB() async {
     final path = await getDatabasesPath();
-    final databasePath = join(path, 'carsix_12.db');
+    final databasePath = join(path, 'carsix_13.db');
 
     return await openDatabase(
       databasePath,
-      version: 12, // 버전 업데이트
+      version: 13, // 버전 업데이트
       onCreate: (db, version) async {
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS device_info (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            manufacturer TEXT,
+            vehicle TEXT,
+            licensePlate TEXT,
+            installationPlace TEXT
+          )
+        ''');
         await db.execute('''
         CREATE TABLE lighting_modes (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -156,6 +165,17 @@ class DatabaseHelper {
             rightSecondPassengerFavorites TEXT
           )
         ''');
+        }
+        if (oldVersion < 13) {
+          await db.execute('''
+            CREATE TABLE IF NOT EXISTS device_info (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              manufacturer TEXT,
+              vehicle TEXT,
+              licensePlate TEXT,
+              installationPlace TEXT
+            )
+          ''');
         }
       },
     );
@@ -557,5 +577,46 @@ class DatabaseHelper {
     } else {
       throw Exception("LightingModel 데이터가 없습니다.");
     }
+  }
+
+  // 디바이스 정보 저장
+  Future<void> saveDeviceInfo({
+    required String manufacturer,
+    required String vehicle,
+    required String licensePlate,
+    required String installationPlace,
+  }) async {
+    final db = await database;
+
+    await db.delete('device_info'); // 기존 데이터 삭제
+    await db.insert(
+      'device_info',
+      {
+        'manufacturer': manufacturer,
+        'vehicle': vehicle,
+        'licensePlate': licensePlate,
+        'installationPlace': installationPlace,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  // 디바이스 정보 조회
+  Future<Map<String, String>?> getDeviceInfo() async {
+    final db = await database;
+
+    final result = await db.query('device_info', limit: 1);
+
+    if (result.isNotEmpty) {
+      final row = result.first;
+
+      return {
+        'manufacturer': row['manufacturer'] as String,
+        'vehicle': row['vehicle'] as String,
+        'licensePlate': row['licensePlate'] as String,
+        'installationPlace': row['installationPlace'] as String,
+      };
+    }
+    return null;
   }
 }

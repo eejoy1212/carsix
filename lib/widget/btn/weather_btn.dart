@@ -22,7 +22,7 @@ class WeatherBtn extends StatelessWidget {
     return InkWell(
       onLongPress: onLongPress,
       onTap: () async {
-        await controller.fetchWeather();
+        await controller.fetchWeather(context);
       },
       child: Container(
         width: width, // 너비

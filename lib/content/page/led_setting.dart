@@ -229,6 +229,7 @@ class LedSetting extends StatelessWidget {
         onSave: () async {
           bool res = await controller.saveLighting();
           if (res) {
+            Get.back();
             Get.snackbar(
               "",
               ""
