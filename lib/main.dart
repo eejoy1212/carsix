@@ -10,11 +10,13 @@ import 'package:carsix/routes/app_pages.dart';
 import 'package:carsix/theme/controllers/theme_controller.dart';
 import 'package:carsix/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-void main() {
+void main() async {
   // Desktop 환경이라면 sqflite_common_ffi를 초기화
+  await dotenv.load(fileName: ".env");
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;

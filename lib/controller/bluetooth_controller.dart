@@ -9,10 +9,14 @@ import 'package:carsix/models/music_mode_model.dart';
 import 'package:carsix/models/single_mode_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:dio/dio.dart';
+import 'package:geolocator/geolocator.dart';
 
 class BLEController extends GetxController {
+  final Dio _dio = Dio();
   //처음 시작 시 적용 모드 가져오기
   //조명 화면 모델
   Rx<LightingModel> lightingModel = Rx(LightingModel(
@@ -678,6 +682,96 @@ class BLEController extends GetxController {
     //   print('불러오기 완료: mode=$modeKey');
     // }
   } //로컬 디비
+  String _mapWeatherToKorean(String condition) {
+    // WeatherAPI의 상태를 맑음/흐림/비/눈으로 변환
+    if (condition.contains('Clear') || condition.contains('Sunny')) {
+      return '맑음';
+    } else if (condition.contains('Cloudy') || condition.contains('Overcast')) {
+      return '흐림';
+    } else if (condition.contains('Rain') || condition.contains('Drizzle')) {
+      return '비';
+    } else if (condition.contains('Snow') || condition.contains('Sleet')) {
+      return '눈';
+    } else {
+      return '알 수 없음';
+    }
+  }
+
+  Future<String> fetchWeather() async {
+    try {
+      //위치 권한 확인
+      bool serviceEnabled;
+      LocationPermission permission;
+
+      // 위치 서비스 활성화 여부 확인
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        throw Exception('위치 서비스가 비활성화되어 있습니다.');
+      }
+
+      // 위치 권한 상태 확인
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          throw Exception('위치 권한이 거부되었습니다.');
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        throw Exception('위치 권한이 영구적으로 거부되었습니다. 설정에서 권한을 활성화하세요.');
+      }
+
+      // 위치 권한 요청 및 현재 위치 가져오기
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      print("position>>>$position");
+      String location =
+          "${position.latitude},${position.longitude}"; // 위도, 경도 설정
+
+      String apiKey = dotenv.env['WEATHER_API_KEY'] ?? "";
+      final url =
+          'https://api.weatherapi.com/v1/current.json?key=$apiKey&q=$location';
+
+      final response = await _dio.get(url);
+      if (response.statusCode == 200) {
+        final data = response.data;
+        final condition = data['current']['condition']['text']; // 날씨 상태
+
+        String weather = _mapWeatherToKorean(condition);
+        print("현재 날씨>>>$weather");
+        return weather;
+      } else {
+        return '날씨 정보를 가져오지 못했습니다.';
+      }
+    } catch (e) {
+      return '에러가 발생했습니다: $e';
+    }
+  }
+  // Future<String> fetchWeather() async {
+  //   // 위치를 내부에서 처리 (예: 기본값 설정)
+  //   String location = "Busan"; // 기본 위치 (서울)
+
+  //   // 환경 변수에서 API 키 가져오기
+  //   String apiKey = dotenv.env['WEATHER_API_KEY'] ?? "";
+
+  //   final url =
+  //       'https://api.weatherapi.com/v1/current.json?key=$apiKey&q=$location';
+
+  //   try {
+  //     final response = await _dio.get(url);
+
+  //     if (response.statusCode == 200) {
+  //       final data = response.data;
+  //       final condition = data['current']['condition']['text']; // 날씨 상태
+  //       return _mapWeatherToKorean(condition);
+  //     } else {
+  //       return '날씨 정보를 가져오지 못했습니다.';
+  //     }
+  //   } catch (e) {
+  //     return '에러가 발생했습니다: $e';
+  //   }
+  // }
 
 //커스텀모드 컬러 세팅
   void initCustomSetting() {

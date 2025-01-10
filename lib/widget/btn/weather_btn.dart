@@ -1,5 +1,7 @@
+import 'package:carsix/controller/bluetooth_controller.dart';
 import 'package:carsix/widget/chip/color_chip.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class WeatherBtn extends StatelessWidget {
   final VoidCallback onTap;
@@ -16,9 +18,12 @@ class WeatherBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final BLEController controller = Get.find<BLEController>();
     return InkWell(
       onLongPress: onLongPress,
-      onTap: onTap,
+      onTap: () async {
+        await controller.fetchWeather();
+      },
       child: Container(
         width: width, // 너비
         height: 48, // 높이

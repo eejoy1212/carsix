@@ -55,6 +55,12 @@
 
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>이 앱은 BLE 장치를 검색할 때 위치 정보를 사용합니다.</string>
-
+    <!-- 로케이션 권한 -->
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>앱 사용 중 위치 접근 권한이 필요합니다.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>항상 위치 접근 권한이 필요합니다.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>항상 및 앱 사용 중 위치 접근 권한이 필요합니다.</string>
 </dict>
 </plist>
